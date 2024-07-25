@@ -1,0 +1,107 @@
+/*
+Author: Vera Konigin
+Contact: vera@groundedwren.com
+File Description: Index.html styles
+*/
+
+html {
+	height: 100vh;
+}
+
+body {
+	min-height: 100vh;
+	height: 100%;
+	width: 100%;
+	max-width: 1920px;
+	max-height: 1000px;
+
+	display: flex;
+	flex-direction: column;
+
+	header {
+		#mainHeaderRight {
+			display: grid;
+			grid-template-columns: auto auto;
+			gap: 4px;
+			
+			> span, > h2 {
+				grid-column: 1 / -1;
+			}
+
+			form {
+				.tab-panel {
+					> * {
+						width: 100%;
+					}
+				}
+				legend {
+					text-align: start;
+				}
+				button[type="submit"] {
+					float: inline-end;
+				}
+			}
+			#formLoad {
+				&:has([aria-controls="divLoadLocal"]:checked) #divLoadLocal {
+					display: block;
+				}
+			}
+			#formSave {
+				&:has([aria-controls="divNewSave"]:checked) #divNewSave,
+				&:has([aria-controls="divExistingSave"]:checked) #divExistingSave {
+					display: block;
+				}
+			}
+		}
+	}
+
+	@media (max-width: 600px) {
+		#mainHeader {
+			grid-template-columns: 0fr 1fr 1fr;
+		}
+	}
+
+	main {
+		flex-grow: 1;
+		min-height: 0;
+		max-height: 1000px;
+
+		display: grid;
+		grid-template-columns: minmax(500px, 1fr) minmax(500px, auto);
+
+		> section {
+			min-height: 0px;
+			max-height: 100%;
+			padding: 5px;
+
+			display: flex;
+			flex-direction: column;
+
+			> .scroll-container {
+				flex-grow: 1;
+				overflow-y: auto;
+			}
+		}
+	}
+
+	footer {
+		figure {
+			text-align: center;
+		}
+	}
+}
+
+@media(max-width: 1000px) {
+	body {
+		max-height: auto;
+
+		main {
+			display: block;
+			min-height: auto;
+
+			> section {
+				max-height: auto;
+			}
+		}
+	}
+}

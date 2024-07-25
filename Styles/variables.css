@@ -1,0 +1,45 @@
+/*
+Author: Vera Konigin
+Contact: vera@groundedwren.com
+File Description: CSS Variables
+*/
+
+:root, .theme-light {
+	--background-color: #FFFFFF;
+	--background-color-2: #E3E3E3;
+	--text-color: #000000;
+	--border-color: #000000;
+	--selected-color: #90CBDB;
+	--button-face-color: #DEDEDE;
+	--button-text-color: #000000;
+	--input-text-color: #000000;
+	--input-background-color: #FFFFFF;
+	--link-color: #0000EE;
+	--link-background-color: #BDE0F2;
+	--focus-color: #FF0701;
+	--icon-color: #000000;
+	--banner-color: #B3B3B3;
+	--mark-color: #FCC5F1;
+	--accent-color: #D5B3D9;
+}
+
+@media not print {
+	.theme-dark {
+		--background-color: #000000;
+		--background-color-2: #242424;
+		--text-color: #FFFFFF;
+		--border-color: #FFFFFF;
+		--selected-color: #223891;
+		--button-face-color: #474747;
+		--button-text-color: #FFFFFF;
+		--input-text-color: #FFFFFF;
+		--input-background-color: #000000;
+		--link-color: #74D7EE;
+		--link-background-color: #3C5054;
+		--focus-color: #FF0701;
+		--icon-color: #FFFFFF;
+		--banner-color: #404040;
+		--mark-color: #005C08;
+		--accent-color: #8D4A95;
+	}
+}

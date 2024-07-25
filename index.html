@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+	Author: Vera Konigin
+	Contact: vera@groundedwren.com
+	
+	File Description: A chessboard tool
+-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <title>Chessboard</title>
+  
+  <link href="./Styles/variables.css" rel="stylesheet" type="text/css">
+  <link href="./Styles/main.css" rel="stylesheet" type="text/css">
+
+  <script src="./Scripts/FileLibGizmo.js"></script>
+  <script src="./Scripts/ShortcutsControl.js"></script>
+  <script src="./Scripts/SVGIconControl.js"></script>
+  <script src="./Scripts/ToasterControl.js"></script>
+
+  <link href="./Styles/index.css" rel="stylesheet" type="text/css">
+  <script src="./Scripts/index.js"></script>
+</head>
+<body>
+  <header id="mainHeader">
+	<div id="mainHeaderLeft">
+	  <a class="hide-until-focus" href="#mainContent">Skip to content</a>
+	  <noscript><strong>This site may not function properly without JavaScript enabled.</strong></noscript>
+	</div>
+	<div>
+	  <h1>Chessboard</h1>
+	  <span>Work in progress</span>
+	</div>
+	<section id="mainHeaderRight" aria-labelledby="hL&S">
+		<h2 id="hL&S">Load & Save</h2>
+		<button id="btnLoad" popovertarget="formLoad">Load</button>
+		<form id="formLoad" aria-labelledby="btnLoad" popover onsubmit="GW.Chessboard.onLoad(event)">
+			<div class="tab-control">
+				<fieldset class="tab-list">
+					<legend>Mode</legend>
+					<label class="text-after">
+						<input
+							type="radio"
+							name="loadMode"
+							value="local"
+							aria-controls="divLoadLocal"
+							onchange="GW.Chessboard.onLoadModeChange(event)"
+							checked
+						>
+						<span id="spnLocalSave">Local save</span>
+					</label>
+					<label class="text-after">
+						<input
+							type="radio" 
+							name="loadMode"
+							value="upload"
+							onchange="GW.Chessboard.onLoadModeChange(event)"
+						>
+						Upload file
+					</label>
+				</fieldset>
+				<div id="divLoadLocal" class="tab-panel">
+					<select id="selLoadLocal" aria-labelledby="spnLocalSave" required>
+						<option value="">No saves</option>
+					</select>
+				</div>
+			</div>
+			<button type="submit">Load</button>
+		</form>
+		<button id="btnSave" popovertarget="formSave">Save</button>
+		<form id="formSave" aria-labelledby="btnSave" popover onsubmit="GW.Chessboard.onSave(event)">
+			<div class="tab-control">
+				<fieldset class="tab-list">
+					<legend>Mode</legend>
+					<label class="text-after">
+						<input
+							type="radio"
+							name="saveMode"
+							value="new"
+							aria-controls="divNewSave"
+							onchange="GW.Chessboard.onSaveModeChange(event)"
+							checked
+						>
+						New save
+					</label>
+					<label class="text-after">
+						<input
+							type="radio"
+							name="saveMode"
+							value="existing"
+							aria-controls="divExistingSave"
+							onchange="GW.Chessboard.onSaveModeChange(event)"
+						>
+						<span id="spanExistingSave">Existing save</span>
+					</label>
+					<label class="text-after">
+						<input 
+							type="radio" 
+							name="saveMode" 
+							value="download"
+							onchange="GW.Chessboard.onSaveModeChange(event)"
+						>
+						Download
+					</label>
+				</fieldset>
+				<div id="divNewSave" class="tab-panel">
+					<label class="input-vertical">Name
+						<input id="txtSaveName"
+							type="text" 
+							pattern="[a-zA-Z0-9 ]+" 
+							oninput="GW.Chessboard.onTxtSaveNameInput(event)"
+							required
+						>
+					</label>
+				</div>
+				<div id="divExistingSave" class="tab-panel">
+					<select id="selSaveExisting" aria-labelledby="spanExistingSave">
+						<option value="">No saves</option>
+					</select>
+				</div>
+			</div>
+			<button type="submit">Save</button>
+		</form>
+		<span aria-live="polite" aria-atomic="true">Last save: <time id="timSave"></time></span>
+	</section>
+  </header>
+  <main id="mainContent">
+	<section>
+		<h2>Board</h2>
+		<div class="scroll-container">
+			<gw-shortcuts
+				code_0=""
+				handler_0=""
+				info_0=""
+			>
+				<table id="tblBoard">
+					<thead>
+						<th scope="col">A</th>
+						<th scope="col">B</th>
+						<th scope="col">C</th>
+						<th scope="col">D</th>
+						<th scope="col">E</th>
+						<th scope="col">F</th>
+						<th scope="col">G</th>
+						<th scope="col">H</th>
+					</thead>
+					<tbody id="tbodyBoard"></tbody>
+				</table>
+			</gw-shortcuts>
+			<p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p>
+		</div>
+	</section>
+	<section>
+		<h2>Details</h2>
+		<div class="scroll-container"></div>
+	</section>
+  </main>
+  <footer>
+	<figure>
+		<img src="./Img/gw-button.png" alt="Grounded Wren 88x31 Button; white text on a swirling purple, red, and black background">
+		<figcaption>Created by Vera in 2024</figcaption>
+	</figure>
+  </footer>
+</body>
+</html>

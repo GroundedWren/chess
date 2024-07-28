@@ -21,7 +21,7 @@ body {
 	header {
 		#mainHeaderRight {
 			display: grid;
-			grid-template-columns: auto auto;
+			grid-template-columns: auto auto auto;
 			gap: 4px;
 			
 			> span, > h2 {
@@ -29,17 +29,7 @@ body {
 			}
 
 			form {
-				.tab-panel {
-					> * {
-						width: 100%;
-					}
-				}
-				legend {
-					text-align: start;
-				}
-				button[type="submit"] {
-					float: inline-end;
-				}
+				text-align: initial;
 			}
 			#formLoad {
 				&:has([aria-controls="divLoadLocal"]:checked) #divLoadLocal {
@@ -88,6 +78,36 @@ body {
 		figure {
 			text-align: center;
 		}
+	}
+}
+
+form {
+	h1, h2, h3, h4, h5, h6 {
+		margin-block: 0;
+		margin-block-start: -4px;
+		margin-inline-start: -4px;
+		padding-inline: 5px;
+		border-radius: 0 10px 10px 0;
+		background-color: var(--accent-color);
+		word-break: keep-all;
+		text-align: start;
+	}
+
+	.footer {
+		width: 100%;
+
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		gap: 5px;
+	}
+}
+
+dialog {
+	padding: 4px;
+	&::backdrop {
+		background-color: var(--background-color-2);
+		opacity: 0.75;
 	}
 }
 

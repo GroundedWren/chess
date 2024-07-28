@@ -1,0 +1,10 @@
+{
+	"configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open Shortcuts.html",
+            "file": ".\\index.html",
+        }
+    ]
+}

@@ -28,6 +28,10 @@ window.GW.Controls = window.GW.Controls || {};
 					bottom: 0;
 					right: 0;
 					padding: 5px;
+
+					&:empty {
+						padding: 0px;
+					}
 					
 					display: flex;
 					flex-direction: column-reverse;

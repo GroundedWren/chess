@@ -31,152 +31,167 @@
 	</div>
 	<div>
 	  <h1>Chessboard</h1>
-	  <span>Work in progress</span>
+	  <span id="spnName"></span>
 	</div>
-	<section id="mainHeaderRight" aria-labelledby="hGames">
-		<h2 id="hGames">Games</h2>
-		<button popovertarget="formLoad">Load</button>
-		<form id="formLoad"
-			aria-labelledby="hLoad"
-			aria-describedby="emLoadWarning"
-			popover onsubmit="GW.Chessboard.onLoad(event); document.getElementById('formLoad').hidePopover();"
-		>
-			<h3 id="hLoad">Load Game</h3>
-			<em id="emLoadWarning">Unsaved changes will be lost.</em>
-			<div class="tab-control">
-				<fieldset class="tab-list">
-					<legend>Mode</legend>
-					<label class="text-after">
-						<input
-							type="radio"
-							name="loadMode"
-							value="local"
-							aria-controls="divLoadLocal"
-							onchange="GW.Chessboard.onLoadModeChange(event)"
-							checked
-						>
-						<span id="spnLocalSave">Local save</span>
-					</label>
-					<label class="text-after">
-						<input
-							type="radio" 
-							name="loadMode"
-							value="upload"
-							onchange="GW.Chessboard.onLoadModeChange(event)"
-						>
-						Upload file
-					</label>
-				</fieldset>
-				<div id="divLoadLocal" role="group" aria-labelledby="spnLocalSave" class="tab-panel">
-					<label class="input-vertical">
-						File
-						<select id="selLoadLocal" required>
-							<option value="">No saves</option>
-						</select>
-					</label>
-				</div>
-			</div>
-			<div class="footer">
-				<button type="button" onclick="document.getElementById('formLoad').hidePopover()">Cancel</button>
-				<button type="submit">Load</button>
-			</div>
-		</form>
-		<button popovertarget="formSave">Save</button>
-		<form id="formSave"
-			aria-labelledby="hSave"
-			popover
-			onsubmit="GW.Chessboard.onSave(event); document.getElementById('formSave').hidePopover();"
-		>
-			<h3 id="hSave">Save Game</h3>
-			<div class="tab-control">
-				<fieldset class="tab-list">
-					<legend>Mode</legend>
-					<label class="text-after">
-						<input
-							type="radio"
-							name="saveMode"
-							value="new"
-							aria-controls="divNewSave"
-							onchange="GW.Chessboard.onSaveModeChange(event)"
-							checked
-						>
-						<span id="spnNewSave">New save</span>
-					</label>
-					<label class="text-after">
-						<input
-							type="radio"
-							name="saveMode"
-							value="existing"
-							aria-controls="divExistingSave"
-							onchange="GW.Chessboard.onSaveModeChange(event)"
-						>
-						<span id="spnExistingSave">Existing save</span>
-					</label>
-					<label class="text-after">
-						<input 
-							type="radio" 
-							name="saveMode" 
-							value="download"
-							onchange="GW.Chessboard.onSaveModeChange(event)"
-						>
-						Download file
-					</label>
-				</fieldset>
-				<div id="divNewSave" role="group" aria-labelledby="spnNewSave" class="tab-panel">
-					<label class="input-vertical">Name
-						<input id="txtSaveName"
-							type="text" 
-							pattern="[a-zA-Z0-9 ]+" 
-							oninput="GW.Chessboard.onTxtSaveNameInput(event)"
-							required
-						>
-					</label>
-				</div>
-				<div id="divExistingSave" role="group" aria-labelledby="spnExistingSave" class="tab-panel">
-					<label class="input-vertical">
-						File
-						<select id="selSaveExisting">
-							<option value="">No saves</option>
-						</select>
-					</label>
-				</div>
-			</div>
-			<div class="footer">
-				<button type="button" onclick="document.getElementById('formSave').hidePopover()">Cancel</button>
-				<button type="submit">Save</button>
-			</div>
-		</form>
-		<button onclick="document.getElementById('diaNew').showModal()">New</button>
-		<dialog id="diaNew">
-			<form
-				aria-labelledby="hNew"
-				aria-describedby="emNewWarning pNew"
-				onsubmit="GW.Chessboard.newGame(event); document.getElementById('diaNew').close();"
+	<div id="mainHeaderRight">
+		<details>
+			<summary id="sumDisplay">Display</summary>
+			<aside id="asiDisplay" aria-labelledby="sumDisplay" role="group">
+				<label class="text-after">
+					<input id="cbxDarkMode" type="checkbox" oninput="localStorage.setItem('theme', event.target.checked ? 'dark' : 'light')">
+					Dark mode
+				</label>
+				<label class="text-after">
+					<input id="cbxVertLayout" type="checkbox">
+					Vertical layout
+				</label>
+			</aside>
+		</details>
+		<section id="secGames" aria-labelledby="hGames">
+			<h2 id="hGames">Games</h2>
+			<button popovertarget="formLoad">Load</button>
+			<form id="formLoad"
+				aria-labelledby="hLoad"
+				aria-describedby="emLoadWarning"
+				popover onsubmit="GW.Chessboard.onLoad(event); document.getElementById('formLoad').hidePopover();"
 			>
-				<h3 id="hNew">New Game</h3>
-				<em id="emNewWarning">Unsaved changes will be lost.</em>
-				<p id="pNew">Start a new game?</p>
+				<h3 id="hLoad">Load Game</h3>
+				<em id="emLoadWarning">Unsaved changes will be lost.</em>
+				<div class="tab-control">
+					<fieldset class="tab-list">
+						<legend>Mode</legend>
+						<label class="text-after">
+							<input
+								type="radio"
+								name="loadMode"
+								value="local"
+								aria-controls="divLoadLocal"
+								onchange="GW.Chessboard.onLoadModeChange(event)"
+								checked
+							>
+							<span id="spnLocalSave">Local save</span>
+						</label>
+						<label class="text-after">
+							<input
+								type="radio" 
+								name="loadMode"
+								value="upload"
+								onchange="GW.Chessboard.onLoadModeChange(event)"
+							>
+							Upload file
+						</label>
+					</fieldset>
+					<div id="divLoadLocal" role="group" aria-labelledby="spnLocalSave" class="tab-panel">
+						<label class="input-vertical">
+							File
+							<select id="selLoadLocal" required>
+								<option value="">No saves</option>
+							</select>
+						</label>
+					</div>
+				</div>
 				<div class="footer">
-					<button type="button" onclick="document.getElementById('diaNew').close()">Cancel</button>
-					<button type="submit" autofocus>Yes</button>
+					<button type="button" onclick="document.getElementById('formLoad').hidePopover()">Cancel</button>
+					<button type="submit">Load</button>
 				</div>
 			</form>
-		</dialog>
-		<span id="spnName"></span>
-		<span aria-live="polite" aria-atomic="true">Last save: <time id="timSave">-</time></span>
-	</section>
+			<button popovertarget="formSave">Save</button>
+			<form id="formSave"
+				aria-labelledby="hSave"
+				popover
+				onsubmit="GW.Chessboard.onSave(event); document.getElementById('formSave').hidePopover();"
+			>
+				<h3 id="hSave">Save Game</h3>
+				<div class="tab-control">
+					<fieldset class="tab-list">
+						<legend>Mode</legend>
+						<label class="text-after">
+							<input
+								type="radio"
+								name="saveMode"
+								value="new"
+								aria-controls="divNewSave"
+								onchange="GW.Chessboard.onSaveModeChange(event)"
+								checked
+							>
+							<span id="spnNewSave">New save</span>
+						</label>
+						<label class="text-after">
+							<input
+								type="radio"
+								name="saveMode"
+								value="existing"
+								aria-controls="divExistingSave"
+								onchange="GW.Chessboard.onSaveModeChange(event)"
+							>
+							<span id="spnExistingSave">Existing save</span>
+						</label>
+						<label class="text-after">
+							<input 
+								type="radio" 
+								name="saveMode" 
+								value="download"
+								onchange="GW.Chessboard.onSaveModeChange(event)"
+							>
+							Download file
+						</label>
+					</fieldset>
+					<div id="divNewSave" role="group" aria-labelledby="spnNewSave" class="tab-panel">
+						<label class="input-vertical">Name
+							<input id="txtSaveName"
+								type="text" 
+								pattern="[a-zA-Z0-9 ]+" 
+								oninput="GW.Chessboard.onTxtSaveNameInput(event)"
+								required
+							>
+						</label>
+					</div>
+					<div id="divExistingSave" role="group" aria-labelledby="spnExistingSave" class="tab-panel">
+						<label class="input-vertical">
+							File
+							<select id="selSaveExisting">
+								<option value="">No saves</option>
+							</select>
+						</label>
+					</div>
+				</div>
+				<div class="footer">
+					<button type="button" onclick="document.getElementById('formSave').hidePopover()">Cancel</button>
+					<button type="submit">Save</button>
+				</div>
+			</form>
+			<button onclick="document.getElementById('diaNew').showModal()">New</button>
+			<dialog id="diaNew">
+				<form
+					aria-labelledby="hNew"
+					aria-describedby="emNewWarning pNew"
+					onsubmit="GW.Chessboard.newGame(event); document.getElementById('diaNew').close();"
+				>
+					<h3 id="hNew">New Game</h3>
+					<em id="emNewWarning">Unsaved changes will be lost.</em>
+					<p id="pNew">Start a new game?</p>
+					<div class="footer">
+						<button type="button" onclick="document.getElementById('diaNew').close()">Cancel</button>
+						<button type="submit" autofocus>Yes</button>
+					</div>
+				</form>
+			</dialog>
+			<span aria-live="polite" aria-atomic="true">Last save: <time id="timSave">-</time></span>
+		</section>
+	</div>
   </header>
   <main id="mainContent">
-	<section>
-		<h2>Board</h2>
+	<section id="secBoard">
+		<h2 id="hBoard">Board</h2>
 		<div class="scroll-container">
 			<gw-shortcuts
 				code_0=""
 				handler_0=""
 				info_0=""
 			>
-				<table id="tblBoard">
+				<table id="tblBoard" aria-labelledby="hBoard">
 					<thead>
+						<td></td>
 						<th scope="col">A</th>
 						<th scope="col">B</th>
 						<th scope="col">C</th>

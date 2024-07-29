@@ -11,7 +11,7 @@ window.GW = window.GW || {};
 	 *		Name: "filename"
 	 *		Timestamp: Date,
 	 *		Moves: [
-	 *			"RC to RC", ...
+	 *			"Move in algebraic notation", ...
 	 *		]
 	 *	}
 	 */
@@ -21,6 +21,9 @@ window.GW = window.GW || {};
 		Timestamp: null,
 		Moves: [],
 	};
+	ns.ORDERED_RANKS = ["8", "7", "6", "5", "4", "3", "2", "1"];
+	ns.ORDERED_FILES = ["a", "b", "c", "d", "e", "f", "g", "h"];
+	ns.Snapshots = [];
 
 	//#region Load & Save
 	ns.onLoad = async (event) => {
@@ -31,19 +34,20 @@ window.GW = window.GW || {};
 				ns.Data = JSON.parse(localStorage.getItem(
 					`game-${document.getElementById("selLoadLocal").value}`
 				));
-				updateFileInfo();
-				renderGameData();
 				break;
 			case "upload":
 				const loadedData = await GW.Gizmos.FileLib.promptFileAsJSON();
-				if(loadedData && loadedData.Timestamp && loadedData.Moves){
-					ns.Data = loadedData;
-					ns.Data.Name = GW.Gizmos.FileLib.LastLoadedFilename;
-					updateFileInfo();
-					renderGameData();
+				if(!loadedData || !loadedData.Timestamp || !loadedData.Moves){
+					return;
 				}
+				ns.Data = loadedData;
+				ns.Data.Name = GW.Gizmos.FileLib.LastLoadedFilename;
 				break;
 		}
+
+		updateFileInfo();
+		buildGameSnapshots();
+		ns.setSnapshot(0);
 	};
 	ns.onSave = (event) => {
 		event.preventDefault();
@@ -66,14 +70,16 @@ window.GW = window.GW || {};
 	};
 
 	ns.newGame = (event) => {
-		event.preventDefault();
+		event?.preventDefault();
 		
 		ns.Data = {
 			Name: "",
 			Timestamp: null,
 			Moves: [],
 		};
-		renderGameData();
+		updateFileInfo();
+		buildGameSnapshots();
+		ns.setSnapshot(0);
 	};
 
 	function saveToLocal(gameName) {
@@ -105,10 +111,12 @@ window.GW = window.GW || {};
 	}
 	function updateFileInfo() {
 		const timSave = document.getElementById("timSave");
-		timSave.setAttribute("datetime", ns.Data.Timestamp)
-		timSave.innerText = new Date(ns.Data.Timestamp).toLocaleString(undefined, { dateStyle: "short", timeStyle: "medium" });
+		timSave.setAttribute("datetime", ns.Data.Timestamp || "")
+		timSave.innerText = ns.Data.Timestamp
+			? new Date(ns.Data.Timestamp).toLocaleString(undefined, { dateStyle: "short", timeStyle: "medium" })
+			: "-";
 
-		document.getElementById("spnName").innerText = ns.Data.Name ? `File: ${ns.Data.Name}` : "";
+		document.getElementById("spnName").innerHTML = ns.Data.Name ? `File: ${ns.Data.Name}` : "";
 	}
 
 	ns.reloadSavesList = function processLocalSaves() {
@@ -171,18 +179,204 @@ window.GW = window.GW || {};
 	};
 	//#endregion
 
+	//#region Snapshots
+	function buildGameSnapshots() {
+		ns.Snapshots = [];
+
+		const initSnap = {};
+		ns.ORDERED_FILES.forEach(file => {
+			initSnap[`${file}7`] = new ns.Pieces.Pawn("black");
+			initSnap[`${file}2`] = new ns.Pieces.Pawn("white");
+			switch(file) {
+				case "a":
+				case "h":
+					initSnap[`${file}8`] = new ns.Pieces.Rook("black", file);
+					initSnap[`${file}1`] = new ns.Pieces.Rook("white", file);
+					break;
+				case "b":
+				case "g":
+					initSnap[`${file}8`] = new ns.Pieces.Knight("black", file);
+					initSnap[`${file}1`] = new ns.Pieces.Knight("white", file);
+					break;
+				case "c":
+				case "f":
+					initSnap[`${file}8`] = new ns.Pieces.Bishop("black", file);
+					initSnap[`${file}1`] = new ns.Pieces.Bishop("white", file);
+					break;
+				case "d":
+					initSnap[`${file}8`] = new ns.Pieces.Queen("black", file);
+					initSnap[`${file}1`] = new ns.Pieces.Queen("white", file);
+					break;
+				case "e":
+					initSnap[`${file}8`] = new ns.Pieces.King("black", file);
+					initSnap[`${file}1`] = new ns.Pieces.King("white", file);
+					break;
+			}
+		});
+		ns.Snapshots.push(initSnap);
+
+		for(let i = 0; i < ns.Data.Moves.length; i++) {
+			ns.Snapshots.push(getSnapshot(ns.Snapshots[i], ns.Data.Moves[i]));
+		}
+	}
+
+	function getSnapshot(snapshot, move) {
+		//KJA TODO
+	}
+	//#endregion
+
 	//#region Rendering
-	function renderGameData() {
-		ns.renderBoardAtMove(ns.Data.Moves.length - 1);
+	ns.setSnapshot = (snapshotIdx) => {
+		const snapshot = ns.Snapshots[snapshotIdx];
+		renderBoardAtSnapshot(snapshot);
 	}
 
-	ns.renderBoardAtMove = (moveIdx) => {
-
+	function renderBoardAtSnapshot (snapshot) {
+		
+		document.getElementById("tbodyBoard").innerHTML = ns.ORDERED_RANKS.map(rank => `
+		<tr>
+			<th scope="row">${rank}</th>
+			${ns.ORDERED_FILES.map(file => `
+			<td><div>
+				${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
+			</div></td>
+			`).join("")}
+		</tr>
+		`).join("");
 	}
+	//#endregion
+
+	//#region Pieces
+	ns.Pieces = {};
+	ns.Pieces.Piece = class Piece {
+		Color;
+		StartFile;
+		constructor(color, startFile) {
+			this.Color = color;
+			this.StartFile = startFile;
+		}
+
+		get Name() {
+			throw new Error("Name is not implemented");
+		}
+		get Abbr() {
+			throw new Error("Abbr is not implemented");
+		}
+		get IconKey() {
+			throw new Error("IconKey is not implemented");
+		}
+		get FlipClass() {
+			return "";
+		}
+		get Icon() {
+			return `<gw-icon
+				iconKey="${this.IconKey}"
+				title="${this.Color} ${this.Name}"
+				iconClasses="${this.Color} ${this.FlipClass}"
+			></gw-icon>`
+		}
+	}
+
+	ns.Pieces.Pawn = class Pawn extends ns.Pieces.Piece {
+		get Name() {
+			return "Pawn";
+		}
+		get Abbr() {
+			return "";
+		}
+		get IconKey() {
+			return "chess-pawn";
+		}
+	}
+
+	ns.Pieces.Rook = class Rook extends ns.Pieces.Piece {
+		get Name() {
+			return "Rook";
+		}
+		get Abbr() {
+			return "R";
+		}
+		get IconKey() {
+			return "chess-rook";
+		}
+	}
+
+	ns.Pieces.Knight = class Knight extends ns.Pieces.Piece {
+		get Name() {
+			return "Knight";
+		}
+		get Abbr() {
+			return "N";
+		}
+		get IconKey() {
+			return "chess-knight";
+		}
+		get FlipClass() {
+			return this.StartFile === "g" ? "invert-x" : "";
+		}
+	}
+
+	ns.Pieces.Bishop = class Bishop extends ns.Pieces.Piece {
+		get Name() {
+			return "Bishop";
+		}
+		get Abbr() {
+			return "B";
+		}
+		get IconKey() {
+			return "chess-bishop";
+		}
+		get FlipClass() {
+			return this.StartFile === "c" ? "invert-x" : "";
+		}
+	}
+
+	ns.Pieces.Queen = class Queen extends ns.Pieces.Piece {
+		get Name() {
+			return "Queen";
+		}
+		get Abbr() {
+			return "Q";
+		}
+		get IconKey() {
+			return "chess-queen";
+		}
+	}
+
+	ns.Pieces.King = class King extends ns.Pieces.Piece {
+		get Name() {
+			return "King";
+		}
+		get Abbr() {
+			return "K";
+		}
+		get IconKey() {
+			return "chess-king";
+		}
+	}
+	//#endregion
+
+	//#region Notation
+
 	//#endregion
 }) (window.GW.Chessboard = window.GW.Chessboard || {});
 
 window.addEventListener("load", () => {
+	const cbxDarkMode = document.getElementById("cbxDarkMode");
+	const theme = localStorage.getItem("theme");
+	switch(theme) {
+		case "light":
+			cbxDarkMode.checked = false;
+			break;
+		case "dark":
+			cbxDarkMode.checked = true;
+			break;
+		default:
+			cbxDarkMode.checked = window.matchMedia("(prefers-color-scheme: dark)").matches;
+			break;
+	}
+
 	GW.Chessboard.reloadSavesList();
+	GW.Chessboard.newGame();
 });
 window.addEventListener("beforeunload", (event) => {});

@@ -4,7 +4,7 @@ Contact: vera@groundedwren.com
 File Description: CSS Variables
 */
 
-:root, .theme-light {
+:root {
 	--background-color: #FFFFFF;
 	--background-color-2: #E3E3E3;
 	--text-color: #000000;
@@ -20,11 +20,16 @@ File Description: CSS Variables
 	--icon-color: #000000;
 	--banner-color: #B3B3B3;
 	--mark-color: #FCC5F1;
-	--accent-color: #D5B3D9;
+	--accent-color: #C0DBB0;
+
+	--board-piece-white-color: #737373;
+	--board-piece-black-color: #4a2822;
+	--board-square-light-color: #f7f0e8;
+	--board-square-dark-color: #F9D890;
 }
 
 @media not print {
-	.theme-dark {
+	:root:has(#cbxDarkMode:checked) {
 		--background-color: #000000;
 		--background-color-2: #242424;
 		--text-color: #FFFFFF;
@@ -41,5 +46,10 @@ File Description: CSS Variables
 		--banner-color: #404040;
 		--mark-color: #005C08;
 		--accent-color: #8D4A95;
+
+		--board-piece-white-color: #FFFFFF;
+		--board-piece-black-color: #000000;
+		--board-square-light-color: #525dff;
+		--board-square-dark-color: #9008d9;
 	}
 }

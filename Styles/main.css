@@ -224,6 +224,11 @@ details[open] summary {
 	}
 }
 
+:popover-open, dialog {
+	color: var(--text-color);
+	background-color: var(--background-color);
+}
+
 button, input:is([type="button"], [type="submit"], [type="reset"]), input[type="file"]::file-selector-button, select, summary {
 	background-color: var(--button-face-color);
 	color: var(--button-text-color);

@@ -279,7 +279,7 @@ mark {
 
 form {
 	button[type="submit"], button:not([type="reset"], [type="button"]), input[type="submit"] {
-		background-color: var(--selected-color);
+		border-width: 2px;
 		font-weight: bold;
 	}
 }

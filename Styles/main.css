@@ -241,7 +241,6 @@ button, input:is([type="button"], [type="submit"], [type="reset"]), input[type="
 button[aria-expanded="true"], button[aria-pressed="true"], details[open] summary {
 	background-color: var(--selected-color);
 	font-weight: bold;
-	font-style: italic;
 }
 
 :is(button, select, input:is([type="button"], [type="submit"], [type="reset"]))[disabled], input[type="file"][disabled]::file-selector-button {
@@ -276,6 +275,13 @@ textarea {
 mark {
 	background-color: var(--mark-color);
 	color: var(--text-color);
+}
+
+form {
+	button[type="submit"], button:not([type="reset"], [type="button"]), input[type="submit"] {
+		background-color: var(--selected-color);
+		font-weight: bold;
+	}
 }
 
 .input-vertical {

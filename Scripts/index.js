@@ -333,7 +333,7 @@ window.GW = window.GW || {};
 			if(Math.abs(rank - this.Rank) === 2) {
 				this.EnPassantable = true;
 			}
-			super(file, rank);
+			super.moveTo(file, rank);
 		}
 
 		getMoves(boardSnap) {

@@ -22,7 +22,9 @@ window.GW = window.GW || {};
 		Moves: [],
 	};
 	ns.ORDERED_RANKS = ["8", "7", "6", "5", "4", "3", "2", "1"];
+	ns.RANK_ORDER_INDEX = {"8": 0, "7": 1, "6": 2, "5": 3, "4": 4, "3": 5, "2": 6, "1": 7};
 	ns.ORDERED_FILES = ["a", "b", "c", "d", "e", "f", "g", "h"];
+	ns.FILE_ORDER_INDEX = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7};
 	ns.Snapshots = [];
 
 	//#region Load & Save
@@ -185,31 +187,31 @@ window.GW = window.GW || {};
 
 		const initSnap = {};
 		ns.ORDERED_FILES.forEach(file => {
-			initSnap[`${file}7`] = new ns.Pieces.Pawn("black");
-			initSnap[`${file}2`] = new ns.Pieces.Pawn("white");
+			initSnap[`${file}7`] = new ns.Pieces.Pawn("black", file, 7);
+			initSnap[`${file}2`] = new ns.Pieces.Pawn("white", file, 2);
 			switch(file) {
 				case "a":
 				case "h":
-					initSnap[`${file}8`] = new ns.Pieces.Rook("black", file);
-					initSnap[`${file}1`] = new ns.Pieces.Rook("white", file);
+					initSnap[`${file}8`] = new ns.Pieces.Rook("black", file, 8);
+					initSnap[`${file}1`] = new ns.Pieces.Rook("white", file, 1);
 					break;
 				case "b":
 				case "g":
-					initSnap[`${file}8`] = new ns.Pieces.Knight("black", file);
-					initSnap[`${file}1`] = new ns.Pieces.Knight("white", file);
+					initSnap[`${file}8`] = new ns.Pieces.Knight("black", file, 8);
+					initSnap[`${file}1`] = new ns.Pieces.Knight("white", file, 1);
 					break;
 				case "c":
 				case "f":
-					initSnap[`${file}8`] = new ns.Pieces.Bishop("black", file);
-					initSnap[`${file}1`] = new ns.Pieces.Bishop("white", file);
+					initSnap[`${file}8`] = new ns.Pieces.Bishop("black", file, 8);
+					initSnap[`${file}1`] = new ns.Pieces.Bishop("white", file, 1);
 					break;
 				case "d":
-					initSnap[`${file}8`] = new ns.Pieces.Queen("black", file);
-					initSnap[`${file}1`] = new ns.Pieces.Queen("white", file);
+					initSnap[`${file}8`] = new ns.Pieces.Queen("black", file, 8);
+					initSnap[`${file}1`] = new ns.Pieces.Queen("white", file, 1);
 					break;
 				case "e":
-					initSnap[`${file}8`] = new ns.Pieces.King("black", file);
-					initSnap[`${file}1`] = new ns.Pieces.King("white", file);
+					initSnap[`${file}8`] = new ns.Pieces.King("black", file, 8);
+					initSnap[`${file}1`] = new ns.Pieces.King("white", file, 1);
 					break;
 			}
 		});
@@ -242,7 +244,7 @@ window.GW = window.GW || {};
 		<tr>
 			<th scope="row">${rank}</th>
 			${ns.ORDERED_FILES.map(file => `
-			<td><div>
+			<td id="cell-${file}${rank}"><div>
 				${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
 			</div></td>
 			`).join("")}
@@ -256,9 +258,18 @@ window.GW = window.GW || {};
 	ns.Pieces.Piece = class Piece {
 		Color;
 		StartFile;
-		constructor(color, startFile) {
+
+		File;
+		Rank;
+		HasMoved;
+		constructor(color, startFile, startRank) {
 			this.Color = color;
 			this.StartFile = startFile;
+
+			this.File = startFile;
+			this.Rank = startRank;
+
+			this.HasMoved = false;
 		}
 
 		get Name() {
@@ -282,11 +293,33 @@ window.GW = window.GW || {};
 		}
 
 		clone() {
-			return new ns.Pieces[this.Name](this.Color, this.StartFile);
+			const clone = new ns.Pieces[this.Name](this.Color, this.StartFile);
+			clone.HasMoved = this.HasMoved;
+			return clone;
+		}
+
+		moveTo(file, rank) {
+			this.Rank = rank;
+			this.File = file;
+			this.HasMoved = true;
+		}
+
+		getMoves(boardSnap) {
+			throw new Error("getMoves is not implemented");
+		}
+
+		isValidMove(boardSnap, file, rank) {
+			throw new Error("isValidMove is not implemented");
+		}
+
+		canCapture(boardSnap, file, rank) {
+			throw new Error("canCapture is not implemented");
 		}
 	}
 
 	ns.Pieces.Pawn = class Pawn extends ns.Pieces.Piece {
+		EnPassantable = false; //Not part of clone
+
 		get Name() {
 			return "Pawn";
 		}
@@ -295,6 +328,63 @@ window.GW = window.GW || {};
 		}
 		get IconKey() {
 			return "chess-pawn";
+		}
+
+		moveTo(file, rank) {
+			if(Math.abs(rank - this.Rank) === 2) {
+				this.EnPassantable = true;
+			}
+			super(file, rank);
+		}
+
+		getMoves(boardSnap) {
+			const moves = [];
+
+			const dir = this.Color === "white" ? 1 : -1;
+
+			const cellOneUp = `${this.File}${getRank(this.Rank, dir)}`;
+			if(!boardSnap[cellOneUp]) {
+				moves.push({Cell: cellOneUp, Capture: null});
+			}
+
+			const cellTwoUp = `${this.File}${getRank(this.Rank, dir*2)}`;
+			if(!this.HasMoved && !boardSnap[cellOneUp] && !boardSnap[cellTwoUp]) {
+				moves.push({Cell: cellTwoUp, Capture: null});
+			}
+
+			const cellLeftDiag = `${getFile(this.File, -1)}${getRank(this.Rank, dir)}`;
+			const cellRightDiag = `${getFile(this.File, 1)}${getRank(this.Rank, dir)}`;
+			const cellLeft = `${getFile(this.File, -1)}${this.Rank}`;
+			const cellRight = `${getFile(this.File, 1)}${this.Rank}`;
+
+			if(boardSnap[cellLeftDiag] && boardSnap[cellLeftDiag].Color !== this.Color) {
+				moves.push({Cell: cellLeftDiag, Capture: cellLeftDiag});
+			}
+			if(boardSnap[cellRightDiag] && boardSnap[cellRightDiag].Color !== this.Color) {
+				moves.push({Cell: cellRightDiag, Capture: cellRightDiag});
+			}
+
+			// on croissant
+			if(boardSnap[cellLeft]?.Color !== this.Color && boardSnap[cellLeft]?.EnPassantable) {
+				moves.push({Cell: cellLeftDiag, Capture: cellLeft});
+			}
+			if(boardSnap[cellRight]?.Color !== this.Color && boardSnap[cellRight]?.EnPassantable) {
+				moves.push({Cell: cellRightDiag, Capture: cellRight});
+			}
+
+			return moves;
+		}
+
+		isValidMove(boardSnap, file, rank) {
+			const moves = this.getMoves(boardSnap);
+			return moves.filter(move => move.Cell[0] === file && move.Cell[1] === rank).length > 0;
+		}
+
+		canCapture(boardSnap, rank, file) {
+			const moves = this.getMoves(boardSnap);
+			return moves.filter(
+				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
+			).length > 0;
 		}
 	}
 
@@ -362,6 +452,97 @@ window.GW = window.GW || {};
 		get IconKey() {
 			return "chess-king";
 		}
+	}
+
+	function getRank(startRank, delta) {
+		return getOrderedItemAtDelta(ns.ORDERED_RANKS, ns.RANK_ORDER_INDEX[startRank], delta);
+	}
+
+	function getFile(startFile, delta) {
+		return getOrderedItemAtDelta(ns.ORDERED_FILES, ns.FILE_ORDER_INDEX[startFile], delta);
+	}
+
+	function getOrderedItemAtDelta(ary, startIdx, delta) {
+		if(startIdx === null || startIdx === undefined) { return ""; }
+
+		const newIdx = startIdx + delta;
+		if(newIdx < 0 || newIdx >= ary.length) { return ""; }
+
+		return ary[newIdx];
+	}
+
+	function getLineInfo(boardSnap, fileOne, rankOne, fileTwo, rankTwo) {
+		const fileOneIdx = ns.FILE_ORDER_INDEX[fileOne];
+		const fileTwoIdx = ns.FILE_ORDER_INDEX[fileTwo];
+		const startFileIdx = Math.min(fileOneIdx, fileTwoIdx);
+		const endFileIdx = Math.max(fileOneIdx, fileTwoIdx);
+		const fileDelta = endFileIdx - startFileIdx;
+
+		const rankOneIdx = ns.RANK_ORDER_INDEX[rankOne];
+		const rankTwoIdx = ns.RANK_ORDER_INDEX[rankTwo];
+		const startRankIdx = Math.min(rankOneIdx, rankTwoIdx);
+		const endRankIdx = Math.max(rankOneIdx, rankTwoIdx);
+		const rankDelta = endRankIdx - startRankIdx;
+
+		const info = {Direction: "", Pieces: {}};
+
+		if(fileDelta === rankDelta) {
+			info.Direction = "file-rank"
+			for(let delta = 0; delta < fileDelta; delta++) {
+				const cell = `${ns.ORDERED_FILES[startFileIdx + delta]}${ns.ORDERED_RANKS[startRankIdx + delta]}`
+				if(boardSnap[cell]) {
+					info.Pieces[cell] = true;
+				}
+			}
+		}
+		else if(fileDelta === 0) {
+			info.Direction = "file";
+			for(let rankIdx = startRankIdx; rankIdx <= endRankIdx; rankIdx++) {
+				const cell = `${fileOne}${ns.ORDERED_RANKS[rankIdx]}`
+				if(boardSnap[cell]) {
+					info.Pieces[cell] = true;
+				}
+			}
+		}
+		else if(rankDelta === 0) {
+			info.Direction = "rank";
+			for(let fileIdx = startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
+				if(boardSnap[`${ns.ORDERED_RANKS[rankIdx]}${rankOne}`]) {
+					info.Pieces[cell] = true;
+				}
+			}
+		}
+
+		return info;
+	}
+
+	function getLineUntilBlocked(boardSnap, startFile, startRank, fileStep, rankStep) {
+		let blocked = false;
+		if(fileStep === 0 && rankStep === 0) {
+			debugger; //Hey are you sure
+			blocked = true;
+		}
+
+		const cells = [];
+		let fileIdx = ns.FILE_ORDER_INDEX[startFile];
+		let rankIdx = ns.RANK_ORDER_INDEX[startRank];
+		
+		while(fileIdx >= 0
+			&& rankIdx >= 0
+			&& fileIdx < ns.ORDERED_FILES.length
+			&& rankIdx < ns.ORDERED_RANKS.length
+			&& !blocked
+		) {
+			fileIdx += fileStep;
+			rankIdx += rankStep;
+			const cell = `${ns.ORDERED_FILES[fileIdx]}${ns.ORDERED_RANKS[rankIdx]}}`;
+			cells.push(cell);
+			if(boardSnap[cell]) {
+				blocked = true;
+			}
+		}
+
+		return {Cells: cells, Blocked: blocked};
 	}
 	//#endregion
 

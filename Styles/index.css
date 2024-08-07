@@ -47,6 +47,10 @@ body {
 
 			form {
 				text-align: initial;
+
+				.tab-panel :is(input, select) {
+					width: 100%;
+				}
 			}
 			#formLoad {
 				&:has([aria-controls="divLoadLocal"]:checked) #divLoadLocal {

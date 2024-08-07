@@ -306,6 +306,11 @@ label:has(input:checked) {
 		margin-inline: 0;
 		margin-block-end: 0;
 		
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-around;
+		gap: 5px;
+		
 		label:has(:checked) {
 		background-color: var(--selected-color);
 		}

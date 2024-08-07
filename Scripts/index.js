@@ -4,7 +4,6 @@
  */
  
 window.GW = window.GW || {};
-window.GW = window.GW || {};
 (function Chessboard(ns) {
 	/**
 	 *	Data: {

@@ -216,12 +216,17 @@ window.GW = window.GW || {};
 		ns.Snapshots.push(initSnap);
 
 		for(let i = 0; i < ns.Data.Moves.length; i++) {
-			ns.Snapshots.push(getSnapshot(ns.Snapshots[i], ns.Data.Moves[i]));
+			ns.Snapshots.push(getSnapshot(
+				ns.Snapshots[i],
+				ns.Data.Moves[i],
+				i % 2 == 0 ? "white" : "black"
+			));
 		}
 	}
 
-	function getSnapshot(snapshot, move) {
-		//KJA TODO
+	function getSnapshot(snapshot, move, color) {
+		const newSnap = {};
+		Object.keys(snapshot).forEach(cell => newSnap[cell] = snapshot[cell].clone());
 	}
 	//#endregion
 
@@ -274,6 +279,10 @@ window.GW = window.GW || {};
 				title="${this.Color} ${this.Name}"
 				iconClasses="${this.Color} ${this.FlipClass}"
 			></gw-icon>`
+		}
+
+		clone() {
+			return new ns.Pieces[this.Name](this.Color, this.StartFile);
 		}
 	}
 

@@ -218,9 +218,24 @@ body {
 							top: 0;
 							left: calc(100% - 16px);
 						}
+						&.move-to-able {
+							top: calc(100% - 16px);
+							left: 0;
+						}
+						&.threatened {
+							top: calc(100% - 16px);
+							left: calc(100% - 16px);
+						}
+						&.does-capture {
+							top: calc(100% - 16px);
+							left: calc(100% - 32px);
+						}
 					}
 					&.movable gw-icon.movable,
-					&.threatening gw-icon.threatening {
+					&.threatening gw-icon.threatening
+					&.move-to-able gw-icon.move-to-able
+					&.threatened gw-icon.threatened
+					&.does-capture gw-icon.does-capture {
 						display: block;
 					}
 				}

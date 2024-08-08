@@ -289,7 +289,28 @@ window.GW = window.GW || {};
 						<gw-icon
 							class="earmark threatening"
 							iconKey="bolt"
-							title="Can capture selected square's piece"
+							title="Can capture the selected square's piece"
+						></gw-icon>
+					</span>
+					<span id=spnMoveToAble-${file}${rank} class="icon-span">
+						<gw-icon
+							class="earmark move-to-able"
+							iconKey="forward-step"
+							title="The selected square's piece can move here"
+						></gw-icon>
+					</span>
+					<span id=spnThreatened-${file}${rank} class="icon-span">
+						<gw-icon
+							class="earmark threatened"
+							iconKey="skull"
+							title="Can be captured by the selected square's piece"
+						></gw-icon>
+					</span>
+					<span id=spnDoesCapture-${file}${rank} class="icon-span">
+						<gw-icon
+							class="earmark does-capture"
+							iconKey="hand-fist"
+							title="Moving the selected square's piece here performs a capture"
 						></gw-icon>
 					</span>
 				</button>
@@ -373,6 +394,17 @@ window.GW = window.GW || {};
 		newCellBtn.focus();
 	}
 
+	function cleanSelectionBasedClasses() {
+		const snapshot = ns.Snapshots[ns.CurrentSnapshotIdx];
+		Object.keys(snapshot).forEach(snapCell => {
+			const tdCell = document.getElementById(`cell-${snapCell}`);
+			tdCell.classList.remove("movable");
+			tdCell.classList.remove("threatening");
+			tdCell.classList.remove("move-to-able");
+			tdCell.classList.remove("does-capture");
+		});
+	}
+
 	function calloutPiecesMovable(file, rank) {
 		const snapshot = ns.Snapshots[ns.CurrentSnapshotIdx];
 		Object.keys(snapshot).forEach(snapCell => {
@@ -385,6 +417,38 @@ window.GW = window.GW || {};
 			}
 		});
 	}
+
+	function calloutPiecesThreatening(file, rank) {
+		const snapshot = ns.Snapshots[ns.CurrentSnapshotIdx];
+		Object.keys(snapshot).forEach(snapCell => {
+			const tdCell = document.getElementById(`cell-${snapCell}`);
+			if(snapshot[snapCell] && snapshot[snapCell].canCapture(snapshot, file, rank)) {
+				tdCell.classList.add("threatening");
+			}
+			else {
+				tdCell.classList.remove("threatening");
+			}
+		});
+	}
+
+	function calloutPiecePath(file, rank) {
+		const snapshot = ns.Snapshots[ns.CurrentSnapshotIdx];
+		const piece = snapshot[`${file}${rank}`];
+		if(!piece) { return; }
+
+		const moves = piece.getMoves(snapshot);
+		moves.forEach(move => {
+			tdMoveCell = document.getElementById(`cell-${move.Cell}`);
+			tdCaptureCell = document.getElementById(`cell-${move.Capture}`);
+			if(tdMoveCell) {
+				tdMoveCell.classList.add("move-to-able");
+			}
+			if(tdCaptureCell) {
+				tdCaptureCell.classList.add("threatened");
+				tdMoveCell.classList.add("does-capture");
+			}
+		});
+	}
 	//#endregion
 
 	//#region Details
@@ -394,7 +458,10 @@ window.GW = window.GW || {};
 			buttonEl => buttonEl.setAttribute("aria-pressed", buttonEl.id === `button-${file}${rank}`)
 		);
 
+		cleanSelectionBasedClasses();
 		calloutPiecesMovable(file, rank);
+		calloutPiecesThreatening(file, rank);
+		calloutPiecePath(file, rank);
 	}
 	//#endregion
 
@@ -460,7 +527,8 @@ window.GW = window.GW || {};
 		}
 
 		canCapture(boardSnap, file, rank) {
-			throw new Error("canCapture is not implemented");
+			return false;
+			//throw new Error("canCapture is not implemented");
 		}
 	}
 

@@ -813,6 +813,17 @@ window.GW = window.GW || {};
 	}
 
 	ns.Pieces.Queen = class Queen extends ns.Pieces.Piece {
+		static LineCombos = [
+			{fileStep: 1, rankStep: 1},
+			{fileStep: 1, rankStep: 0},
+			{fileStep: 1, rankStep: -1},
+			{fileStep: 0, rankStep: 1},
+			{fileStep: 0, rankStep: -1},
+			{fileStep: -1, rankStep: 1},
+			{fileStep: -1, rankStep: 0},
+			{fileStep: -1, rankStep: -1}
+		];
+
 		get Name() {
 			return "Queen";
 		}
@@ -821,6 +832,42 @@ window.GW = window.GW || {};
 		}
 		get IconKey() {
 			return "chess-queen";
+		}
+
+		getMoves(boardSnap) {
+			const moves = [];
+			ns.Pieces.Queen.LineCombos.forEach(lineSpec => {
+				moves.push(...this.getStandardLineMoves(boardSnap, lineSpec.fileStep, lineSpec.rankStep));
+			});
+			return this.filterByTeamCheck(moves);
+		}
+
+		isValidMove(boardSnap, file, rank) {
+			const {Direction: direction, Pieces: pieces} = getLineInfo(boardSnap, this.File, this.Rank, file, rank);
+
+			if(direction !== "file-rank") {
+				return false;
+			}
+
+			const checkCell = `${file}${rank}`;
+
+			if(Object.keys(pieces).length === 1) {
+				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: null});
+			}
+
+			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
+				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: checkCell});
+			}
+
+			return false;
+		}
+
+		canCapture(boardSnap, file, rank) {
+			if(!this.isValidMove(boardSnap, file, rank)) {
+				return false;
+			}
+			const checkCell = `${file}${rank}`;
+			return boardSnap[checkCell] && boardSnap[checkCell].Color !== this.Color;
 		}
 	}
 

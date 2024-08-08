@@ -270,8 +270,8 @@ window.GW = window.GW || {};
 				} spnIcon-${file}${rank}
 				  spnMovable-${file}${rank}
 				  spnThreatening-${file}${rank}
-				  spnMoveToAble-${file}${rank}"
-				  spnThreatened-${file}${rank}"
+				  spnMoveToAble-${file}${rank}
+				  spnThreatened-${file}${rank}
 				  spnDoesCapture-${file}${rank}"
 			>
 				<button id="button-${file}${rank}"
@@ -404,6 +404,7 @@ window.GW = window.GW || {};
 			tdCell.classList.remove("movable");
 			tdCell.classList.remove("threatening");
 			tdCell.classList.remove("move-to-able");
+			tdCell.classList.remove("threatened");
 			tdCell.classList.remove("does-capture");
 		});
 	}
@@ -533,6 +534,31 @@ window.GW = window.GW || {};
 			return false;
 			//throw new Error("canCapture is not implemented");
 		}
+
+		getStandardLineMoves(boardSnap, fileStep, rankStep) {
+			const moves = [];
+
+			const {Cells: lineCells, Blocked: lineBlocked} = getLineUntilBlocked(
+				boardSnap,
+				this.File,
+				this.Rank,
+				fileStep,
+				rankStep
+			);
+			moves.push(...(lineCells.map(cell => { return {Cell: cell, Capture: null} })));
+
+			if(lineBlocked && lineCells.length) {
+				const blockedCell = moves[moves.length - 1].Cell;
+				if(boardSnap[blockedCell].Color !== this.Color) {
+					moves[moves.length - 1].Capture = moves[moves.length - 1].Cell
+				}
+				else {
+					moves.pop();
+				}
+			}
+			
+			return moves;
+		}
 	}
 
 	ns.Pieces.Pawn = class Pawn extends ns.Pieces.Piece {
@@ -607,6 +633,13 @@ window.GW = window.GW || {};
 	}
 
 	ns.Pieces.Rook = class Rook extends ns.Pieces.Piece {
+		static LineCombos = [
+			{fileStep: 1, rankStep: 0},
+			{fileStep: -1, rankStep: 0},
+			{fileStep: 0, rankStep: 1},
+			{fileStep: 0, rankStep: -1},
+		];
+
 		get Name() {
 			return "Rook";
 		}
@@ -615,6 +648,41 @@ window.GW = window.GW || {};
 		}
 		get IconKey() {
 			return "chess-rook";
+		}
+
+		getMoves(boardSnap) {
+			const moves = [];
+			ns.Pieces.Rook.LineCombos.forEach(lineSpec => {
+				moves.push(...this.getStandardLineMoves(boardSnap, lineSpec.fileStep, lineSpec.rankStep));
+			});
+			return moves;
+		}
+
+		isValidMove(boardSnap, file, rank) {
+			const {Direction: direction, Pieces: pieces} = getLineInfo(boardSnap, this.File, this.Rank, file, rank);
+
+			if(direction !== "file" && direction !== "rank") {
+				return false;
+			}
+
+			if(Object.keys(pieces).length === 1) {
+				return true;
+			}
+
+			const checkCell = `${file}${rank}`;
+			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
+				return true;
+			}
+
+			return false;
+		}
+
+		canCapture(boardSnap, file, rank) {
+			if(!this.isValidMove(boardSnap, file, rank)) {
+				return false;
+			}
+			const checkCell = `${file}${rank}`;
+			return boardSnap[checkCell] && boardSnap[checkCell].Color !== this.Color;
 		}
 	}
 
@@ -758,7 +826,8 @@ window.GW = window.GW || {};
 		else if(rankDelta === 0) {
 			info.Direction = "rank";
 			for(let fileIdx = startFileIdx; fileIdx <= endFileIdx; fileIdx++) {
-				if(boardSnap[`${ns.ORDERED_RANKS[rankIdx]}${rankOne}`]) {
+				const cell = `${ns.ORDERED_FILES[fileIdx]}${rankOne}`
+				if(boardSnap[cell]) {
 					info.Pieces[cell] = true;
 				}
 			}
@@ -778,19 +847,21 @@ window.GW = window.GW || {};
 		let fileIdx = ns.FILE_ORDER_INDEX[startFile];
 		let rankIdx = ns.RANK_ORDER_INDEX[startRank];
 		
+		fileIdx += fileStep;
+		rankIdx += rankStep;
 		while(fileIdx >= 0
 			&& rankIdx >= 0
 			&& fileIdx < ns.ORDERED_FILES.length
 			&& rankIdx < ns.ORDERED_RANKS.length
 			&& !blocked
 		) {
-			fileIdx += fileStep;
-			rankIdx += rankStep;
-			const cell = `${ns.ORDERED_FILES[fileIdx]}${ns.ORDERED_RANKS[rankIdx]}}`;
+			const cell = `${ns.ORDERED_FILES[fileIdx]}${ns.ORDERED_RANKS[rankIdx]}`;
 			cells.push(cell);
 			if(boardSnap[cell]) {
 				blocked = true;
 			}
+			fileIdx += fileStep;
+			rankIdx += rankStep;
 		}
 
 		return {Cells: cells, Blocked: blocked};

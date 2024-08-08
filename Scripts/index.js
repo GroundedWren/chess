@@ -20,11 +20,14 @@ window.GW = window.GW || {};
 		Timestamp: null,
 		Moves: [],
 	};
+
 	ns.ORDERED_RANKS = ["8", "7", "6", "5", "4", "3", "2", "1"];
 	ns.RANK_ORDER_INDEX = {"8": 0, "7": 1, "6": 2, "5": 3, "4": 4, "3": 5, "2": 6, "1": 7};
 	ns.ORDERED_FILES = ["a", "b", "c", "d", "e", "f", "g", "h"];
 	ns.FILE_ORDER_INDEX = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7};
+
 	ns.Snapshots = [];
+	ns.CurrentSnapshotIdx = 0;
 
 	//#region Load & Save
 	ns.onLoad = async (event) => {
@@ -233,22 +236,165 @@ window.GW = window.GW || {};
 
 	//#region Rendering
 	ns.setSnapshot = (snapshotIdx) => {
+		ns.CurrentSnapshotIdx = snapshotIdx;
 		const snapshot = ns.Snapshots[snapshotIdx];
 		renderBoardAtSnapshot(snapshot);
 	}
 
 	function renderBoardAtSnapshot (snapshot) {
+		document.getElementById("theadBoard").innerHTML = `
+		<tr>
+			<td></td>
+			<td></td>
+			<th scope="col" colspan="${ns.ORDERED_FILES.length}">File</th>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			${ns.ORDERED_FILES.map(file => `<th scope="col">${file}</th>`).join("")}
+		</tr>
+		`;
 		
 		document.getElementById("tbodyBoard").innerHTML = ns.ORDERED_RANKS.map(rank => `
 		<tr>
+			${ns.RANK_ORDER_INDEX[rank] === 0
+				? `<th scope="row" rowspan="${ns.ORDERED_RANKS.length}" class="left-border"><span>Rank</span></th>`
+				: ""
+			}
 			<th scope="row">${rank}</th>
 			${ns.ORDERED_FILES.map(file => `
-			<td id="cell-${file}${rank}"><div>
-				${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
-			</div></td>
+			<td id="cell-${file}${rank}"
+				aria-labelledby="${(ns.RANK_ORDER_INDEX[rank] + ns.FILE_ORDER_INDEX[file]) % 2 === 0
+					? "spnSquareWhiteLabel"
+					: "spnSquareBlackLabel"
+				} spnIcon-${file}${rank} spnMovable-${file}${rank} spnThreatening-${file}${rank}"
+			>
+				<button id="button-${file}${rank}"
+					tabindex="-1"
+					aria-labelledby="spnSquareBtnLabel"
+					aria-pressed="false"
+					onclick="GW.Chessboard.onSquareClicked('${file}', '${rank}')"
+				>
+					<span id="spnIcon-${file}${rank}" class="icon-span">
+						${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
+					</span>
+					<span id=spnMovable-${file}${rank} class="icon-span">
+						<gw-icon
+							class="earmark movable"
+							iconKey="person-running"
+							title="Can move to the selected square"
+						></gw-icon>
+					</span>
+					<span id=spnThreatening-${file}${rank} class="icon-span">
+						<gw-icon
+							class="earmark threatening"
+							iconKey="bolt"
+							title="Can capture selected square's piece"
+						></gw-icon>
+					</span>
+				</button>
+			</td>
 			`).join("")}
 		</tr>
 		`).join("");
+	}
+
+	ns.tblBoardOnFocusIn = (event) => {
+		const tblBoard = document.getElementById("tblBoard");
+		const tbodyBoard = document.getElementById("tbodyBoard");
+		let curCellBtn = tbodyBoard.querySelector(`[tabindex="0"]`);
+		let focusTarget = event.target;
+
+		if(focusTarget === tblBoard) {
+			tblBoard.removeAttribute("tabindex");
+			focusTarget = tbodyBoard.querySelector(`button`);
+		}
+
+		if(curCellBtn !== focusTarget) {
+			focusSquare(curCellBtn, focusTarget);
+		}
+	}
+
+	ns.tblBoardOnKbdNav = (event) => {
+		const curCellBtn = tbodyBoard.querySelector(`[tabindex="0"]`);
+		const curCell = curCellBtn.parentElement;
+		const curFile = curCell.getAttribute("id")["cell-".length];
+		const curRank = curCell.getAttribute("id")["cell-".length + 1];
+
+		let targetCellLocation = "";
+		switch(event.key) {
+			case "ArrowRight":
+				targetCellLocation = `${getFile(curFile, 1)}${curRank}`;
+				break;
+			case "ArrowLeft":
+				targetCellLocation = `${getFile(curFile, -1)}${curRank}`;
+				break;
+			case "ArrowUp":
+				targetCellLocation = `${curFile}${getRank(curRank, -1)}`;
+				break;
+			case "ArrowDown":
+				targetCellLocation = `${curFile}${getRank(curRank, 1)}`;
+				break;
+			case "PageUp":
+				targetCellLocation = `${curFile}${ns.ORDERED_RANKS[0]}`;
+				break;
+			case "PageDown":
+				targetCellLocation = `${curFile}${ns.ORDERED_RANKS[ns.ORDERED_RANKS.length - 1]}`;
+				break;
+			case "Home":
+				if(event.ctrlKey) {
+					targetCellLocation = `${ns.ORDERED_FILES[0]}${ns.ORDERED_RANKS[0]}`;
+				}
+				else {
+					targetCellLocation = `${ns.ORDERED_FILES[0]}${curRank}`;
+				}
+				break;
+			case "End":
+				if(event.ctrlKey) {
+					targetCellLocation = `${ns.ORDERED_FILES[ns.ORDERED_FILES.length - 1]}${ns.ORDERED_RANKS[ns.ORDERED_RANKS.length - 1]}`;
+				}
+				else {
+					targetCellLocation = `${ns.ORDERED_FILES[ns.ORDERED_FILES.length - 1]}${ns.ORDERED_RANKS[ns.ORDERED_RANKS.length - 1]}`;
+				}
+				break;
+		}
+		const targetCell = document.getElementById(`cell-${targetCellLocation}`);
+		if(!targetCell) {
+			return;
+		}
+		focusSquare(curCellBtn, targetCell.querySelector("button"));
+	}
+
+	function focusSquare(prevCellBtn, newCellBtn) {
+		if(!newCellBtn) { return; }
+
+		prevCellBtn?.setAttribute("tabindex", -1);
+		newCellBtn.setAttribute("tabindex", 0);
+		newCellBtn.focus();
+	}
+
+	function calloutPiecesMovable(file, rank) {
+		const snapshot = ns.Snapshots[ns.CurrentSnapshotIdx];
+		Object.keys(snapshot).forEach(snapCell => {
+			const tdCell = document.getElementById(`cell-${snapCell}`);
+			if(snapshot[snapCell] && snapshot[snapCell].isValidMove(snapshot, file, rank)) {
+				tdCell.classList.add("movable");
+			}
+			else {
+				tdCell.classList.remove("movable");
+			}
+		});
+	}
+	//#endregion
+
+	//#region Details
+	ns.onSquareClicked = (file, rank) => {
+		const tbodyBoard = document.getElementById("tbodyBoard");
+		tbodyBoard.querySelectorAll("button").forEach(
+			buttonEl => buttonEl.setAttribute("aria-pressed", buttonEl.id === `button-${file}${rank}`)
+		);
+
+		calloutPiecesMovable(file, rank);
 	}
 	//#endregion
 
@@ -260,7 +406,7 @@ window.GW = window.GW || {};
 
 		File;
 		Rank;
-		HasMoved;
+		MoveCount;
 		constructor(color, startFile, startRank) {
 			this.Color = color;
 			this.StartFile = startFile;
@@ -268,7 +414,7 @@ window.GW = window.GW || {};
 			this.File = startFile;
 			this.Rank = startRank;
 
-			this.HasMoved = false;
+			this.MoveCount = 0;
 		}
 
 		get Name() {
@@ -288,19 +434,20 @@ window.GW = window.GW || {};
 				iconKey="${this.IconKey}"
 				title="${this.Color} ${this.Name}"
 				iconClasses="${this.Color} ${this.FlipClass}"
+				class="piece"
 			></gw-icon>`
 		}
 
 		clone() {
 			const clone = new ns.Pieces[this.Name](this.Color, this.StartFile);
-			clone.HasMoved = this.HasMoved;
+			clone.MoveCount = this.MoveCount;
 			return clone;
 		}
 
 		moveTo(file, rank) {
 			this.Rank = rank;
 			this.File = file;
-			this.HasMoved = true;
+			this.MoveCount++;
 		}
 
 		getMoves(boardSnap) {
@@ -308,7 +455,8 @@ window.GW = window.GW || {};
 		}
 
 		isValidMove(boardSnap, file, rank) {
-			throw new Error("isValidMove is not implemented");
+			return false;
+			//throw new Error("isValidMove is not implemented");
 		}
 
 		canCapture(boardSnap, file, rank) {
@@ -339,7 +487,7 @@ window.GW = window.GW || {};
 		getMoves(boardSnap) {
 			const moves = [];
 
-			const dir = this.Color === "white" ? 1 : -1;
+			const dir = this.Color === "white" ? -1 : 1;
 
 			const cellOneUp = `${this.File}${getRank(this.Rank, dir)}`;
 			if(!boardSnap[cellOneUp]) {
@@ -347,7 +495,7 @@ window.GW = window.GW || {};
 			}
 
 			const cellTwoUp = `${this.File}${getRank(this.Rank, dir*2)}`;
-			if(!this.HasMoved && !boardSnap[cellOneUp] && !boardSnap[cellTwoUp]) {
+			if(!this.MoveCount && !boardSnap[cellOneUp] && !boardSnap[cellTwoUp]) {
 				moves.push({Cell: cellTwoUp, Capture: null});
 			}
 

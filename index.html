@@ -186,25 +186,69 @@
 		<h2 id="hBoard">Board</h2>
 		<div class="scroll-container">
 			<gw-shortcuts
-				code_0=""
-				handler_0=""
-				info_0=""
+				code_0="ArrowRight"
+				handler_0="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_0="Move to the next file"
+
+				code_1="ArrowLeft"
+				handler_1="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_1="Move to the previous file"
+
+				code_2="ArrowUp"
+				handler_2="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_2="Move to the next rank"
+
+				code_3="ArrowDown"
+				handler_3="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_3="Move to the previous rank"
+
+				code_4="PageUp"
+				handler_4="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_4="Move to the bottom rank"
+
+				code_5="PageDown"
+				handler_5="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_5="Move to the top rank"
+
+				code_6="Home"
+				handler_6="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_6="Move to the first file"
+
+				code_7="End"
+				handler_7="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_7="Move to the last file"
+
+				code_8="Ctrl+Home"
+				handler_8="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_8="Move to a8"
+
+				code_9="Ctrl+End"
+				handler_9="GW.Chessboard.tblBoardOnKbdNav(event)"
+				info_9="Move to h1"
+
+				code_10="Alt+S"
+				handler_10="GW.Controls.Shortcuts.reportShortcuts(event)"
+				info_10="Displays available shortcuts"
 			>
-				<table id="tblBoard" aria-labelledby="hBoard">
-					<thead>
-						<td></td>
-						<th scope="col">A</th>
-						<th scope="col">B</th>
-						<th scope="col">C</th>
-						<th scope="col">D</th>
-						<th scope="col">E</th>
-						<th scope="col">F</th>
-						<th scope="col">G</th>
-						<th scope="col">H</th>
-					</thead>
+				<span id="spnDataGrid" class="hidden">Data Grid.</span>
+				<table id="tblBoard"
+					aria-labelledby="hBoard spnDataGrid"
+					role="grid"
+					tabindex="0"
+					onfocusin="GW.Chessboard.tblBoardOnFocusIn(event)"
+				>
+					<thead id="theadBoard"></thead>
 					<tbody id="tbodyBoard"></tbody>
 				</table>
+				<aside id="asiTblBoard" aria-live="polite">
+					<gw-icon iconKey="keyboard" title="Keyboard navigation available"></gw-icon>
+					<span class="sr-only">in focus mode</span>
+					<span>(<kbd>Alt</kbd>+<kbd>S</kbd>)</span>
+				</aside>
 			</gw-shortcuts>
+			<span id="spnSquareBtnLabel" class="hidden">Select</span>
+			<span id="spnSquareWhiteLabel" class="hidden">White square</span>
+			<span id="spnSquareBlackLabel" class="hidden">Black square</span>
 		</div>
 	</section>
 	<section>

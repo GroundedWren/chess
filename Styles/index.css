@@ -115,7 +115,9 @@ body {
 
 		#tblBoard {
 			max-width: 750px;
-			margin-inline: auto;
+			margin-inline-end: 5px;
+
+			width: calc(100% - 5px);
 			
 			th, thead {
 				background-color: var(--accent-color);
@@ -124,33 +126,63 @@ body {
 			}
 			thead {
 				border-bottom: none;
+
+				td {
+					border: none;
+				}
 			}
 
 			tbody {
-				tr:nth-child(odd) {
-					td:nth-child(odd) {
-						background-color: var(--board-square-dark-color);
-					}
-					td:nth-child(even) {
-						background-color: var(--board-square-light-color);
+				.left-border {
+					min-width: auto;
+					> span {
+						writing-mode: vertical-lr;
+						display: inline-block;
+						transform: rotate(180deg);
 					}
 				}
 
-				tr:nth-child(even) {
-					td:nth-child(even) {
-						background-color: var(--board-square-dark-color);
-					}
-					td:nth-child(odd) {
-						background-color: var(--board-square-light-color);
-					}
+				td[aria-labelledby~="spnSquareWhiteLabel"] {
+					background-color: var(--board-square-light-color);
+				}
+				td[aria-labelledby~="spnSquareBlackLabel"] {
+					background-color: var(--board-square-dark-color);
 				}
 
 				td {
-					> div {
+					> button {
 						aspect-ratio: 1 / 1;
 						display: flex;
+						width: 100%;
+						background-color: transparent;
+						border: none;
+						position: relative;
+
+						&:focus {
+							outline-width: 4px;
+							outline-color: var(--focus-color);
+							outline-style: solid;
+							outline-offset: 1px;
+							position: relative;
+							z-index: 100;
+						}
+
+						&[aria-pressed="true"] {
+							outline: 5px solid var(--selected-color);
+							background-color: color-mix(in srgb, var(--selected-color) 8%, transparent);
+							outline-offset: -2px;
+
+							&:focus {
+								box-shadow: 0px 0px 0px 5px var(--focus-color);
+							}
+						}
 					}
-					gw-icon {
+
+					.icon-span {
+						display: contents;
+					}
+
+					gw-icon.piece {
 						width: 50%;
 						height: 50%;
 						margin: auto;
@@ -170,8 +202,41 @@ body {
 							}
 						}
 					}
+
+					gw-icon.earmark {
+						display: none;
+
+						position: absolute;
+						width: 5%;
+						height: 5%;
+
+						&.movable {
+							top: 0;
+							left: 0;
+						}
+						&.threatening {
+							top: 0;
+							left: calc(100% - 16px);
+						}
+					}
+					&.movable gw-icon.movable,
+					&.threatening gw-icon.threatening {
+						display: block;
+					}
 				}
 			}
+		}
+
+		:has(#tblBoard:not(:focus-within)) {
+			#asiTblBoard > * {
+				display: none;
+			}
+		}
+		#asiTblBoard {
+			display: flex;
+			justify-content: center;
+			align-items: flex-end;
+			gap: 2px;
 		}
 	}
 

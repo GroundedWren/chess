@@ -209,7 +209,11 @@ body {
 						position: absolute;
 						width: 5%;
 						height: 5%;
-
+						
+						&.in-check {
+							top: calc(100% - 32px);
+							left: calc(100% - 16px);
+						}
 						&.movable {
 							top: 0;
 							left: 0;
@@ -231,6 +235,7 @@ body {
 							left: calc(100% - 32px);
 						}
 					}
+					&.in-check gw-icon.in-check,
 					&.movable gw-icon.movable,
 					&.threatening gw-icon.threatening,
 					&.move-to-able gw-icon.move-to-able,

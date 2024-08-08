@@ -189,31 +189,31 @@ window.GW = window.GW || {};
 
 		const initSnap = {};
 		ns.ORDERED_FILES.forEach(file => {
-			initSnap[`${file}7`] = new ns.Pieces.Pawn("black", file, 7);
-			initSnap[`${file}2`] = new ns.Pieces.Pawn("white", file, 2);
+			initSnap[`${file}7`] = new ns.Pieces.Pawn("black", file, "7");
+			initSnap[`${file}2`] = new ns.Pieces.Pawn("white", file, "2");
 			switch(file) {
 				case "a":
 				case "h":
-					initSnap[`${file}8`] = new ns.Pieces.Rook("black", file, 8);
-					initSnap[`${file}1`] = new ns.Pieces.Rook("white", file, 1);
+					initSnap[`${file}8`] = new ns.Pieces.Rook("black", file, "8");
+					initSnap[`${file}1`] = new ns.Pieces.Rook("white", file, "1");
 					break;
 				case "b":
 				case "g":
-					initSnap[`${file}8`] = new ns.Pieces.Knight("black", file, 8);
-					initSnap[`${file}1`] = new ns.Pieces.Knight("white", file, 1);
+					initSnap[`${file}8`] = new ns.Pieces.Knight("black", file, "8");
+					initSnap[`${file}1`] = new ns.Pieces.Knight("white", file, "1");
 					break;
 				case "c":
 				case "f":
-					initSnap[`${file}8`] = new ns.Pieces.Bishop("black", file, 8);
-					initSnap[`${file}1`] = new ns.Pieces.Bishop("white", file, 1);
+					initSnap[`${file}8`] = new ns.Pieces.Bishop("black", file, "8");
+					initSnap[`${file}1`] = new ns.Pieces.Bishop("white", file, "1");
 					break;
 				case "d":
-					initSnap[`${file}8`] = new ns.Pieces.Queen("black", file, 8);
-					initSnap[`${file}1`] = new ns.Pieces.Queen("white", file, 1);
+					initSnap[`${file}8`] = new ns.Pieces.Queen("black", file, "8");
+					initSnap[`${file}1`] = new ns.Pieces.Queen("white", file, "1");
 					break;
 				case "e":
-					initSnap[`${file}8`] = new ns.Pieces.King("black", file, 8);
-					initSnap[`${file}1`] = new ns.Pieces.King("white", file, 1);
+					initSnap[`${file}8`] = new ns.Pieces.King("black", file, "8");
+					initSnap[`${file}1`] = new ns.Pieces.King("white", file, "1");
 					break;
 			}
 		});
@@ -231,6 +231,7 @@ window.GW = window.GW || {};
 	function getSnapshot(snapshot, move, color) {
 		const newSnap = {};
 		Object.keys(snapshot).forEach(cell => newSnap[cell] = snapshot[cell].clone());
+		//TODO
 	}
 	//#endregion
 
@@ -268,6 +269,7 @@ window.GW = window.GW || {};
 					? "spnSquareWhiteLabel"
 					: "spnSquareBlackLabel"
 				} spnIcon-${file}${rank}
+				  spnInCheck-${file}${rank}
 				  spnMovable-${file}${rank}
 				  spnThreatening-${file}${rank}
 				  spnMoveToAble-${file}${rank}
@@ -282,6 +284,13 @@ window.GW = window.GW || {};
 				>
 					<span id="spnIcon-${file}${rank}" class="icon-span">
 						${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
+					</span>
+					<span id=spnInCheck-${file}${rank} class="icon-span">
+						<gw-icon
+							class="earmark in-check"
+							iconKey="triangle-exclamation"
+							title="In check"
+						></gw-icon>
 					</span>
 					<span id=spnMovable-${file}${rank} class="icon-span">
 						<gw-icon
@@ -323,6 +332,15 @@ window.GW = window.GW || {};
 			`).join("")}
 		</tr>
 		`).join("");
+		
+		["white", "black"].forEach(color => {
+			if(isTeamInCheck(snapshot, color)) {
+				const king = Object.values(snapshot).filter(
+					piece => piece.Name === "King" && piece.Color === color
+				)[0];
+				document.getElementById(`cell-${king.File}${king.Rank}`).classList.add("in-check");
+			}
+		});
 	}
 
 	ns.tblBoardOnFocusIn = (event) => {
@@ -672,6 +690,10 @@ window.GW = window.GW || {};
 		}
 
 		isValidMove(boardSnap, file, rank) {
+			if(this.File === file && this.Rank === rank) {
+				return false;
+			}
+
 			const {Direction: direction, Pieces: pieces} = getLineInfo(boardSnap, this.File, this.Rank, file, rank);
 
 			if(direction !== "file" && direction !== "rank") {
@@ -784,6 +806,10 @@ window.GW = window.GW || {};
 		}
 
 		isValidMove(boardSnap, file, rank) {
+			if(this.File === file && this.Rank === rank) {
+				return false;
+			}
+
 			const {Direction: direction, Pieces: pieces} = getLineInfo(boardSnap, this.File, this.Rank, file, rank);
 
 			if(direction !== "file-rank") {
@@ -843,6 +869,10 @@ window.GW = window.GW || {};
 		}
 
 		isValidMove(boardSnap, file, rank) {
+			if(this.File === file && this.Rank === rank) {
+				return false;
+			}
+
 			const {Direction: direction, Pieces: pieces} = getLineInfo(boardSnap, this.File, this.Rank, file, rank);
 
 			if(direction !== "file-rank") {
@@ -916,9 +946,11 @@ window.GW = window.GW || {};
 		const info = {Direction: "", Pieces: {}};
 
 		if(fileDelta === rankDelta) {
-			info.Direction = "file-rank"
-			for(let delta = 0; delta < fileDelta; delta++) {
-				const cell = `${ns.ORDERED_FILES[startFileIdx + delta]}${ns.ORDERED_RANKS[startRankIdx + delta]}`
+			info.Direction = "file-rank";
+			const fileDir = ((fileTwoIdx - fileOneIdx) < 0) ? -1 : 1;
+			const rankDir = ((rankTwoIdx - rankOneIdx) < 0) ? -1 : 1;
+			for(let delta = 0; delta <= fileDelta; delta++) {
+				const cell = `${ns.ORDERED_FILES[fileOneIdx + (delta*fileDir)]}${ns.ORDERED_RANKS[rankOneIdx + (delta*rankDir)]}`
 				if(boardSnap[cell]) {
 					info.Pieces[cell] = true;
 				}
@@ -975,6 +1007,18 @@ window.GW = window.GW || {};
 		}
 
 		return {Cells: cells, Blocked: blocked};
+	}
+
+	function isTeamInCheck(boardSnap, color) {
+		const king = Object.values(boardSnap).filter(
+			piece => piece.Name === "King" && piece.Color === color
+		)[0];
+		return Object.values(boardSnap).reduce((inCheck, piece) => {
+			if(piece.Color !== color && piece.canCapture(boardSnap, king.File, king.Rank)) {
+				inCheck = true;
+			}
+			return inCheck;
+		}, false);
 	}
 	//#endregion
 

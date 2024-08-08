@@ -185,7 +185,7 @@
 	<section id="secBoard">
 		<h2 id="hBoard">Board</h2>
 		<div class="scroll-container">
-			<gw-shortcuts
+			<gw-shortcuts role="application" aria-describedby="asiTblBoard"
 				code_0="ArrowRight"
 				handler_0="GW.Chessboard.tblBoardOnKbdNav(event)"
 				info_0="Move to the next file"
@@ -240,7 +240,7 @@
 					<thead id="theadBoard"></thead>
 					<tbody id="tbodyBoard"></tbody>
 				</table>
-				<aside id="asiTblBoard" aria-live="polite">
+				<aside id="asiTblBoard">
 					<gw-icon iconKey="keyboard" title="Keyboard navigation available"></gw-icon>
 					<span class="sr-only">in focus mode</span>
 					<span>(<kbd>Alt</kbd>+<kbd>S</kbd>)</span>

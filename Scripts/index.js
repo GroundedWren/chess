@@ -267,7 +267,12 @@ window.GW = window.GW || {};
 				aria-labelledby="${(ns.RANK_ORDER_INDEX[rank] + ns.FILE_ORDER_INDEX[file]) % 2 === 0
 					? "spnSquareWhiteLabel"
 					: "spnSquareBlackLabel"
-				} spnIcon-${file}${rank} spnMovable-${file}${rank} spnThreatening-${file}${rank}"
+				} spnIcon-${file}${rank}
+				  spnMovable-${file}${rank}
+				  spnThreatening-${file}${rank}
+				  spnMoveToAble-${file}${rank}"
+				  spnThreatened-${file}${rank}"
+				  spnDoesCapture-${file}${rank}"
 			>
 				<button id="button-${file}${rank}"
 					tabindex="-1"
@@ -375,7 +380,7 @@ window.GW = window.GW || {};
 					targetCellLocation = `${ns.ORDERED_FILES[ns.ORDERED_FILES.length - 1]}${ns.ORDERED_RANKS[ns.ORDERED_RANKS.length - 1]}`;
 				}
 				else {
-					targetCellLocation = `${ns.ORDERED_FILES[ns.ORDERED_FILES.length - 1]}${ns.ORDERED_RANKS[ns.ORDERED_RANKS.length - 1]}`;
+					targetCellLocation = `${ns.ORDERED_FILES[ns.ORDERED_FILES.length - 1]}${curRank}`;
 				}
 				break;
 		}
@@ -395,9 +400,7 @@ window.GW = window.GW || {};
 	}
 
 	function cleanSelectionBasedClasses() {
-		const snapshot = ns.Snapshots[ns.CurrentSnapshotIdx];
-		Object.keys(snapshot).forEach(snapCell => {
-			const tdCell = document.getElementById(`cell-${snapCell}`);
+		document.getElementById("tbodyBoard").querySelectorAll("td").forEach(tdCell => {
 			tdCell.classList.remove("movable");
 			tdCell.classList.remove("threatening");
 			tdCell.classList.remove("move-to-able");
@@ -616,6 +619,17 @@ window.GW = window.GW || {};
 	}
 
 	ns.Pieces.Knight = class Knight extends ns.Pieces.Piece {
+		static MoveCombos = [
+			{RankD: 1, FileD: 2},
+			{RankD: 1, FileD: -2},
+			{RankD: 2, FileD: 1},
+			{RankD: 2, FileD: -1},
+			{RankD: -1, FileD: 2},
+			{RankD: -1, FileD: -2},
+			{RankD: -2, FileD: 1},
+			{RankD: -2, FileD: -1},
+		]
+
 		get Name() {
 			return "Knight";
 		}
@@ -627,6 +641,28 @@ window.GW = window.GW || {};
 		}
 		get FlipClass() {
 			return this.StartFile === "g" ? "invert-x" : "";
+		}
+
+		getMoves(boardSnap) {
+			return ns.Pieces.Knight.MoveCombos.reduce((moves, moveCombo) => {
+				const moveCell = `${getFile(this.File, moveCombo.FileD)}${getRank(this.Rank, moveCombo.RankD)}`;
+				if(moveCell.length === 2 && (!boardSnap[moveCell] || boardSnap[moveCell].Color !== this.Color)) {
+					moves.push({Cell: moveCell, Capture: boardSnap[moveCell] ? moveCell : null});
+				}
+				return moves;
+			}, []);
+		}
+
+		isValidMove(boardSnap, file, rank) {
+			const moves = this.getMoves(boardSnap);
+			return moves.filter(move => move.Cell[0] === file && move.Cell[1] === rank).length > 0;
+		}
+
+		canCapture(boardSnap, rank, file) {
+			const moves = this.getMoves(boardSnap);
+			return moves.filter(
+				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
+			).length > 0;
 		}
 	}
 

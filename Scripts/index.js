@@ -559,6 +559,15 @@ window.GW = window.GW || {};
 			
 			return moves;
 		}
+
+		filterByTeamCheck(moves) {
+			return moves.filter(move => !this.moveCausesTeamCheck(move));
+		}
+
+		moveCausesTeamCheck(move) {
+			//TODO
+			return false;
+		}
 	}
 
 	ns.Pieces.Pawn = class Pawn extends ns.Pieces.Piece {
@@ -616,19 +625,23 @@ window.GW = window.GW || {};
 				moves.push({Cell: cellRightDiag, Capture: cellRight});
 			}
 
-			return moves;
+			return this.filterByTeamCheck(moves);
 		}
 
 		isValidMove(boardSnap, file, rank) {
-			const moves = this.getMoves(boardSnap);
-			return moves.filter(move => move.Cell[0] === file && move.Cell[1] === rank).length > 0;
+			const move = this.getMoves(boardSnap).filter(
+				move => move.Cell[0] === file && move.Cell[1] === rank
+			)[0];
+
+			return move && !this.moveCausesTeamCheck(move);
 		}
 
 		canCapture(boardSnap, rank, file) {
-			const moves = this.getMoves(boardSnap);
-			return moves.filter(
+			const move = this.getMoves(boardSnap).filter(
 				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
-			).length > 0;
+			)[0];
+
+			return move && !this.moveCausesTeamCheck(move);
 		}
 	}
 
@@ -655,7 +668,7 @@ window.GW = window.GW || {};
 			ns.Pieces.Rook.LineCombos.forEach(lineSpec => {
 				moves.push(...this.getStandardLineMoves(boardSnap, lineSpec.fileStep, lineSpec.rankStep));
 			});
-			return moves;
+			return this.filterByTeamCheck(moves);
 		}
 
 		isValidMove(boardSnap, file, rank) {
@@ -665,13 +678,14 @@ window.GW = window.GW || {};
 				return false;
 			}
 
+			const checkCell = `${file}${rank}`;
+
 			if(Object.keys(pieces).length === 1) {
-				return true;
+				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: null});
 			}
 
-			const checkCell = `${file}${rank}`;
 			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
-				return true;
+				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: checkCell});
 			}
 
 			return false;
@@ -712,25 +726,31 @@ window.GW = window.GW || {};
 		}
 
 		getMoves(boardSnap) {
-			return ns.Pieces.Knight.MoveCombos.reduce((moves, moveCombo) => {
+			const moves = ns.Pieces.Knight.MoveCombos.reduce((moves, moveCombo) => {
 				const moveCell = `${getFile(this.File, moveCombo.FileD)}${getRank(this.Rank, moveCombo.RankD)}`;
 				if(moveCell.length === 2 && (!boardSnap[moveCell] || boardSnap[moveCell].Color !== this.Color)) {
 					moves.push({Cell: moveCell, Capture: boardSnap[moveCell] ? moveCell : null});
 				}
 				return moves;
 			}, []);
+
+			return this.filterByTeamCheck(moves);
 		}
 
 		isValidMove(boardSnap, file, rank) {
-			const moves = this.getMoves(boardSnap);
-			return moves.filter(move => move.Cell[0] === file && move.Cell[1] === rank).length > 0;
+			const move =  this.getMoves(boardSnap).filter(
+				move => move.Cell[0] === file && move.Cell[1] === rank
+			)[0];
+			
+			return move && !this.moveCausesTeamCheck(move);
 		}
 
 		canCapture(boardSnap, rank, file) {
-			const moves = this.getMoves(boardSnap);
-			return moves.filter(
+			const move = this.getMoves(boardSnap).filter(
 				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
-			).length > 0;
+			)[0];
+
+			return move && !this.moveCausesTeamCheck(move);
 		}
 	}
 

@@ -496,6 +496,8 @@ window.GW = window.GW || {};
 		File;
 		Rank;
 		MoveCount;
+
+		DisableCheckCheck;
 		constructor(color, startFile, startRank) {
 			this.Color = color;
 			this.StartFile = startFile;
@@ -504,6 +506,8 @@ window.GW = window.GW || {};
 			this.Rank = startRank;
 
 			this.MoveCount = 0;
+
+			this.DisableCheckCheck = false;
 		}
 
 		get Name() {
@@ -578,11 +582,17 @@ window.GW = window.GW || {};
 			return moves;
 		}
 
-		filterByTeamCheck(moves) {
-			return moves.filter(move => !this.moveCausesTeamCheck(move));
+		filterByTeamCheck(boardSnap, moves) {
+			if(this.DisableCheckCheck) {
+				return moves;
+			}
+			return moves.filter(move => !this.moveCausesTeamCheck(boardSnap, move));
 		}
 
-		moveCausesTeamCheck(move) {
+		moveCausesTeamCheck(boardSnap, move) {
+			if(this.DisableCheckCheck) {
+				return false;
+			}
 			//TODO
 			return false;
 		}
@@ -643,7 +653,7 @@ window.GW = window.GW || {};
 				moves.push({Cell: cellRightDiag, Capture: cellRight});
 			}
 
-			return this.filterByTeamCheck(moves);
+			return this.filterByTeamCheck(boardSnap, moves);
 		}
 
 		isValidMove(boardSnap, file, rank) {
@@ -651,7 +661,7 @@ window.GW = window.GW || {};
 				move => move.Cell[0] === file && move.Cell[1] === rank
 			)[0];
 
-			return move && !this.moveCausesTeamCheck(move);
+			return !!move;
 		}
 
 		canCapture(boardSnap, rank, file) {
@@ -659,7 +669,7 @@ window.GW = window.GW || {};
 				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
 			)[0];
 
-			return move && !this.moveCausesTeamCheck(move);
+			return !!move;
 		}
 	}
 
@@ -686,7 +696,7 @@ window.GW = window.GW || {};
 			ns.Pieces.Rook.LineCombos.forEach(lineSpec => {
 				moves.push(...this.getStandardLineMoves(boardSnap, lineSpec.fileStep, lineSpec.rankStep));
 			});
-			return this.filterByTeamCheck(moves);
+			return this.filterByTeamCheck(boardSnap, moves);
 		}
 
 		isValidMove(boardSnap, file, rank) {
@@ -703,11 +713,11 @@ window.GW = window.GW || {};
 			const checkCell = `${file}${rank}`;
 
 			if(Object.keys(pieces).length === 1) {
-				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: null});
+				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: null});
 			}
 
 			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
-				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: checkCell});
+				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: checkCell});
 			}
 
 			return false;
@@ -756,7 +766,7 @@ window.GW = window.GW || {};
 				return moves;
 			}, []);
 
-			return this.filterByTeamCheck(moves);
+			return this.filterByTeamCheck(boardSnap, moves);
 		}
 
 		isValidMove(boardSnap, file, rank) {
@@ -764,7 +774,7 @@ window.GW = window.GW || {};
 				move => move.Cell[0] === file && move.Cell[1] === rank
 			)[0];
 			
-			return move && !this.moveCausesTeamCheck(move);
+			return !!move;
 		}
 
 		canCapture(boardSnap, rank, file) {
@@ -772,7 +782,7 @@ window.GW = window.GW || {};
 				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
 			)[0];
 
-			return move && !this.moveCausesTeamCheck(move);
+			return !!move;
 		}
 	}
 
@@ -802,7 +812,7 @@ window.GW = window.GW || {};
 			ns.Pieces.Bishop.LineCombos.forEach(lineSpec => {
 				moves.push(...this.getStandardLineMoves(boardSnap, lineSpec.fileStep, lineSpec.rankStep));
 			});
-			return this.filterByTeamCheck(moves);
+			return this.filterByTeamCheck(boardSnap, moves);
 		}
 
 		isValidMove(boardSnap, file, rank) {
@@ -819,11 +829,11 @@ window.GW = window.GW || {};
 			const checkCell = `${file}${rank}`;
 
 			if(Object.keys(pieces).length === 1) {
-				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: null});
+				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: null});
 			}
 
 			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
-				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: checkCell});
+				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: checkCell});
 			}
 
 			return false;
@@ -865,7 +875,7 @@ window.GW = window.GW || {};
 			ns.Pieces.Queen.LineCombos.forEach(lineSpec => {
 				moves.push(...this.getStandardLineMoves(boardSnap, lineSpec.fileStep, lineSpec.rankStep));
 			});
-			return this.filterByTeamCheck(moves);
+			return this.filterByTeamCheck(boardSnap, moves);
 		}
 
 		isValidMove(boardSnap, file, rank) {
@@ -882,11 +892,11 @@ window.GW = window.GW || {};
 			const checkCell = `${file}${rank}`;
 
 			if(Object.keys(pieces).length === 1) {
-				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: null});
+				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: null});
 			}
 
 			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
-				return !this.moveCausesTeamCheck({Cell: checkCell, Capture: checkCell});
+				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: checkCell});
 			}
 
 			return false;
@@ -1014,9 +1024,11 @@ window.GW = window.GW || {};
 			piece => piece.Name === "King" && piece.Color === color
 		)[0];
 		return Object.values(boardSnap).reduce((inCheck, piece) => {
+			piece.DisableCheckCheck = true;
 			if(piece.Color !== color && piece.canCapture(boardSnap, king.File, king.Rank)) {
 				inCheck = true;
 			}
+			piece.DisableCheckCheck = false;
 			return inCheck;
 		}, false);
 	}

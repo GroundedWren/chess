@@ -119,6 +119,19 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return moves;
 		}
 
+		isStandardValidLineMove(boardSnap, pieces, file, rank) {
+			const checkCell = `${file}${rank}`;
+
+			if(Object.keys(pieces).length === 1) {
+				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: null});
+			}
+			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
+				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: checkCell});
+			}
+
+			return false;
+		}
+
 		filterByTeamCheck(boardSnap, moves) {
 			if(this.DisableCheckCheck) {
 				return moves;
@@ -251,17 +264,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				return false;
 			}
 
-			const checkCell = `${file}${rank}`;
-
-			if(Object.keys(pieces).length === 1) {
-				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: null});
-			}
-
-			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
-				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: checkCell});
-			}
-
-			return false;
+			return this.isStandardValidLineMove(boardSnap, pieces, file, rank);
 		}
 
 		canCapture(boardSnap, file, rank) {
@@ -371,17 +374,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				return false;
 			}
 
-			const checkCell = `${file}${rank}`;
-
-			if(Object.keys(pieces).length === 1) {
-				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: null});
-			}
-
-			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
-				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: checkCell});
-			}
-
-			return false;
+			return this.isStandardValidLineMove(boardSnap, pieces, file, rank);
 		}
 
 		canCapture(boardSnap, file, rank) {
@@ -432,21 +425,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 			const {Direction: direction, Pieces: pieces} = getLineInfo(boardSnap, this.File, this.Rank, file, rank);
 
-			if(direction !== "file-rank") {
+			if(direction !== "file-rank" && direction !== "file" && direction !== "rank") {
 				return false;
 			}
 
-			const checkCell = `${file}${rank}`;
-
-			if(Object.keys(pieces).length === 1) {
-				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: null});
-			}
-
-			if(Object.keys(pieces).length === 2 && pieces[checkCell] && boardSnap[checkCell].Color !== this.Color) {
-				return !this.moveCausesTeamCheck(boardSnap, {Cell: checkCell, Capture: checkCell});
-			}
-
-			return false;
+			return this.isStandardValidLineMove(boardSnap, pieces, file, rank);
 		}
 
 		canCapture(boardSnap, file, rank) {

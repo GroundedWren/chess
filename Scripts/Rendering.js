@@ -102,6 +102,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 							title="Moving the selected square's piece here performs a capture"
 						></gw-icon>
 					</span>
+					<span id=spnInCheck-${file}${rank} class="icon-span">
+						<gw-icon
+							class="earmark in-check"
+							iconKey="triangle-exclamation"
+							title="In check"
+						></gw-icon>
+					</span>
 				</button>
 			</td>
 			`).join("")}
@@ -199,6 +206,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			tdCell.classList.remove("move-to-able");
 			tdCell.classList.remove("threatened");
 			tdCell.classList.remove("does-capture");
+			tdCell.classList.remove("in-check");
 		});
 	}
 

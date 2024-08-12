@@ -234,13 +234,18 @@ body {
 							top: calc(100% - 16px);
 							left: calc(100% - 32px);
 						}
+						&.in-check {
+							top: calc(100% - 32px);
+							left: calc(100% - 16px);
+						}
 					}
 					&.in-check gw-icon.in-check,
 					&.movable gw-icon.movable,
 					&.threatening gw-icon.threatening,
 					&.move-to-able gw-icon.move-to-able,
 					&.threatened gw-icon.threatened,
-					&.does-capture gw-icon.does-capture {
+					&.does-capture gw-icon.does-capture,
+					&.in-check gw-icon.in-check {
 						display: block;
 					}
 				}

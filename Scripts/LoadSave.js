@@ -26,7 +26,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 
 		updateFileInfo();
-		buildGameSnapshots();
+		Gw.Chessboard.Snapshots.buildGameSnapshots();
 		GW.Chessboard.Rendering.setSnapshot(0);
 	};
 	ns.onSave = (event) => {
@@ -58,7 +58,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			Moves: [],
 		};
 		updateFileInfo();
-		buildGameSnapshots();
+		GW.Chessboard.Snapshots.buildGameSnapshots();
 		GW.Chessboard.Rendering.setSnapshot(0);
 	};
 
@@ -167,56 +167,4 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			txtSaveName.setCustomValidity("");
 		}
 	};
-
-	//#region Snapshots
-	function buildGameSnapshots() {
-		GW.Chessboard.Snapshots = [];
-
-		const initSnap = {};
-		GW.Chessboard.ORDERED_FILES.forEach(file => {
-			initSnap[`${file}7`] = new GW.Chessboard.Pieces.Pawn("black", file, "7");
-			initSnap[`${file}2`] = new GW.Chessboard.Pieces.Pawn("white", file, "2");
-			switch(file) {
-				case "a":
-				case "h":
-					initSnap[`${file}8`] = new GW.Chessboard.Pieces.Rook("black", file, "8");
-					initSnap[`${file}1`] = new GW.Chessboard.Pieces.Rook("white", file, "1");
-					break;
-				case "b":
-				case "g":
-					initSnap[`${file}8`] = new GW.Chessboard.Pieces.Knight("black", file, "8");
-					initSnap[`${file}1`] = new GW.Chessboard.Pieces.Knight("white", file, "1");
-					break;
-				case "c":
-				case "f":
-					initSnap[`${file}8`] = new GW.Chessboard.Pieces.Bishop("black", file, "8");
-					initSnap[`${file}1`] = new GW.Chessboard.Pieces.Bishop("white", file, "1");
-					break;
-				case "d":
-					initSnap[`${file}8`] = new GW.Chessboard.Pieces.Queen("black", file, "8");
-					initSnap[`${file}1`] = new GW.Chessboard.Pieces.Queen("white", file, "1");
-					break;
-				case "e":
-					initSnap[`${file}8`] = new GW.Chessboard.Pieces.King("black", file, "8");
-					initSnap[`${file}1`] = new GW.Chessboard.Pieces.King("white", file, "1");
-					break;
-			}
-		});
-		GW.Chessboard.Snapshots.push(initSnap);
-
-		for(let i = 0; i < GW.Chessboard.Data.Moves.length; i++) {
-			GW.Chessboard.Snapshots.push(getSnapshot(
-				GW.Chessboard.Snapshots[i],
-				GW.Chessboard.Data.Moves[i],
-				i % 2 == 0 ? "white" : "black"
-			));
-		}
-	}
-
-	function getSnapshot(snapshot, move, color) {
-		const newSnap = {};
-		Object.keys(snapshot).forEach(cell => newSnap[cell] = snapshot[cell].clone());
-		//TODO
-	}
-	//#endregion
 }) (window.GW.Chessboard.LoadSave = window.GW.Chessboard.LoadSave || {});

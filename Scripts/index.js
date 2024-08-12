@@ -26,9 +26,6 @@ window.GW = window.GW || {};
 	ns.ORDERED_FILES = ["a", "b", "c", "d", "e", "f", "g", "h"];
 	ns.FILE_ORDER_INDEX = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7};
 
-	ns.Snapshots = [];
-	ns.CurrentSnapshotIdx = 0;
-
 	ns.getRank = function getRank(startRank, delta) {
 		return getOrderedItemAtDelta(ns.ORDERED_RANKS, ns.RANK_ORDER_INDEX[startRank], delta);
 	}

@@ -29,6 +29,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	ns.Piece = class Piece {
 		Color;
 		StartFile;
+		StartRank;
 
 		File;
 		Rank;
@@ -38,6 +39,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		constructor(color, startFile, startRank) {
 			this.Color = color;
 			this.StartFile = startFile;
+			this.StartRank = startRank;
 
 			this.File = startFile;
 			this.Rank = startRank;
@@ -69,7 +71,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 
 		clone() {
-			const clone = new ns[this.Name](this.Color, this.StartFile);
+			const clone = new ns[this.Name](this.Color, this.StartFile, this.StartRank);
+			clone.File = this.File;
+			clone.Rank = this.Rank;
 			clone.MoveCount = this.MoveCount;
 			return clone;
 		}
@@ -80,18 +84,24 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			this.MoveCount++;
 		}
 
-		getMoves(boardSnap) {
+		getMoves(_boardSnap) {
 			throw new Error("getMoves is not implemented");
 		}
 
 		isValidMove(boardSnap, file, rank) {
-			return false;
-			//throw new Error("isValidMove is not implemented");
+			const move = this.getMoves(boardSnap).filter(
+				move => move.Cell[0] === file && move.Cell[1] === rank
+			)[0];
+
+			return !!move;
 		}
 
 		canCapture(boardSnap, file, rank) {
-			return false;
-			//throw new Error("canCapture is not implemented");
+			const move = this.getMoves(boardSnap).filter(
+				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
+			)[0];
+
+			return !!move;
 		}
 
 		getStandardLineMoves(boardSnap, fileStep, rankStep) {
@@ -143,8 +153,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			if(this.DisableCheckCheck) {
 				return false;
 			}
-			//TODO
-			return false;
+			
+			const simulation = {};
+			for(let cell of Object.keys(boardSnap)) {
+				simulation[cell] = boardSnap[cell].clone();
+			}
+			GW.Chessboard.Snapshots.applyMove(simulation, `${this.File}${this.Rank}`, move);
+			return ns.isTeamInCheck(simulation, this.Color);
 		}
 	}
 	//#endregion
@@ -161,6 +176,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		get IconKey() {
 			return "chess-pawn";
+		}
+
+		clone() {
+			const myClone = super.clone();
+			myClone.EnPassantable = this.EnPassantable;
+			return myClone;
 		}
 
 		moveTo(file, rank) {
@@ -206,22 +227,6 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			}
 
 			return this.filterByTeamCheck(boardSnap, moves);
-		}
-
-		isValidMove(boardSnap, file, rank) {
-			const move = this.getMoves(boardSnap).filter(
-				move => move.Cell[0] === file && move.Cell[1] === rank
-			)[0];
-
-			return !!move;
-		}
-
-		canCapture(boardSnap, rank, file) {
-			const move = this.getMoves(boardSnap).filter(
-				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
-			)[0];
-
-			return !!move;
 		}
 	}
 	//#endregion
@@ -313,22 +318,6 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			}, []);
 
 			return this.filterByTeamCheck(boardSnap, moves);
-		}
-
-		isValidMove(boardSnap, file, rank) {
-			const move =  this.getMoves(boardSnap).filter(
-				move => move.Cell[0] === file && move.Cell[1] === rank
-			)[0];
-			
-			return !!move;
-		}
-
-		canCapture(boardSnap, rank, file) {
-			const move = this.getMoves(boardSnap).filter(
-				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
-			)[0];
-
-			return !!move;
 		}
 	}
 	//#endregion
@@ -444,6 +433,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 	//#region King
 	ns.King = class King extends ns.Piece {
+		static MoveCombos = [
+			{RankD: 1, FileD: 0},
+			{RankD: -1, FileD: 0},
+			{RankD: 0, FileD: 1},
+			{RankD: 0, FileD: -1},
+		]
+
 		get Name() {
 			return "King";
 		}
@@ -452,6 +448,57 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		get IconKey() {
 			return "chess-king";
+		}
+
+		getMoves(boardSnap) {
+			let moves = [];
+			for(let moveCombo of ns.King.MoveCombos) {
+				const cell = `${GW.Chessboard.getFile(this.File, moveCombo.FileD)}${GW.Chessboard.getRank(this.Rank, moveCombo.RankD)}`;
+				if(cell.length !== 2) {continue;}
+				if(!boardSnap[cell] || (boardSnap[cell] && boardSnap[cell.Color !== this.Color])) {
+					moves.push({Cell: cell, Capture: boardSnap[cell] ? cell : null});
+				}
+			}
+			moves = this.filterByTeamCheck(boardSnap, moves);
+			if(this.MoveCount || (!this.DisableCheckCheck && ns.isTeamInCheck(boardSnap, this.Color))) {
+				return moves;
+			}
+
+			const cellKingSide = `${ORDERED_FILES[ORDERED_FILES.length - 1]}${this.Rank}`;
+			const pieceKingSide = boardSnap[cellKingSide];
+			if(pieceKingSide
+				&& pieceKingSide.Color === this.Color
+				&& pieceKingSide.Name === "Rook"
+				&& !pieceKingSide.MoveCount
+			) {
+				const castleStep1 = `${GW.Chessboard.getFile(this.File, 1)}${this.Rank}`;
+				const castleStep2 = `${GW.Chessboard.getFile(this.File, 2)}${this.Rank}`;
+				if(!this.moveCausesTeamCheck(boardSnap, {Cell: castleStep1, Capture: null})
+					&& !this.moveCausesTeamCheck(boardSnap, {Cell: castleStep2, Capture: null})
+					&& !boardSnap[castleStep1]
+					&& !boardSnap[castleStep2]) {
+						moves.push({Cell: castleStep2, Capture: null, CastleKS: cellKingSide});
+				}
+			}
+
+			const cellQueenSide = `${ORDERED_FILES[0]}${this.Rank}`;
+			const pieceQueenSide = boardSnap[cellQueenSide];
+			if(pieceQueenSide
+				&& pieceQueenSide.Color === this.Color
+				&& pieceQueenSide.Name === "Rook"
+				&& !pieceQueenSide.MoveCount
+			) {
+				const castleStep1 = `${GW.Chessboard.getFile(this.File, -1)}${this.Rank}`;
+				const castleStep2 = `${GW.Chessboard.getFile(this.File, -2)}${this.Rank}`;
+				if(!this.moveCausesTeamCheck(boardSnap, {Cell: castleStep1, Capture: null})
+					&& !this.moveCausesTeamCheck(boardSnap, {Cell: castleStep2, Capture: null})
+					&& !boardSnap[castleStep1]
+					&& !boardSnap[castleStep2]) {
+						moves.push({Cell: castleStep2, Capture: null, CastleQS: cellQueenSide});
+				}
+			}
+
+			return moves;
 		}
 	}
 	//#endregion

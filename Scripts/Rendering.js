@@ -5,15 +5,17 @@
  
 window.GW = window.GW || {};
 window.GW.Chessboard = window.GW.Chessboard || {};
-(function LoadSave(ns) {
+(function Rendering(ns) {
 	const ORDERED_FILES = GW.Chessboard.ORDERED_FILES;
 	const ORDERED_RANKS = GW.Chessboard.ORDERED_RANKS;
 	const RANK_ORDER_INDEX = GW.Chessboard.RANK_ORDER_INDEX;
 	const FILE_ORDER_INDEX = GW.Chessboard.FILE_ORDER_INDEX;
 
+	ns.CurrentSnapshotIdx = 0;
+
 	ns.setSnapshot = (snapshotIdx) => {
-		GW.Chessboard.CurrentSnapshotIdx = snapshotIdx;
-		const snapshot = GW.Chessboard.Snapshots[snapshotIdx];
+		ns.CurrentSnapshotIdx = snapshotIdx;
+		const snapshot = GW.Chessboard.Snapshots.List[snapshotIdx];
 		renderBoardAtSnapshot(snapshot);
 	}
 
@@ -49,7 +51,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				  spnThreatening-${file}${rank}
 				  spnMoveToAble-${file}${rank}
 				  spnThreatened-${file}${rank}
-				  spnDoesCapture-${file}${rank}"
+				  spnDoesCapture-${file}${rank}
+				  spnInCheck-${file}${rank}
+				  spnDoesCastle-${file}${rank}"
 			>
 				<button id="button-${file}${rank}"
 					tabindex="-1"
@@ -107,6 +111,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 							class="earmark in-check"
 							iconKey="triangle-exclamation"
 							title="In check"
+						></gw-icon>
+					</span>
+					<span id=spnDoesCastle-${file}${rank} class="icon-span">
+						<gw-icon
+							class="earmark does-castle"
+							iconKey="chess-rook"
+							title="The selected square's piece moving here causes castling"
 						></gw-icon>
 					</span>
 				</button>
@@ -206,12 +217,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			tdCell.classList.remove("move-to-able");
 			tdCell.classList.remove("threatened");
 			tdCell.classList.remove("does-capture");
-			tdCell.classList.remove("in-check");
+			tdCell.classList.remove("does-castle");
 		});
 	}
 
 	ns.calloutPiecesMovable = function calloutPiecesMovable(file, rank) {
-		const snapshot = GW.Chessboard.Snapshots[GW.Chessboard.CurrentSnapshotIdx];
+		const snapshot = GW.Chessboard.Snapshots.List[ns.CurrentSnapshotIdx];
 		Object.keys(snapshot).forEach(snapCell => {
 			const tdCell = document.getElementById(`cell-${snapCell}`);
 			if(snapshot[snapCell] && snapshot[snapCell].isValidMove(snapshot, file, rank)) {
@@ -224,7 +235,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	}
 
 	ns.calloutPiecesThreatening = function calloutPiecesThreatening(file, rank) {
-		const snapshot = GW.Chessboard.Snapshots[GW.Chessboard.CurrentSnapshotIdx];
+		const snapshot = GW.Chessboard.Snapshots.List[ns.CurrentSnapshotIdx];
 		Object.keys(snapshot).forEach(snapCell => {
 			const tdCell = document.getElementById(`cell-${snapCell}`);
 			if(snapshot[snapCell] && snapshot[snapCell].canCapture(snapshot, file, rank)) {
@@ -237,7 +248,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	}
 
 	ns.calloutPiecePath = function calloutPiecePath(file, rank) {
-		const snapshot = GW.Chessboard.Snapshots[GW.Chessboard.CurrentSnapshotIdx];
+		const snapshot = GW.Chessboard.Snapshots.List[ns.CurrentSnapshotIdx];
 		const piece = snapshot[`${file}${rank}`];
 		if(!piece) { return; }
 
@@ -251,6 +262,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			if(tdCaptureCell) {
 				tdCaptureCell.classList.add("threatened");
 				tdMoveCell.classList.add("does-capture");
+			}
+			if(move.CastleKS || move.CastleQS) {
+				tdMoveCell.classList.add("does-castle");
 			}
 		});
 	}

@@ -238,6 +238,10 @@ body {
 							top: calc(100% - 32px);
 							left: calc(100% - 16px);
 						}
+						&.does-castle {
+							top: calc(100% - 32px);
+							left: 0;
+						}
 					}
 					&.in-check gw-icon.in-check,
 					&.movable gw-icon.movable,
@@ -245,7 +249,8 @@ body {
 					&.move-to-able gw-icon.move-to-able,
 					&.threatened gw-icon.threatened,
 					&.does-capture gw-icon.does-capture,
-					&.in-check gw-icon.in-check {
+					&.in-check gw-icon.in-check,
+					&.does-castle gw-icon.does-castle {
 						display: block;
 					}
 				}

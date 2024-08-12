@@ -257,7 +257,20 @@
 	</section>
 	<section>
 		<h2>Details</h2>
-		<div class="scroll-container"></div>
+		<div class="scroll-container">
+			<div id="detailsArticles">
+				<article aria-labelledby="hMoves">
+					<h3 id="hMoves">Moves</h3>
+					<div id="moveButtons">
+						<button id="btnPrevMove"><gw-icon iconKey="backward-step" title="Previous move"></gw-icon></button>
+						<span>
+							<span id="spnMoveIdx" aria-live="polite">Move 0 of 0</span>
+						</span>
+						<button id="btnNextMove"><gw-icon iconKey="forward-step" title="Next move"></gw-icon></button>
+					</div>
+				</article>
+			</div>
+		</div>
 	</section>
   </main>
   <footer>

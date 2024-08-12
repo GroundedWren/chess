@@ -39,7 +39,6 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 					break;
 			}
 		});
-		initSnap["b4"] = new GW.Chessboard.Pieces.Bishop("white", "b", "4");
 		ns.List.push(initSnap);
 
 		for(let i = 0; i < GW.Chessboard.Data.Moves.length; i++) {

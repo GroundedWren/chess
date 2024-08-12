@@ -13,10 +13,39 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 	ns.CurrentSnapshotIdx = 0;
 
+	ns.prevSnapshot = () => {
+		ns.setSnapshot(snapshotIdx - 1);
+	}
+	ns.nextSnapshot = () => {
+		ns.setSnapshot(snapshotIdx + 1);
+	}
+
 	ns.setSnapshot = (snapshotIdx) => {
 		ns.CurrentSnapshotIdx = snapshotIdx;
 		const snapshot = GW.Chessboard.Snapshots.List[snapshotIdx];
 		renderBoardAtSnapshot(snapshot);
+
+		const btnPrevMove = document.getElementById("btnPrevMove")
+		if(ns.CurrentSnapshotIdx === 0) {
+			btnPrevMove.setAttribute("disabled", "true");
+		}
+		else {
+			btnPrevMove.removeAttribute("disabled");
+		}
+
+		const btnNextMove = document.getElementById("btnNextMove")
+		if(ns.CurrentSnapshotIdx === GW.Chessboard.Snapshots.List.length - 1) {
+			btnNextMove.setAttribute("disabled", "true");
+		}
+		else {
+			btnNextMove.removeAttribute("disabled");
+		}
+
+		const spnMoveIdx = document.getElementById("spnMoveIdx");
+		const newText = `Move ${ns.CurrentSnapshotIdx} of ${GW.Chessboard.Snapshots.List.length - 1}`
+		if(spnMoveIdx.innerText !== newText){
+			spnMoveIdx.innerText = newText;
+		}
 	}
 
 	function renderBoardAtSnapshot (snapshot) {

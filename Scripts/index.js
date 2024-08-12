@@ -48,14 +48,18 @@ window.GW = window.GW || {};
 
 	ns.onSquareClicked = (file, rank) => {
 		const tbodyBoard = document.getElementById("tbodyBoard");
+		const clickedBtn = document.getElementById(`button-${file}${rank}`);
+		doToggleOn = clickedBtn.getAttribute("aria-pressed") != "true";
 		tbodyBoard.querySelectorAll("button").forEach(
-			buttonEl => buttonEl.setAttribute("aria-pressed", buttonEl.id === `button-${file}${rank}`)
+			buttonEl => buttonEl.setAttribute("aria-pressed", buttonEl === clickedBtn && doToggleOn)
 		);
 
 		ns.Rendering.cleanSelectionBasedClasses();
-		ns.Rendering.calloutPiecesMovable(file, rank);
-		ns.Rendering.calloutPiecesThreatening(file, rank);
-		ns.Rendering.calloutPiecePath(file, rank);
+		if(doToggleOn) {
+			ns.Rendering.calloutPiecesMovable(file, rank);
+			ns.Rendering.calloutPiecesThreatening(file, rank);
+			ns.Rendering.calloutPiecePath(file, rank);
+		}
 	}
 }) (window.GW.Chessboard = window.GW.Chessboard || {});
 

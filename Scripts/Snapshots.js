@@ -50,7 +50,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 	}
 
-	function getSnapshot(snapshot, move, color) {
+	function getSnapshot(snapshot, moveNotation, color) {
 		const newSnap = {};
 		Object.keys(snapshot).forEach(cell => newSnap[cell] = snapshot[cell].clone());
 		//TODO

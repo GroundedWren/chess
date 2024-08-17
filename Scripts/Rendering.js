@@ -1,5 +1,5 @@
 /**
- * @file Code for loading and saving games
+ * @file Code for rendering and using the board
  * @author Vera Konigin vera@groundedwren.com
  */
  

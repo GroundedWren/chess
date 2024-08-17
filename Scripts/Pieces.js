@@ -1,5 +1,5 @@
 /**
- * @file Code chess pieces
+ * @file Code for chess pieces
  * @author Vera Konigin vera@groundedwren.com
  */
  

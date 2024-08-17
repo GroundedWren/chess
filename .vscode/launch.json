@@ -3,7 +3,7 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open Shortcuts.html",
+            "name": "Open Chess",
             "file": ".\\index.html",
         }
     ]

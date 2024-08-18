@@ -75,7 +75,6 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 					? "spnSquareWhiteLabel"
 					: "spnSquareBlackLabel"
 				} spnIcon-${file}${rank}
-				  spnInCheck-${file}${rank}
 				  spnMovable-${file}${rank}
 				  spnThreatening-${file}${rank}
 				  spnMoveToAble-${file}${rank}
@@ -92,13 +91,6 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				>
 					<span id="spnIcon-${file}${rank}" class="icon-span">
 						${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
-					</span>
-					<span id=spnInCheck-${file}${rank} class="icon-span">
-						<gw-icon
-							class="earmark in-check"
-							iconKey="triangle-exclamation"
-							title="In check"
-						></gw-icon>
 					</span>
 					<span id=spnMovable-${file}${rank} class="icon-span">
 						<gw-icon

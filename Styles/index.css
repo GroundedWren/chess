@@ -284,6 +284,7 @@ body {
 	flex-wrap: wrap;
 	justify-content: flex-start;
 	align-content: center;
+	align-items: flex-start;
 	gap: 10px;
 
 	#artMoves {
@@ -300,6 +301,17 @@ body {
 		#divCurMove {
 			display: flex;
 			justify-content: center;
+		}
+	}
+
+	#artLegend {
+		min-width: 200px;
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+
+		th, td {
+			padding: 2px;
 		}
 	}
 }

@@ -259,8 +259,8 @@
 		<h2>Details</h2>
 		<div class="scroll-container">
 			<div id="detailsArticles">
-				<article id="artMoves" aria-labelledby="hMoves">
-					<h3 id="hMoves">Moves</h3>
+				<article id="artHistory" aria-labelledby="hHistory">
+					<h3 id="hHistory">History</h3>
 					<div id="moveButtons">
 						<button id="btnPrevMove"><gw-icon iconKey="backward-step" title="Previous move"></gw-icon></button>
 						<span>
@@ -276,6 +276,119 @@
 						<ol start="0" reversed>
 							<li>Initial board</li>
 						</ol>
+					</details>
+				</article>
+				<article id="artLegend" aria-labelledby="hLegend">
+					<h3 id="hLegend">Legend</h3>
+					<details>
+						<summary id="sumIcons">Icons</summary>
+						<table aria-labelledby="sumIcons">
+							<tbody>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="person-running"
+										title="person-running icon"
+									></gw-icon></th>
+									<td>Can move to the selected square</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="bolt"
+										title="bolt icon"
+									></gw-icon></th>
+									<td>Can capture the selected square's piece</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="forward-step"
+										title="forward-step icon"
+									></gw-icon></th>
+									<td>The selected square's piece can move here</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="skull"
+										title="skull icon"
+									></gw-icon></th>
+									<td>Can be captured by the selected square's piece</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="hand-fist"
+										title="hand-fist icon"
+									></gw-icon></th>
+									<td>Moving the selected square's piece here performs a capture</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="triangle-exclamation"
+										title="triangle-exclamation icon"
+									></gw-icon></th>
+									<td>In check</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="chess-rook"
+										title="chess-rook icon"
+									></gw-icon></th>
+									<td>The selected square's piece moving here causes castling</td>
+								</tr>
+							</tbody>
+						</table>
+					</details>
+					<details>
+						<summary id="sumPieces">Pieces</summary>
+						<table aria-labelledby="sumPieces">
+							<thead>
+								<tr>
+									<th scope="col">Piece</th>
+									<th scope="col">Name</th>
+									<th scope="col">Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="chess-pawn"
+										title="pawn Icon"
+									></gw-icon></th>
+									<td>Pawn</td>
+									<td>1</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="chess-knight"
+										title="knight Icon"
+									></gw-icon></th>
+									<td>Knight</td>
+									<td>3</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="chess-bishop"
+										title="bishop Icon"
+									></gw-icon></th>
+									<td>Bishop</td>
+									<td>3</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="chess-rook"
+										title="rook Icon"
+									></gw-icon></th>
+									<td>Rook</td>
+									<td>5</td>
+								</tr>
+								<tr>
+									<th scope="row"><gw-icon
+										iconKey="chess-queen"
+										title="queen Icon"
+									></gw-icon></th>
+									<td>Queen</td>
+									<td>9</td>
+								</tr>
+							</tbody>
+						</table>
 					</details>
 				</article>
 			</div>

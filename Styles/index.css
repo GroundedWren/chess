@@ -359,6 +359,7 @@ body:has(#cbxVertLayout:checked) {
 		min-height: auto;
 		padding-inline: 0;
 		
+		max-height: initial;
 		max-width: 2000px;
 		margin-inline: auto;
 
@@ -385,6 +386,8 @@ body:has(#cbxVertLayout:checked) {
 			display: block;
 			min-height: auto;
 			padding-inline: 0;
+
+			max-height: initial;
 
 			> section h2 {
 				text-align: center;

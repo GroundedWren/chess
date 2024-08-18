@@ -12,9 +12,9 @@ window.GW.Controls = window.GW.Controls || {};
 	window.addEventListener("load", function shortcutsControlOnLoad() {
 		document.body.insertAdjacentHTML(
 			"beforeend",
-			`<aside id="gw-shortcuts-live" aria-live="polite" style="display: contents;"></aside>`
+			`<aside id="asiGWShortcutsLive" aria-live="polite" style="display: contents;"></aside>`
 		);
-		ns.AsiShortcutsLive = document.getElementById("gw-shortcuts-live");
+		ns.AsiShortcutsLive = document.getElementById("asiGWShortcutsLive");
 	});
 
 	/** Called as an event handler, this reports the shortcuts available to the current target element */

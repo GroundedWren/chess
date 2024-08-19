@@ -260,8 +260,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			GW.Chessboard.Snapshots.initiateMove(
 				prevSelectedSquare.id.replace("button-", ""),
 				`${file}${rank}`
-			);
-			focusSquare(undefined, document.getElementById(clickedBtnId));
+			).then(() => {
+				focusSquare(undefined, document.getElementById(clickedBtnId));
+			});
 		}
 	}
 

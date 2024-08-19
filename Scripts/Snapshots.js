@@ -55,7 +55,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		//TODO use Notation.js
 	}
 
-	ns.initiateMove = function(cellStart, cellEnd) {
+	ns.initiateMove = async function(cellStart, cellEnd) {
 		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
 		const curSnap = ns.List[curSnapIdx];
 
@@ -72,12 +72,37 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 		ns.List = ns.List.slice(0, curSnapIdx + 1);
 		const newSnap = ns.cloneSnapshot(curSnap);
-		ns.applyMove(newSnap, cellStart, move)
+		await applyMove(newSnap, cellStart, move);
 		ns.List.push(newSnap);
 
 		//Push move to GW.Chessboard.Data
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
+	}
+
+	async function applyMove(snapshot, cellStart, move) {
+		ns.applyMove(snapshot, cellStart, move);
+		if(move.Promotion) {
+			const userPromise = new Promise(resolve => ns.resolvePromotion = GW.createDelegate(
+				this,
+				(resolve, event) => {
+					event.preventDefault();
+					
+					const pieceName = event.target.elements["promoteTo"].value;
+					let oldPieceColor = snapshot[move.Cell].Color;
+					delete snapshot[move.Cell];
+					snapshot[move.Cell] = new GW.Chessboard.Pieces[pieceName](
+						oldPieceColor,
+						move.Cell[0],
+						move.Cell[1]
+					);
+					resolve();
+				},
+				[resolve]
+			));
+			document.getElementById("diaPromotion").showModal();
+			return userPromise;
+		}
 	}
 
 	ns.applyMove = function applyMove(snapshot, cellStart, move) {
@@ -100,10 +125,6 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		else if (move.CastleQS) {
 			ns.applyMove(snapshot, move.CastleQS, {Cell: `${GW.Chessboard.getFile(piece.File, 1)}${piece.Rank}`, Capture: null});
-		}
-
-		if(move.Promotion) {
-			//TODO
 		}
 	}
 

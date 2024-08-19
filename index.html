@@ -410,6 +410,38 @@
 		<figcaption>Created by Vera in 2024</figcaption>
 	</figure>
   </footer>
+  <dialog id="diaPromotion">
+	<form
+		aria-labelledby="hPromotion"
+		aria-describedby="pPromotion"
+		onsubmit="GW.Chessboard.Snapshots.resolvePromotion(event); document.getElementById('diaPromotion').close();"
+	>
+		<h1 id="hPromotion">Promotion</h1>
+		<p id="pPromotion">This move has promoted a pawn.</p>
+		<fieldset>
+			<legend>Promote to</legend>
+			<label class="text-after">
+				<input type="radio" name="promoteTo" value="Queen" autofocus checked>
+				Queen
+			</label>
+			<label class="text-after">
+				<input type="radio" name="promoteTo" value="Knight">
+				Knight
+			</label>
+			<label class="text-after">
+				<input type="radio" name="promoteTo" value="Rook">
+				Rook
+			</label>
+			<label class="text-after">
+				<input type="radio" name="promoteTo" value="Bishop">
+				Bishop
+			</label>
+		</fieldset>
+		<div class="footer">
+			<button type="submit">Confirm</button>
+		</div>
+	</form>
+  </dialog>
   <aside id="asiChessboardLive" class="sr-only" aria-live="polite"></aside>
 </body>
 </html>

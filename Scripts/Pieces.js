@@ -454,7 +454,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			for(let moveCombo of ns.King.MoveCombos) {
 				const cell = `${GW.Chessboard.getFile(this.File, moveCombo.FileD)}${GW.Chessboard.getRank(this.Rank, moveCombo.RankD)}`;
 				if(cell.length !== 2) {continue;}
-				if(!boardSnap[cell] || (boardSnap[cell] && boardSnap[cell.Color !== this.Color])) {
+				if(!boardSnap[cell] || (boardSnap[cell] && boardSnap[cell.Color] !== this.Color)) {
 					moves.push({Cell: cell, Capture: boardSnap[cell] ? cell : null});
 				}
 			}

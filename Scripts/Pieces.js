@@ -154,10 +154,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				return false;
 			}
 			
-			const simulation = {};
-			for(let cell of Object.keys(boardSnap)) {
-				simulation[cell] = boardSnap[cell].clone();
-			}
+			const simulation = GW.Chessboard.Snapshots.cloneSnapshot(boardSnap);
 			GW.Chessboard.Snapshots.applyMove(simulation, `${this.File}${this.Rank}`, move);
 			return ns.isTeamInCheck(simulation, this.Color);
 		}
@@ -178,15 +175,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return "chess-pawn";
 		}
 
-		clone() {
-			const myClone = super.clone();
-			myClone.EnPassantable = this.EnPassantable;
-			return myClone;
-		}
-
 		moveTo(file, rank) {
 			if(Math.abs(rank - this.Rank) === 2) {
 				this.EnPassantable = true;
+			}
+			else {
+				this.EnPassantable = false;
 			}
 			super.moveTo(file, rank);
 		}
@@ -196,9 +190,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 			const dir = this.Color === "white" ? -1 : 1;
 
-			const cellOneUp = `${this.File}${GW.Chessboard.getRank(this.Rank, dir)}`;
+			const rankOneUp = GW.Chessboard.getRank(this.Rank, dir);
+			const cellOneUp = `${this.File}${rankOneUp}`;
 			if(!boardSnap[cellOneUp]) {
-				moves.push({Cell: cellOneUp, Capture: null});
+				moves.push({
+					Cell: cellOneUp,
+					Capture: null,
+					Promotion: rankOneUp === "8" || rankOneUp === "1"
+				});
 			}
 
 			const cellTwoUp = `${this.File}${GW.Chessboard.getRank(this.Rank, dir*2)}`;

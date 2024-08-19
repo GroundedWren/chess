@@ -13,6 +13,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 	ns.CurrentSnapshotIdx = 0;
 
+	ns.getCurrentMovingColor = function getCurrentMovingColor() {
+		return ns.CurrentSnapshotIdx % 2 == 0 ? "white" : "black";
+	}
+
 	ns.prevSnapshot = () => {
 		ns.setSnapshot(snapshotIdx - 1);
 	}
@@ -31,6 +35,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		else {
 			btnPrevMove.removeAttribute("disabled");
+			btnPrevMove.onclick = GW.createDelegate(ns, ns.setSnapshot, [ns.CurrentSnapshotIdx - 1]);
 		}
 
 		const btnNextMove = document.getElementById("btnNextMove")
@@ -39,6 +44,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		else {
 			btnNextMove.removeAttribute("disabled");
+			btnNextMove.onclick = GW.createDelegate(ns, ns.setSnapshot, [ns.CurrentSnapshotIdx + 1]);
 		}
 
 		const spnMoveIdx = document.getElementById("spnMoveIdx");
@@ -87,7 +93,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 					tabindex="-1"
 					aria-labelledby="spnSquareBtnLabel"
 					aria-pressed="false"
-					onclick="GW.Chessboard.onSquareClicked('${file}', '${rank}')"
+					onclick="GW.Chessboard.Rendering.onSquareClicked('${file}', '${rank}')"
 				>
 					<span id="spnIcon-${file}${rank}" class="icon-span">
 						${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
@@ -231,7 +237,39 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		newCellBtn.focus();
 	}
 
-	ns.cleanSelectionBasedClasses = function cleanSelectionBasedClasses() {
+	ns.onSquareClicked = (file, rank) => {
+		const tbodyBoard = document.getElementById("tbodyBoard");
+		const prevSelectedSquare = tbodyBoard.querySelector(`button[aria-pressed="true"]`);
+		const clickedBtn = document.getElementById(`button-${file}${rank}`);
+		const isClickedBtnMove = clickedBtn.getAttribute("aria-labelledby") === "spnSquareBtnMoveLabel";
+		const doToggleOn = !isClickedBtnMove && clickedBtn.getAttribute("aria-pressed") !== "true";
+
+		ns.cleanSelectionBasedState();
+
+		if(doToggleOn) {
+			clickedBtn.setAttribute("aria-pressed", "true");
+			ns.calloutPiecesMovable(file, rank);
+			ns.calloutPiecesThreatening(file, rank);
+			ns.calloutPiecePath(file, rank);
+		}
+		else if(isClickedBtnMove) {
+			GW.Chessboard.Snapshots.initiateMove(
+				prevSelectedSquare.id.replace("button-", ""),
+				`${file}${rank}`
+			);
+		}
+	}
+
+	ns.clearSelection = (_event) => {
+		const tbodyBoard = document.getElementById("tbodyBoard");
+		if(!tbodyBoard.querySelector(`button[aria-pressed="true"]:focus-within`)) {
+			GW.Chessboard.invisibleAlert("Selection cleared");
+		}
+
+		ns.cleanSelectionBasedState();
+	}
+
+	ns.cleanSelectionBasedState = function cleanSelectionBasedState() {
 		document.getElementById("tbodyBoard").querySelectorAll("td").forEach(tdCell => {
 			tdCell.classList.remove("movable");
 			tdCell.classList.remove("threatening");
@@ -239,6 +277,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			tdCell.classList.remove("threatened");
 			tdCell.classList.remove("does-capture");
 			tdCell.classList.remove("does-castle");
+			
+			const tdBtn = tdCell.querySelector("button");
+			tdBtn.setAttribute("aria-pressed", false);
+			tdBtn.setAttribute("aria-labelledby", "spnSquareBtnLabel");
 		});
 	}
 
@@ -279,6 +321,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			tdCaptureCell = document.getElementById(`cell-${move.Capture}`);
 			if(tdMoveCell) {
 				tdMoveCell.classList.add("move-to-able");
+
+				if(ns.getCurrentMovingColor() === piece.Color) {
+					const tdMoveBtn = tdMoveCell.querySelector("button");
+					tdMoveBtn.removeAttribute("aria-pressed");
+					tdMoveBtn.setAttribute("aria-labelledby", "spnSquareBtnMoveLabel");
+				}
 			}
 			if(tdCaptureCell) {
 				tdCaptureCell.classList.add("threatened");

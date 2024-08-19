@@ -43,20 +43,17 @@ window.GW = window.GW || {};
 		return ary[newIdx];
 	}
 
-	ns.onSquareClicked = (file, rank) => {
-		const tbodyBoard = document.getElementById("tbodyBoard");
-		const clickedBtn = document.getElementById(`button-${file}${rank}`);
-		doToggleOn = clickedBtn.getAttribute("aria-pressed") != "true";
-		tbodyBoard.querySelectorAll("button").forEach(
-			buttonEl => buttonEl.setAttribute("aria-pressed", buttonEl === clickedBtn && doToggleOn)
-		);
+	ns.invisibleAlert = function invisibleAlert(message) {
+		const asiChessboardLive = document.getElementById("asiChessboardLive");
+		asiChessboardLive.innerText = "";
+		setTimeout(() => asiChessboardLive.innerText = message, 0);
+	}
 
-		ns.Rendering.cleanSelectionBasedClasses();
-		if(doToggleOn) {
-			ns.Rendering.calloutPiecesMovable(file, rank);
-			ns.Rendering.calloutPiecesThreatening(file, rank);
-			ns.Rendering.calloutPiecePath(file, rank);
-		}
+	GW.createDelegate = function(context, method, args)  {
+		return function generatedFunction()
+		{
+			return method.apply(context, (args || []).concat(...arguments));
+		};
 	}
 }) (window.GW.Chessboard = window.GW.Chessboard || {});
 

@@ -233,6 +233,10 @@
 				code_10="Alt+S"
 				handler_10="GW.Controls.Shortcuts.reportShortcuts(event)"
 				info_10="Displays available shortcuts"
+
+				code_11="Escape"
+				handler_11="GW.Chessboard.Rendering.clearSelection(event)"
+				info_11="Displays available shortcuts"
 			>
 				<span id="spnDataGrid" class="hidden">Data Grid.</span>
 				<table id="tblBoard"
@@ -251,6 +255,7 @@
 				</aside>
 			</gw-shortcuts>
 			<span id="spnSquareBtnLabel" class="hidden">Select</span>
+			<span id="spnSquareBtnMoveLabel" class="hidden">Move</span>
 			<span id="spnSquareWhiteLabel" class="hidden">White square</span>
 			<span id="spnSquareBlackLabel" class="hidden">Black square</span>
 		</div>
@@ -262,11 +267,15 @@
 				<article id="artHistory" aria-labelledby="hHistory">
 					<h3 id="hHistory">History</h3>
 					<div id="moveButtons">
-						<button id="btnPrevMove"><gw-icon iconKey="backward-step" title="Previous move"></gw-icon></button>
+						<button id="btnPrevMove">
+							<gw-icon iconKey="backward-step" title="Previous move"></gw-icon>
+						</button>
 						<span>
 							<span id="spnMoveIdx" aria-live="polite">Move 0 of 0</span>
 						</span>
-						<button id="btnNextMove"><gw-icon iconKey="forward-step" title="Next move"></gw-icon></button>
+						<button id="btnNextMove">
+							<gw-icon iconKey="forward-step" title="Next move"></gw-icon>
+						</button>
 					</div>
 					<div id="divCurMove">
 						Initial board
@@ -401,5 +410,6 @@
 		<figcaption>Created by Vera in 2024</figcaption>
 	</figure>
   </footer>
+  <aside id="asiChessboardLive" class="sr-only" aria-live="polite"></aside>
 </body>
 </html>

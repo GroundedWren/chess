@@ -51,9 +51,33 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	}
 
 	function getSnapshot(snapshot, moveNotation, color) {
-		const newSnap = {};
-		Object.keys(snapshot).forEach(cell => newSnap[cell] = snapshot[cell].clone());
-		//TODO
+		const newSnap = ns.cloneSnapshot(snapshot);
+		//TODO use Notation.js
+	}
+
+	ns.initiateMove = function(cellStart, cellEnd) {
+		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
+		const curSnap = ns.List[curSnapIdx];
+
+		const startPiece = curSnap[cellStart];
+		if(!startPiece) {
+			debugger; //No?
+			return;
+		}
+		const move = startPiece.getMoves(curSnap).find(move => move.Cell === cellEnd);
+		if(!move) {
+			debugger; //No??
+			return;
+		}
+
+		ns.List = ns.List.slice(0, curSnapIdx + 1);
+		const newSnap = ns.cloneSnapshot(curSnap);
+		ns.applyMove(newSnap, cellStart, move)
+		ns.List.push(newSnap);
+
+		//Push move to GW.Chessboard.Data
+
+		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
 	}
 
 	ns.applyMove = function applyMove(snapshot, cellStart, move) {
@@ -77,5 +101,17 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		else if (move.CastleQS) {
 			ns.applyMove(snapshot, move.CastleQS, {Cell: `${GW.Chessboard.getFile(piece.File, 1)}${piece.Rank}`, Capture: null});
 		}
+
+		if(move.Promotion) {
+			//TODO
+		}
+	}
+
+	ns.cloneSnapshot = function(snapshot) {
+		const cloneSnapshot = {};
+		for(let cell of Object.keys(snapshot)) {
+			cloneSnapshot[cell] = snapshot[cell].clone();
+		}
+		return cloneSnapshot;
 	}
 }) (window.GW.Chessboard.Snapshots = window.GW.Chessboard.Snapshots || {});

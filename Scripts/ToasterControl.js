@@ -12,7 +12,7 @@ window.GW.Controls = window.GW.Controls || {};
 	ns.ToastCount = 0;
 
 	/** This creates the toast container */
-	window.addEventListener("load", function shortcutsControlOnLoad() {
+	window.addEventListener("load", function toasterControlOnLoad() {
 		const toasterLabelId = ns.TOASTER_ASIDE_ID + "-Label";
 
 		document.head.insertAdjacentHTML("beforeend",`

@@ -161,6 +161,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				document.getElementById(`cell-${king.File}${king.Rank}`).classList.add("in-check");
 			}
 		});
+
+		document.getElementById("tblBoard").setAttribute("tabindex", "0");
 	}
 
 	ns.tblBoardOnFocusIn = (event) => {
@@ -235,12 +237,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		prevCellBtn?.setAttribute("tabindex", -1);
 		newCellBtn.setAttribute("tabindex", 0);
 		newCellBtn.focus();
+		document.getElementById("tblBoard").removeAttribute("tabindex");
 	}
 
 	ns.onSquareClicked = (file, rank) => {
 		const tbodyBoard = document.getElementById("tbodyBoard");
 		const prevSelectedSquare = tbodyBoard.querySelector(`button[aria-pressed="true"]`);
-		const clickedBtn = document.getElementById(`button-${file}${rank}`);
+		const clickedBtnId = `button-${file}${rank}`;
+		const clickedBtn = document.getElementById(clickedBtnId);
 		const isClickedBtnMove = clickedBtn.getAttribute("aria-labelledby") === "spnSquareBtnMoveLabel";
 		const doToggleOn = !isClickedBtnMove && clickedBtn.getAttribute("aria-pressed") !== "true";
 
@@ -257,6 +261,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				prevSelectedSquare.id.replace("button-", ""),
 				`${file}${rank}`
 			);
+			focusSquare(undefined, document.getElementById(clickedBtnId));
 		}
 	}
 

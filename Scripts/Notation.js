@@ -5,5 +5,5 @@
  
 window.GW = window.GW || {};
 window.GW.Chessboard = window.GW.Chessboard || {};
-(function LoadSave(ns) {
+(function Notation(ns) {
 }) (window.GW.Chessboard.Notation = window.GW.Chessboard.Notation || {});

@@ -96,8 +96,8 @@
 					</div>
 				</div>
 				<div class="footer">
-					<button type="button" onclick="document.getElementById('formLoad').hidePopover()">Cancel</button>
 					<button type="submit">Load</button>
+					<button type="button" onclick="document.getElementById('formLoad').hidePopover()">Cancel</button>
 				</div>
 			</form>
 			<button popovertarget="formSave">Save</button>
@@ -161,8 +161,8 @@
 					</div>
 				</div>
 				<div class="footer">
-					<button type="button" onclick="document.getElementById('formSave').hidePopover()">Cancel</button>
 					<button type="submit">Save</button>
+					<button type="button" onclick="document.getElementById('formSave').hidePopover()">Cancel</button>
 				</div>
 			</form>
 			<button onclick="document.getElementById('diaNew').showModal()">New</button>
@@ -176,8 +176,8 @@
 					<em id="emNewWarning">Unsaved changes will be lost.</em>
 					<p id="pNew">Start a new game?</p>
 					<div class="footer">
-						<button type="button" onclick="document.getElementById('diaNew').close()">Cancel</button>
-						<button type="submit" autofocus>Yes</button>
+						<button type="submit">Yes</button>
+						<button type="button" onclick="document.getElementById('diaNew').close()" autofocus>Cancel</button>
 					</div>
 				</form>
 			</dialog>

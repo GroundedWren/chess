@@ -114,10 +114,15 @@ body {
 		}
 
 		#tblBoard {
+			table-layout: fixed;
 			max-width: 750px;
 			margin-inline-end: 5px;
 
 			width: calc(100% - 5px);
+
+			col {
+				width: 1.5em;
+			}
 			
 			th, thead {
 				background-color: var(--accent-color);

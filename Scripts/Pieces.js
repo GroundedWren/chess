@@ -433,10 +433,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	//#region King
 	ns.King = class King extends ns.Piece {
 		static MoveCombos = [
+			{RankD: 1, FileD: 1},
 			{RankD: 1, FileD: 0},
-			{RankD: -1, FileD: 0},
+			{RankD: 1, FileD: -1},
 			{RankD: 0, FileD: 1},
 			{RankD: 0, FileD: -1},
+			{RankD: -1, FileD: 1},
+			{RankD: -1, FileD: 0},
+			{RankD: -1, FileD: -1},
 		]
 
 		get Name() {

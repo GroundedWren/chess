@@ -193,11 +193,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			const rankOneUp = GW.Chessboard.getRank(this.Rank, dir);
 			const cellOneUp = `${this.File}${rankOneUp}`;
 			if(!boardSnap[cellOneUp]) {
-				moves.push({
-					Cell: cellOneUp,
-					Capture: null,
-					Promotion: rankOneUp === "8" || rankOneUp === "1"
-				});
+				moves.push({ Cell: cellOneUp, Capture: null });
 			}
 
 			const cellTwoUp = `${this.File}${GW.Chessboard.getRank(this.Rank, dir*2)}`;
@@ -224,6 +220,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			if(boardSnap[cellRight]?.Color !== this.Color && boardSnap[cellRight]?.EnPassantable) {
 				moves.push({Cell: cellRightDiag, Capture: cellRight});
 			}
+
+			moves.forEach(move => {
+				const moveRankIdx = RANK_ORDER_INDEX[move.Cell[1]];
+				move.Promotion = moveRankIdx === 0 || moveRankIdx === ORDERED_RANKS.length
+			});
 
 			return this.filterByTeamCheck(boardSnap, moves);
 		}

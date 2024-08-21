@@ -21,6 +21,7 @@ File Description: CSS Variables
 	--banner-color: #B3B3B3;
 	--mark-color: #D2FCC5;
 	--accent-color: #C0DBB0;
+	--invalid-color: #5C01D8;
 
 	--board-piece-white-color: #737373;
 	--board-piece-black-color: #4a2822;
@@ -46,6 +47,7 @@ File Description: CSS Variables
 		--banner-color: #404040;
 		--mark-color: #005C08;
 		--accent-color: #8D4A95;
+		--invalid-color: #a35ffe;
 
 		--board-piece-white-color: #FFFFFF;
 		--board-piece-black-color: #000000;

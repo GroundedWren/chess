@@ -256,15 +256,11 @@ button[aria-expanded="true"], button[aria-pressed="true"], details[open] summary
 input:is([type="text"], [type="password"], [type="number"], [type="email"], [type="date"], [type="time"]), textarea {
 	color: var(--input-text-color);
 	background-color: var(--input-background-color);
+	border: 2px groove var(--border-color);
 }
 
-:is(input:is([type="text"], [type="password"], [type="number"], [type="email"], [type="date"], [type="time"]), textarea):invalid {
-	box-shadow: inset 0px 0px 5px 2px var(--mark-color);
-	border-color: var(--mark-color);
-}
-select:invalid {
-	box-shadow: inset 0px 0px 5px 2px var(--mark-color);
-	outline: 2px solid var(--mark-color);
+:is(input:is([type="text"], [type="password"], [type="number"], [type="email"], [type="date"], [type="time"]), textarea, select):invalid {
+	box-shadow: inset 0px 0px 4px 2px var(--invalid-color), -3px 0px 0px 0px var(--invalid-color);
 }
 
 textarea {

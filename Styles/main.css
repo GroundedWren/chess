@@ -260,7 +260,10 @@ input:is([type="text"], [type="password"], [type="number"], [type="email"], [typ
 }
 
 :is(input:is([type="text"], [type="password"], [type="number"], [type="email"], [type="date"], [type="time"]), textarea, select):invalid {
-	box-shadow: inset 0px 0px 4px 2px var(--invalid-color), -3px 0px 0px 0px var(--invalid-color);
+	box-shadow: -3px 0px 0px 0px var(--invalid-color);
+	&:focus-within {
+		box-shadow: inset 0px 0px 4px 2px var(--invalid-color), -3px 0px 0px 0px var(--invalid-color);
+	}
 }
 
 textarea {

@@ -107,9 +107,22 @@ body {
 			display: flex;
 			flex-direction: column;
 
+			> .header {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: baseline;
+			}
+
 			> .scroll-container {
 				flex-grow: 1;
 				overflow-y: auto;
+			}
+		}
+
+		#secBoard {
+			> .header {
+				margin-inline-end: 5px;
 			}
 		}
 

@@ -187,7 +187,10 @@
   </header>
   <main id="mainContent">
 	<section id="secBoard">
-		<h2 id="hBoard">Board</h2>
+		<div class="header">
+			<h2 id="hBoard">Board</h2>
+			<div id="divToMove"></div>
+		</div>
 		<div class="scroll-container">
 			<gw-shortcuts role="application" aria-describedby="asiTblBoard"
 				code_0="ArrowRight"
@@ -237,6 +240,7 @@
 				<span id="spnDataGrid" class="hidden">Data Grid.</span>
 				<table id="tblBoard"
 					aria-labelledby="hBoard spnDataGrid"
+					aria-describedby="divToMove"
 					role="grid"
 					tabindex="0"
 					onfocusin="GW.Chessboard.Rendering.tblBoardOnFocusIn(event)"
@@ -273,7 +277,7 @@
 							<em id="emSelInfoMoveable">Can move here:</em>
 							<ul id="ulSelInfoMoveable" aria-labelledby="emSelInfoMoveable" class="link-list"></ul>
 						</div>
-						<article id="artSelInfoPiece" aria-labelledby="hSelectionPiece selInfoPieceName">
+						<article id="artSelInfoPiece" aria-labelledby="hSelInfoPiece divSelInfoPieceName">
 							<h4 id="hSelInfoPiece">Piece</h4>
 							<div><div id="divSelInfoPieceName"></div></div>
 							<div>Starting cell: <span id="spnSelInfoPieceStart"></span></div>

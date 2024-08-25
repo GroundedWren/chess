@@ -54,6 +54,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 
 		updateMovesList(snapshotIdx);
+
+		document.getElementById("divToMove").innerText = `${ns.getCurrentMovingColor()} to move`;
 	}
 
 	function updateMovesList(snapshotIdx) {

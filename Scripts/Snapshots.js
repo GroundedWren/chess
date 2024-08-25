@@ -52,7 +52,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 	function getSnapshot(snapshot, moveNotation, color) {
 		const newSnap = ns.cloneSnapshot(snapshot);
-		//TODO use Notation.js
+		const {CellStart, Move} = GW.Chessboard.Notation.getNotationAsMove(moveNotation, color, newSnap);
+		applyMove(newSnap, CellStart, Move); //Async is only for user input, not needed here
 	}
 
 	ns.initiateMove = async function(cellStart, cellEnd) {
@@ -75,7 +76,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		await applyMove(newSnap, cellStart, move);
 		ns.List.push(newSnap);
 
-		GW.Chessboard.Data.Moves.push("Move " + (curSnapIdx + 1)); //TODO use Notation.js
+		GW.Chessboard.Data.Moves.push(GW.Chessboard.Notation.getMoveAsNotation(cellStart, move, curSnap));
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
 	}
@@ -83,26 +84,34 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	async function applyMove(snapshot, cellStart, move) {
 		ns.applyMove(snapshot, cellStart, move);
 		if(move.Promotion) {
-			const userPromise = new Promise(resolve => ns.resolvePromotion = GW.createDelegate(
-				this,
-				(resolve, event) => {
-					event.preventDefault();
-					
-					const pieceName = event.target.elements["promoteTo"].value;
-					let oldPieceColor = snapshot[move.Cell].Color;
-					delete snapshot[move.Cell];
-					snapshot[move.Cell] = new GW.Chessboard.Pieces[pieceName](
-						oldPieceColor,
-						move.Cell[0],
-						move.Cell[1]
-					);
-					resolve();
-				},
-				[resolve]
-			));
-			document.getElementById("diaPromotion").showModal();
-			return userPromise;
+			if(["Queen", "Knight", "Rook", "Bishop"].includes(move.Promotion)) {
+				promotePiece(move.Cell, move.Promotion, snapshot);
+			}
+			else {
+				const userPromise = new Promise(resolve => ns.resolvePromotion = GW.createDelegate(
+					this,
+					(resolve, event) => {
+						event.preventDefault();
+						
+						promotePiece(move.Cell, event.target.elements["promoteTo"].value, snapshot);
+						resolve();
+					},
+					[resolve]
+				));
+				document.getElementById("diaPromotion").showModal();
+				return userPromise;
+			}
 		}
+	}
+
+	function promotePiece(cell, pieceName, snapshot)  {
+		let oldPieceColor = snapshot[cell].Color;
+		delete snapshot[cell];
+		snapshot[cell] = new GW.Chessboard.Pieces[pieceName](
+			oldPieceColor,
+			cell[0],
+			cell[1]
+		);
 	}
 
 	ns.applyMove = function applyMove(snapshot, cellStart, move) {

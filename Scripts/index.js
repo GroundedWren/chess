@@ -49,6 +49,11 @@ window.GW = window.GW || {};
 		setTimeout(() => asiChessboardLive.innerText = message, 0);
 	}
 
+	ns.writeToClipboard = function writeToClipboard(message) {
+		navigator.clipboard.writeText(message);
+		GW.Controls.Toaster.showToast("Copied to clipboard");
+	}
+
 	GW.createDelegate = function(context, method, args)  {
 		return function generatedFunction()
 		{

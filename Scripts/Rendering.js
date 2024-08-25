@@ -52,6 +52,36 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		if(spnMoveIdx.innerText !== newText){
 			spnMoveIdx.innerText = newText;
 		}
+
+		updateMovesList(snapshotIdx);
+	}
+
+	function updateMovesList(snapshotIdx) {
+		const olMoves = document.getElementById("olMoves");
+
+		if(snapshotIdx >= olMoves.children.length) {
+			olMoves.insertAdjacentHTML("afterbegin", "<li></li>");
+			olMoves.setAttribute("start", olMoves.children.length - 1);
+		}
+
+		const liCur = olMoves.children[olMoves.children.length - snapshotIdx - 1];
+		liCur.innerHTML = `${snapshotIdx
+			? GW.Chessboard.Data.Moves[snapshotIdx - 1]
+			: "Initial board"
+		}`; //TODO pretty this up
+		document.getElementById("divCurMove").innerHTML = liCur.innerHTML;
+
+		const gwShortsBody = document.getElementById("gwShortsBody");
+		if(snapshotIdx) {
+			Object.entries({
+				"code_1": "Alt+M",
+				"handler_1": `GW.Chessboard.writeToClipboard("${GW.Chessboard.Data.Moves[snapshotIdx - 1]}")`,
+				"info_1": "Copy the current move to the clipboard",
+			}).forEach(([attr, value]) => gwShortsBody.setAttribute(attr, value));
+		}
+		else {
+			["code_1", "handler_1", "info_1"].forEach(attr => gwShortsBody.removeAttribute(attr));
+		}
 	}
 
 	function renderBoardAtSnapshot (snapshot) {

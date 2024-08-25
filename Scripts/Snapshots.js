@@ -75,7 +75,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		await applyMove(newSnap, cellStart, move);
 		ns.List.push(newSnap);
 
-		//Push move to GW.Chessboard.Data
+		GW.Chessboard.Data.Moves.push("Move " + (curSnapIdx + 1)); //TODO use Notation.js
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
 	}

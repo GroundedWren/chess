@@ -27,7 +27,7 @@
   <script src="./Scripts/Pieces.js"></script>
   <script src="./Scripts/Snapshots.js"></script>
 </head>
-<body>
+<body><gw-shortcuts id="gwShortsBody" code_0="Alt+S" handler_0="GW.Controls.Shortcuts.reportShortcuts(event)" info_0="Displays available shortcuts">
   <header id="mainHeader">
 	<div id="mainHeaderLeft">
 	  <a class="hide-until-focus" href="#mainContent">Skip to content</a>
@@ -230,13 +230,9 @@
 				handler_9="GW.Chessboard.Rendering.tblBoardOnKbdNav(event)"
 				info_9="Move to h1"
 
-				code_10="Alt+S"
-				handler_10="GW.Controls.Shortcuts.reportShortcuts(event)"
+				code_10="Escape"
+				handler_10="GW.Chessboard.Rendering.clearSelection(event)"
 				info_10="Displays available shortcuts"
-
-				code_11="Escape"
-				handler_11="GW.Chessboard.Rendering.clearSelection(event)"
-				info_11="Displays available shortcuts"
 			>
 				<span id="spnDataGrid" class="hidden">Data Grid.</span>
 				<table id="tblBoard"
@@ -281,13 +277,10 @@
 							<gw-icon iconKey="forward-step" title="Next move"></gw-icon>
 						</button>
 					</div>
-					<div id="divCurMove">
-						Initial board
-					</div>
+					<div id="divCurMove"></div>
 					<details>
 						<summary>List</summary>
-						<ol start="0" reversed>
-							<li>Initial board</li>
+						<ol id="olMoves" start="0" reversed>
 						</ol>
 					</details>
 				</article>
@@ -447,5 +440,5 @@
 	</form>
   </dialog>
   <aside id="asiChessboardLive" class="sr-only" aria-live="polite"></aside>
-</body>
+</gw-shortcuts></body>
 </html>

@@ -292,7 +292,7 @@ body {
 	align-items: flex-start;
 	gap: 10px;
 
-	#artMoves {
+	#artHistory {
 		display: flex;
 		flex-direction: column;
 		gap: 4px;

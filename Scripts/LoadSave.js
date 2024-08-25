@@ -27,7 +27,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 		updateFileInfo();
 		Gw.Chessboard.Snapshots.buildGameSnapshots();
-		GW.Chessboard.Rendering.setSnapshot(0);
+		GW.Chessboard.Rendering.setSnapshot(GW.Chessboard.Snapshots.List.length - 1);
 	};
 	ns.onSave = (event) => {
 		event.preventDefault();

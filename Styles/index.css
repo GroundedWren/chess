@@ -163,7 +163,7 @@ body {
 						border: none;
 						position: relative;
 
-						&:hover {
+						&:hover, &:focus-within {
 							outline-width: 4px;
 							outline-color: var(--focus-color);
 							outline-style: solid;
@@ -283,6 +283,19 @@ body {
 	}
 }
 
+main:has(.board-square-button[aria-pressed="true"]) { 
+	#detailsArticles {
+		#artSelection {
+			#pSelPlaceholder {
+				display: none;
+			}
+			#divSelInfo {
+				display: block;
+			}
+		}
+	}
+}
+
 #detailsArticles {
 	display: flex;
 	flex-direction: row;
@@ -306,6 +319,20 @@ body {
 		#divCurMove {
 			display: flex;
 			justify-content: center;
+		}
+	}
+
+	#artSelection {
+		min-width: 225px;
+		#pSelPlaceholder {
+			display: block;
+		}
+		#divSelInfo {
+			display: none;
+		}
+
+		#divSelInfoPieceName {
+			text-transform: capitalize;
 		}
 	}
 
@@ -347,6 +374,16 @@ form, article {
 		justify-content: flex-end;
 		gap: 5px;
 	}
+
+	article {
+		border: none;
+		background-color: color-mix(in oklab, var(--background-color-2) 50%, var(--background-color) 50%);
+		h1, h2, h3, h4, h5, h6 {
+			background-color: color-mix(in oklab, var(--accent-color) 70%, var(--background-color) 30%);
+			border-radius: 0;
+			margin-inline-end: -4px;
+		}
+	}
 }
 
 dialog {
@@ -381,6 +418,36 @@ body:has(#cbxVertLayout:checked) {
 			min-width: 750px;
 			margin-inline: auto;
 		}
+	}
+}
+
+.link-list {
+	display: flex;
+	flex-direction: column;
+
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	gap: 4px;
+
+	> li {
+		min-height: 24px;
+		min-width: 24px;
+
+		display: flex;
+
+		> a {
+			background-color: var(--link-background-color);
+			flex-grow: 1;
+			text-align: center;
+		}
+	}
+}
+
+.cell-list {
+	margin-block-end: 4px;
+	&:has(> .link-list:empty)::after {
+		content: "-";
 	}
 }
 

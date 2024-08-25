@@ -264,6 +264,35 @@
 		<h2>Details</h2>
 		<div class="scroll-container">
 			<div id="detailsArticles">
+				<article id="artSelection" aria-labelledby="hSelection divSelInfoCell">
+					<h3 id="hSelection">Selection</h3>
+					<p id="pSelPlaceholder">No selected cell</p>
+					<div id="divSelInfo">
+						<div id="divSelInfoCell">Cell: <span id="spnSelInfoCell"></span></div>
+						<div class="cell-list">
+							<em id="emSelInfoMoveable">Can move here:</em>
+							<ul id="ulSelInfoMoveable" aria-labelledby="emSelInfoMoveable" class="link-list"></ul>
+						</div>
+						<article id="artSelInfoPiece" aria-labelledby="hSelectionPiece selInfoPieceName">
+							<h4 id="hSelInfoPiece">Piece</h4>
+							<div><div id="divSelInfoPieceName"></div></div>
+							<div>Starting cell: <span id="spnSelInfoPieceStart"></span></div>
+							<div>Move count: <span id="spnSelInfoPieceMoveCount"></span></div>
+							<div class="cell-list">
+								<em id="emSelInfoMoves">Possible moves:</em>
+								<ul id="ulSelInfoMoves" aria-labelledby="emSelInfoMoves" class="link-list"></ul>
+							</div>
+							<div class="cell-list">
+								<em id="emSelInfoCaptures">Possible captures:</em>
+								<ul id="ulSenInfoCaptures" aria-labelledby="emSelInfoCaptures" class="link-list"></ul>
+							</div>
+							<div class="cell-list">
+								<em id="emSelInfoThreatened">Threatened by:</em>
+								<ul id="ulSelInfoThreatened" aria-labelledby="emSelInfoThreatened" class="link-list"></ul>
+							</div>
+						</article>
+					</div>
+				</article>
 				<article id="artHistory" aria-labelledby="hHistory">
 					<h3 id="hHistory">History</h3>
 					<div id="moveButtons">

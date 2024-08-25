@@ -123,6 +123,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 					tabindex="-1"
 					aria-labelledby="spnSquareBtnLabel"
 					aria-pressed="false"
+					class="board-square-button"
 					onclick="GW.Chessboard.Rendering.onSquareClicked('${file}', '${rank}')"
 				>
 					<span id="spnIcon-${file}${rank}" class="icon-span">
@@ -261,6 +262,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		focusSquare(curCellBtn, targetCell.querySelector("button"));
 	}
 
+	ns.moveFocusTo = (location) => {
+		focusSquare(
+			document.getElementById("tbodyBoard").querySelector(`button[aria-pressed="true"]`),
+			document.getElementById(`cell-${location}`).querySelector("button")
+		);
+	}
+
 	function focusSquare(prevCellBtn, newCellBtn) {
 		if(!newCellBtn) { return; }
 
@@ -272,7 +280,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 	ns.onSquareClicked = (file, rank) => {
 		const tbodyBoard = document.getElementById("tbodyBoard");
-		const prevSelectedSquare = tbodyBoard.querySelector(`button[aria-pressed="true"]`);
+		const prevSelSquareBtn = tbodyBoard.querySelector(`button[aria-pressed="true"]`);
 		const clickedBtnId = `button-${file}${rank}`;
 		const clickedBtn = document.getElementById(clickedBtnId);
 		const isClickedBtnMove = clickedBtn.getAttribute("aria-labelledby") === "spnSquareBtnMoveLabel";
@@ -285,14 +293,56 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			ns.calloutPiecesMovable(file, rank);
 			ns.calloutPiecesThreatening(file, rank);
 			ns.calloutPiecePath(file, rank);
+			updateSelectionInfo(file, rank);
 		}
 		else if(isClickedBtnMove) {
 			GW.Chessboard.Snapshots.initiateMove(
-				prevSelectedSquare.id.replace("button-", ""),
+				prevSelSquareBtn.id.replace("button-", ""),
 				`${file}${rank}`
 			).then(() => {
 				focusSquare(undefined, document.getElementById(clickedBtnId));
 			});
+		}
+	}
+
+	function updateSelectionInfo(file, rank) {
+		const tdSelection = document.getElementById(`cell-${file}${rank}`);
+		document.getElementById("spnSelInfoCell").innerText = `${file}${rank} (${
+			tdSelection.getAttribute("aria-labelledby").includes("spnSquareWhiteLabel")
+			? "white"
+			: "black"
+		})`;
+
+		const tblBoard = document.getElementById("tblBoard");
+
+		document.getElementById("ulSelInfoMoveable").innerHTML = Array.from(tblBoard.querySelectorAll(`td.movable`)).map(tdEl => {
+			const loc = tdEl.id.replace("cell-", "");
+			return `<li><a href="javascript:void(0)" onclick="GW.Chessboard.Rendering.moveFocusTo('${loc}')">${loc}</a></li>`
+		}).join("");
+
+		const piece = GW.Chessboard.Snapshots.List[ns.CurrentSnapshotIdx][`${file}${rank}`];
+		if(piece) {
+			document.getElementById("artSelInfoPiece").removeAttribute("hidden");
+
+			document.getElementById("divSelInfoPieceName").innerText = `${piece.Color} ${piece.Name}`;
+			document.getElementById("spnSelInfoPieceStart").innerText = `${piece.StartFile}${piece.StartRank}`;
+			document.getElementById("spnSelInfoPieceMoveCount").innerText = `${piece.MoveCount}`;
+
+			document.getElementById("ulSelInfoMoves").innerHTML = Array.from(tblBoard.querySelectorAll(`td.move-to-able`)).map(tdEl => {
+				const loc = tdEl.id.replace("cell-", "");
+				return `<li><a href="javascript:void(0)" onclick="GW.Chessboard.Rendering.moveFocusTo('${loc}')">${loc}</a></li>`
+			}).join("");
+			document.getElementById("ulSenInfoCaptures").innerHTML = Array.from(tblBoard.querySelectorAll(`td.threatened`)).map(tdEl => {
+				const loc = tdEl.id.replace("cell-", "");
+				return `<li><a href="javascript:void(0)" onclick="GW.Chessboard.Rendering.moveFocusTo('${loc}')">${loc}</a></li>`
+			}).join("");
+			document.getElementById("ulSelInfoThreatened").innerHTML = Array.from(tblBoard.querySelectorAll(`td.threatening`)).map(tdEl => {
+				const loc = tdEl.id.replace("cell-", "");
+				return `<li><a href="javascript:void(0)" onclick="GW.Chessboard.Rendering.moveFocusTo('${loc}')">${loc}</a></li>`
+			}).join("");
+		}
+		else {
+			document.getElementById("artSelInfoPiece").setAttribute("hidden", "true");
 		}
 	}
 

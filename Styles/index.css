@@ -322,6 +322,16 @@ main:has(.board-square-button[aria-pressed="true"]) {
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
+
+		gw-icon.piece {
+			background-color: #757575;
+			svg.black {
+				fill: black;
+			}
+			svg.white {
+				fill: white;
+			}
+		}
 		
 		#moveButtons {
 			display: flex;

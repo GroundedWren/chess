@@ -62,14 +62,19 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		const olMoves = document.getElementById("olMoves");
 		olMoves.innerHTML = null;
 
-		olMoves.innerHTML = GW.Chessboard.Data.Moves.slice().reverse().map(
-			move => `<li>${move}</li>` //TODO pretty this up
-		).join("");
-		olMoves.insertAdjacentHTML("beforeend", "<li>Initial board</li>");
-
-		const liCur = olMoves.children[olMoves.children.length - snapshotIdx - 1];
-		document.getElementById("divCurMove").innerHTML = liCur.innerHTML;
-
+		for(let i = GW.Chessboard.Data.Moves.length - 1; i >= -1; i--) {
+			let moveMarkup = "Initial board";
+			if(i > -1) {
+				const move = GW.Chessboard.Data.Moves[i];
+				const pieceName = GW.Chessboard.Pieces.getPieceNameFromAbbr(move[0]) || "Pawn";
+				const piece = new GW.Chessboard.Pieces[pieceName](i % 2 == 0 ? "white" : "black");
+				moveMarkup = `${piece.Icon}${move}`;
+			}
+			if(i === snapshotIdx - 1) {
+				document.getElementById("divCurMove").innerHTML = moveMarkup;
+			}
+			olMoves.insertAdjacentHTML("beforeend", `<li>${moveMarkup}</li>`);
+		}
 		olMoves.setAttribute("start", olMoves.children.length - 1);
 
 		const gwShortsBody = document.getElementById("gwShortsBody");

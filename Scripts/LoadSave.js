@@ -16,6 +16,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				GW.Chessboard.Data = JSON.parse(localStorage.getItem(
 					`game-${document.getElementById("selLoadLocal").value}`
 				));
+
+				ns.LocalSaveName = document.getElementById("selLoadLocal").value;
+				document.getElementById("formSave").elements["saveMode"].value = "existing";
+				ns.onSaveModeChange(undefined, event.target);
 				break;
 			case "upload":
 				const loadedData = await GW.Gizmos.FileLib.promptFileAsJSON();

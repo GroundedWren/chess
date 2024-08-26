@@ -73,6 +73,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}`; //TODO pretty this up
 		document.getElementById("divCurMove").innerHTML = liCur.innerHTML;
 
+		for(let i = GW.Chessboard.Data.Moves.length; i < olMoves.children.length - 1; i++) {
+			olMoves.children[0].remove();
+		}
+
 		const gwShortsBody = document.getElementById("gwShortsBody");
 		if(snapshotIdx) {
 			Object.entries({

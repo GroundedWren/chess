@@ -25,6 +25,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}, false);
 	}
 
+	ns.isTeamInCheckmate = function isTeamInCheckmate(boardSnap, color) {
+		return !Object.values(boardSnap).find(
+			piece => piece.Color === color && piece.getMoves(boardSnap).length
+		)
+	}
+
 	//#region Piece
 	ns.Piece = class Piece {
 		Color;

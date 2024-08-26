@@ -76,7 +76,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		await applyMove(newSnap, cellStart, move);
 		ns.List.push(newSnap);
 
-		GW.Chessboard.Data.Moves.push(GW.Chessboard.Notation.getMoveAsNotation(cellStart, move, curSnap));
+		GW.Chessboard.Data.Moves = GW.Chessboard.Data.Moves.slice(0, curSnapIdx);
+		GW.Chessboard.Data.Moves.push(GW.Chessboard.Notation.getMoveAsNotation(cellStart, move, curSnap, newSnap));
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
 	}
@@ -92,8 +93,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 					this,
 					(resolve, event) => {
 						event.preventDefault();
+
+						const promo = event.target.elements["promoteTo"].value;
+						move.Promotion = promo;
 						
-						promotePiece(move.Cell, event.target.elements["promoteTo"].value, snapshot);
+						promotePiece(move.Cell, move.Promotion, snapshot);
 						resolve();
 					},
 					[resolve]

@@ -59,6 +59,35 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		return newSnap;
 	}
 
+	ns.initiateNotationMove = function(note) {
+		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
+		const boardSnap = ns.List[curSnapIdx];
+		
+		const {CellStart, Move} = GW.Chessboard.Notation.getNotationAsMove(
+			note,
+			GW.Chessboard.Rendering.getCurrentMovingColor(),
+			boardSnap
+		);
+		if(!CellStart || !Move) {
+			return false;
+		}
+
+		const newSnap = ns.cloneSnapshot(boardSnap);
+		ns.applyMove(
+			newSnap,
+			CellStart,
+			Move
+		);
+		ns.List.push(newSnap);
+
+		GW.Chessboard.Data.Moves = GW.Chessboard.Data.Moves.slice(0, curSnapIdx);
+		GW.Chessboard.Data.Moves.push(note);
+
+		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
+
+		return true;
+	}
+
 	ns.initiateMove = async function(cellStart, cellEnd) {
 		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
 		const curSnap = ns.List[curSnapIdx];

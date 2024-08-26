@@ -28,11 +28,11 @@ window.GW = window.GW || {};
 
 	ns.getRank = function getRank(startRank, delta) {
 		return getOrderedItemAtDelta(ns.ORDERED_RANKS, ns.RANK_ORDER_INDEX[startRank], delta);
-	}
+	};
 
 	ns.getFile = function getFile(startFile, delta) {
 		return getOrderedItemAtDelta(ns.ORDERED_FILES, ns.FILE_ORDER_INDEX[startFile], delta);
-	}
+	};
 
 	function getOrderedItemAtDelta(ary, startIdx, delta) {
 		if(startIdx === null || startIdx === undefined) { return ""; }
@@ -47,12 +47,21 @@ window.GW = window.GW || {};
 		const asiChessboardLive = document.getElementById("asiChessboardLive");
 		asiChessboardLive.innerText = "";
 		setTimeout(() => asiChessboardLive.innerText = message, 0);
-	}
+	};
 
 	ns.writeToClipboard = function writeToClipboard(message) {
 		navigator.clipboard.writeText(message);
 		GW.Controls.Toaster.showToast("Copied to clipboard");
-	}
+	};
+
+	ns.onApplyMoveSubmit = (event) => {
+		event.preventDefault();
+
+		if(GW.Chessboard.Snapshots.initiateNotationMove(document.getElementById("txtApplyNotation").value)) {
+			GW.Controls.Toaster.showToast("Move applied");
+		}
+		document.getElementById("formApplyMove").reset();
+	};
 
 	GW.createDelegate = function(context, method, args)  {
 		return function generatedFunction()

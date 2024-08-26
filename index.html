@@ -302,6 +302,11 @@
 						</article>
 					</div>
 				</article>
+				<form id="formApplyMove" aria-labelledby="hApplyMove" onsubmit="GW.Chessboard.onApplyMoveSubmit(event)">
+					<h3 id="hApplyMove">Apply Move</h3>
+					<label class="input-vertical">Notation<input id="txtApplyNotation" type="text" autocomplete="off" required></label>
+					<div class="footer"><button type="submit">Submit</button></div>
+				</form>
 				<article id="artHistory" aria-labelledby="hHistory">
 					<h3 id="hHistory">History</h3>
 					<div id="moveButtons">

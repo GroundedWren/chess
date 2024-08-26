@@ -186,7 +186,7 @@ body {
 						}
 
 						&[aria-pressed="true"] {
-							outline: 5px solid var(--selected-color);
+							outline: 5px solid var(--selected-color) !important;
 							background-color: color-mix(in srgb, var(--selected-color) 8%, transparent);
 							outline-offset: -2px;
 

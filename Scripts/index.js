@@ -77,6 +77,11 @@ window.addEventListener("load", () => {
 			break;
 	}
 
+	const autoCopy = localStorage.getItem("autoCopy");
+	if(autoCopy === "true") {
+		document.getElementById("cbxAutoCopy").checked = true;
+	}
+
 	GW.Chessboard.LoadSave.reloadSavesList();
 	GW.Chessboard.LoadSave.newGame();
 });

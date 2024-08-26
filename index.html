@@ -40,8 +40,8 @@
 	</div>
 	<div id="mainHeaderRight">
 		<details>
-			<summary id="sumDisplay">Display</summary>
-			<aside id="asiDisplay" aria-labelledby="sumDisplay" role="group">
+			<summary id="sumSettings">Settings</summary>
+			<aside id="asiSettings" aria-labelledby="sumSettings" role="group">
 				<label class="text-after">
 					<input id="cbxDarkMode" type="checkbox" oninput="localStorage.setItem('theme', event.target.checked ? 'dark' : 'light')">
 					Dark mode
@@ -49,6 +49,10 @@
 				<label class="text-after">
 					<input id="cbxVertLayout" type="checkbox">
 					Vertical layout
+				</label>
+				<label class="text-after">
+					<input id="cbxAutoCopy" type="checkbox" oninput="localStorage.setItem('autoCopy', event.target.checked ? 'true' : 'false')">
+					Copy new moves to clipboard
 				</label>
 			</aside>
 		</details>
@@ -311,7 +315,12 @@
 							<gw-icon iconKey="forward-step" title="Next move"></gw-icon>
 						</button>
 					</div>
-					<div id="divCurMove"></div>
+					<div id="divCurMoveContainer">
+						<div id="divCurMove"></div>
+						<button onclick="GW.Chessboard.writeToClipboard(document.getElementById('divCurMove').innerText)">
+							<gw-icon title="Copy move notation" iconKey="copy"></gw-icon>
+						</button>
+					</div>
 					<details>
 						<summary>List</summary>
 						<ol id="olMoves" start="0" reversed>

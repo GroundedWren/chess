@@ -80,7 +80,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		ns.List.push(newSnap);
 
 		GW.Chessboard.Data.Moves = GW.Chessboard.Data.Moves.slice(0, curSnapIdx);
-		GW.Chessboard.Data.Moves.push(GW.Chessboard.Notation.getMoveAsNotation(cellStart, move, curSnap, newSnap));
+		const moveNotation = GW.Chessboard.Notation.getMoveAsNotation(cellStart, move, curSnap, newSnap)
+		GW.Chessboard.Data.Moves.push(moveNotation);
+		if(document.getElementById("cbxAutoCopy").checked) {
+			setTimeout(() => GW.Chessboard.writeToClipboard(moveNotation), 0);
+		}
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
 	}

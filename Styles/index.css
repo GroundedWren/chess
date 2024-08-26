@@ -27,7 +27,7 @@ body {
 			
 			width: 100% !important;
 
-			#asiDisplay {
+			#asiSettings {
 				display: flex;
 				flex-direction: column;
 			}
@@ -339,9 +339,17 @@ main:has(.board-square-button[aria-pressed="true"]) {
 			align-items: center;
 			gap: 4px;
 		}
-		#divCurMove {
+		#divCurMoveContainer {
 			display: flex;
-			justify-content: center;
+			flex-direction: row;
+			align-items: baseline;
+			justify-content: flex-end;
+			gap: 4px;
+
+			#divCurMove {
+				flex-grow: 1;
+				text-align: center;
+			}
 		}
 	}
 

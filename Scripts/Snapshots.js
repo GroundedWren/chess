@@ -51,9 +51,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	}
 
 	function getSnapshot(snapshot, moveNotation, color) {
+		const {CellStart, Move} = GW.Chessboard.Notation.getNotationAsMove(moveNotation, color, snapshot);
 		const newSnap = ns.cloneSnapshot(snapshot);
-		const {CellStart, Move} = GW.Chessboard.Notation.getNotationAsMove(moveNotation, color, newSnap);
-		applyMove(newSnap, CellStart, Move); //Async is only for user input, not needed here
+		if(CellStart && Move) {
+			applyMove(newSnap, CellStart, Move); //Async is only for user input, not needed here
+		}
+		return newSnap;
 	}
 
 	ns.initiateMove = async function(cellStart, cellEnd) {

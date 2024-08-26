@@ -55,7 +55,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}${
 			move.Cell
 		}${
-			move.Promotion ? `=${new GW.Chessboard.Pieces[move.Promotion]().Abbr}` : ""
+			move.Promotion ? `=${GW.Chessboard.Pieces.getPieceAbbrFromName(move.Promotion)}` : ""
 		}${
 			causesCheck ? "+" : ""
 		}${
@@ -63,8 +63,70 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}`;
 	}
 
-	//TODO
 	ns.getNotationAsMove = function getNotationAsMove(note, color, boardSnap) {
-		return {CellStart: "", Move: {Cell: "e4", Capture: null, Promotion: null, CastleKS: null, CastleQS: null}};
+		let disNote = note.replaceAll("+", "");
+		disNote = disNote.replaceAll("#", "");
+
+		if(disNote === "0-0") {
+			return {
+				CellStart: color === "white" ? "e8" : "e1",
+				Move: {Cell: color === "white" ? "g1" : "g8", CastleKS: color === "white" ? "f1" : "f8"}
+			};
+		}
+		if(disNote === "0-0-0") {
+			return {
+				CellStart: color === "white" ? "e8" : "e1",
+				Move: {Cell: color === "white" ? "c1" : "c8", CastleKS: color === "white" ? "d1" : "d8"}
+			};
+		}
+
+		let promotion;
+		[disNote, promotion] = disNote.split("=");
+
+		const doesCapture = disNote.includes("x");
+		disNote = disNote.replaceAll("x", "");
+
+		let pieceName = GW.Chessboard.Pieces.getPieceNameFromAbbr(disNote[0]);
+		if(pieceName) {
+			disNote = disNote.substring(1);
+		}
+		else {
+			pieceName = "Pawn";
+		}
+
+		const toCell = disNote.substring(disNote.length - 2);
+		disNote = disNote.substring(0, disNote.length - 2);
+
+		let disambigFile = "";
+		let disambigRank = "";
+		if(disNote.length) {
+			disambigFile = disNote[0];
+		}
+		if(disNote.length === 2) {
+			disambigRank = disNote[1];
+		}
+
+		const movingPiece = Object.values(boardSnap).find(
+			piece => piece.Color === color
+				&& (!disambigFile || piece.File === disambigFile)
+				&& (!disambigRank || piece.Rank === disambigRank)
+				&& piece.Name === pieceName
+				&& piece.isValidMove(boardSnap, toCell[0], toCell[1])
+		);
+
+		if(!movingPiece) {
+			alert(`Invalid move: ${note}`);
+			return {};
+		}
+
+		let capture = null;
+		if(doesCapture) {
+			capture = movingPiece.getMoves(boardSnap).find(move => move.Cell === toCell).Capture;
+		}
+
+		return {
+			CellStart: `${movingPiece.File}${movingPiece.Rank}`,
+			Move: {Cell: toCell, Capture: capture, Promotion: GW.Chessboard.Pieces.getPieceNameFromAbbr(promotion)}
+		};
 	}
 }) (window.GW.Chessboard.Notation = window.GW.Chessboard.Notation || {});

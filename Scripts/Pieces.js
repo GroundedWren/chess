@@ -31,6 +31,36 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		)
 	}
 
+	ns.getPieceAbbrFromName = function getPieceAbbrFromName(name) {
+		if(ns[name]) {
+			return new ns[name]().Abbr;
+		}
+		return "";
+	}
+
+	ns.getPieceNameFromAbbr = function getPieceNameFromAbbr(abbr) {
+		switch(abbr) {
+			case "": {
+				return "Pawn";
+			}
+			case "R": {
+				return "Rook";
+			}
+			case "N": {
+				return "Knight";
+			}
+			case "B": {
+				return "Bishop";
+			}
+			case "Q": {
+				return "Queen";
+			}
+			case "K": {
+				return "King";
+			}
+		}
+	}
+
 	//#region Piece
 	ns.Piece = class Piece {
 		Color;

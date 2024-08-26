@@ -53,29 +53,24 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			spnMoveIdx.innerText = newText;
 		}
 
-		updateMovesList(snapshotIdx);
+		renderMovesList(snapshotIdx);
 
 		document.getElementById("divToMove").innerText = `${ns.getCurrentMovingColor()} to move`;
 	}
 
-	function updateMovesList(snapshotIdx) {
+	function renderMovesList(snapshotIdx) {
 		const olMoves = document.getElementById("olMoves");
+		olMoves.innerHTML = null;
 
-		if(snapshotIdx >= olMoves.children.length) {
-			olMoves.insertAdjacentHTML("afterbegin", "<li></li>");
-			olMoves.setAttribute("start", olMoves.children.length - 1);
-		}
+		olMoves.innerHTML = GW.Chessboard.Data.Moves.slice().reverse().map(
+			move => `<li>${move}</li>` //TODO pretty this up
+		).join("");
+		olMoves.insertAdjacentHTML("beforeend", "<li>Initial board</li>");
 
 		const liCur = olMoves.children[olMoves.children.length - snapshotIdx - 1];
-		liCur.innerHTML = `${snapshotIdx
-			? GW.Chessboard.Data.Moves[snapshotIdx - 1]
-			: "Initial board"
-		}`; //TODO pretty this up
 		document.getElementById("divCurMove").innerHTML = liCur.innerHTML;
 
-		for(let i = GW.Chessboard.Data.Moves.length; i < olMoves.children.length - 1; i++) {
-			olMoves.children[0].remove();
-		}
+		olMoves.setAttribute("start", olMoves.children.length - 1);
 
 		const gwShortsBody = document.getElementById("gwShortsBody");
 		if(snapshotIdx) {

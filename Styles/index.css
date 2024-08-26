@@ -156,8 +156,6 @@ body {
 					> span {
 						writing-mode: vertical-lr;
 						display: inline-block;
-						transform: rotate(180deg);
-						-webkit-transform: initial;
 					}
 				}
 

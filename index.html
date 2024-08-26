@@ -51,6 +51,10 @@
 					Vertical layout
 				</label>
 				<label class="text-after">
+					<input id="cbxAutoSave" type="checkbox" oninput="localStorage.setItem('autoSave', event.target.checked ? 'true' : 'false')">
+					Auto save to local
+				</label>
+				<label class="text-after">
 					<input id="cbxAutoCopy" type="checkbox" oninput="localStorage.setItem('autoCopy', event.target.checked ? 'true' : 'false')">
 					Copy new moves to clipboard
 				</label>

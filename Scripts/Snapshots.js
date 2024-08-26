@@ -85,6 +85,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
 
+		if(document.getElementById("cbxAutoSave").checked && GW.Chessboard.LoadSave.LocalSaveName) {
+			GW.Chessboard.LoadSave.saveToLocal(GW.Chessboard.LoadSave.LocalSaveName)
+			setTimeout(() => GW.Controls.Toaster.showToast("Auto saved"), 10);
+		}
+
 		return true;
 	}
 
@@ -113,6 +118,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		GW.Chessboard.Data.Moves.push(moveNotation);
 		if(document.getElementById("cbxAutoCopy").checked) {
 			setTimeout(() => GW.Chessboard.writeToClipboard(moveNotation), 0);
+		}
+		if(document.getElementById("cbxAutoSave").checked && GW.Chessboard.LoadSave.LocalSaveName) {
+			GW.Chessboard.LoadSave.saveToLocal(GW.Chessboard.LoadSave.LocalSaveName)
+			setTimeout(() => GW.Controls.Toaster.showToast("Auto saved"), 10);
 		}
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);

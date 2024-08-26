@@ -86,6 +86,11 @@ window.addEventListener("load", () => {
 			break;
 	}
 
+	const autoSave = localStorage.getItem("autoSave");
+	if(autoSave === "true") {
+		document.getElementById("cbxAutoSave").checked = true;
+	}
+
 	const autoCopy = localStorage.getItem("autoCopy");
 	if(autoCopy === "true") {
 		document.getElementById("cbxAutoCopy").checked = true;

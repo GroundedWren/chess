@@ -6,6 +6,8 @@
 window.GW = window.GW || {};
 window.GW.Chessboard = window.GW.Chessboard || {};
 (function LoadSave(ns) {
+	ns.LocalSaveName = null;
+	
 	ns.onLoad = async (event) => {
 		event.preventDefault();
 
@@ -35,13 +37,17 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		switch(event.target.elements["saveMode"].value) {
 			case "new":
 				const txtSaveName = document.getElementById("txtSaveName");
-				saveToLocal(txtSaveName.value);
+				ns.LocalSaveName = txtSaveName.value;
+				ns.saveToLocal(ns.LocalSaveName);
+
 				txtSaveName.value = "";
 				event.target.elements["saveMode"].value = "existing";
 				ns.onSaveModeChange(undefined, event.target);
+				document.getElementById("selSaveExisting").value = ns.LocalSaveName;
 				break;
 			case "existing":
-				saveToLocal(document.getElementById("selSaveExisting").value);
+				ns.LocalSaveName = document.getElementById("selSaveExisting").value;
+				ns.saveToLocal(ns.LocalSaveName);
 				break;
 			case "download":
 				saveToFile();
@@ -62,7 +68,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		GW.Chessboard.Rendering.setSnapshot(0);
 	};
 
-	function saveToLocal(gameName) {
+	ns.saveToLocal = function saveToLocal(gameName) {
 		beforeSave(gameName);
 		if(!GW.Chessboard.SavesList.includes(gameName)) {
 			GW.Chessboard.SavesList.unshift(gameName);

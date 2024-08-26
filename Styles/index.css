@@ -157,6 +157,7 @@ body {
 						writing-mode: vertical-lr;
 						display: inline-block;
 						transform: rotate(180deg);
+						-webkit-transform: initial;
 					}
 				}
 
@@ -277,7 +278,7 @@ body {
 
 		:has(#tblBoard:not(:focus-within)) {
 			#asiTblBoard > * {
-				display: none;
+				visibility: hidden;
 			}
 		}
 		#asiTblBoard {

@@ -86,17 +86,16 @@ window.addEventListener("load", () => {
 			break;
 	}
 
-	const autoSave = localStorage.getItem("autoSave");
+	const autoSave = localStorage.getItem("auto-save");
 	if(autoSave === "true") {
 		document.getElementById("cbxAutoSave").checked = true;
 	}
 
-	const autoCopy = localStorage.getItem("autoCopy");
+	const autoCopy = localStorage.getItem("auto-copy");
 	if(autoCopy === "true") {
 		document.getElementById("cbxAutoCopy").checked = true;
 	}
 
-	GW.Chessboard.LoadSave.reloadSavesList();
-	GW.Chessboard.LoadSave.newGame();
+	GW.Chessboard.LoadSave.configureInitialGame();
 });
 window.addEventListener("beforeunload", (event) => {});

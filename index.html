@@ -51,11 +51,11 @@
 					Vertical layout
 				</label>
 				<label class="text-after">
-					<input id="cbxAutoSave" type="checkbox" oninput="localStorage.setItem('autoSave', event.target.checked ? 'true' : 'false')">
+					<input id="cbxAutoSave" type="checkbox" oninput="localStorage.setItem('auto-save', event.target.checked ? 'true' : 'false')">
 					Auto save to local
 				</label>
 				<label class="text-after">
-					<input id="cbxAutoCopy" type="checkbox" oninput="localStorage.setItem('autoCopy', event.target.checked ? 'true' : 'false')">
+					<input id="cbxAutoCopy" type="checkbox" oninput="localStorage.setItem('auto-copy', event.target.checked ? 'true' : 'false')">
 					Copy new moves to clipboard
 				</label>
 			</aside>
@@ -131,7 +131,7 @@
 							<span id="spnNewSave">New save</span>
 						</label>
 						<label class="text-after">
-							<input
+							<input id="radSaveModeExisting"
 								type="radio"
 								name="saveMode"
 								value="existing"

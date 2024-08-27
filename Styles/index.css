@@ -156,6 +156,8 @@ body {
 					> span {
 						writing-mode: vertical-lr;
 						display: inline-block;
+						min-height: 150px;
+						transform: rotate(180deg);
 					}
 				}
 

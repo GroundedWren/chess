@@ -74,11 +74,11 @@ a {
 }
 
 *[tabindex="-1"]:focus {
-outline-style: dashed !important;
+	outline-style: dashed !important;
 }
 
 summary, label, input:is([type="checkbox"], [type="radio"]) {
-cursor: pointer;
+	cursor: pointer;
 }
 
 table, th, td {
@@ -187,6 +187,9 @@ summary {
 
 	&::marker {
 		content: "";
+	}
+	&::-webkit-details-marker {
+		display: none;
 	}
 	&::before, &::after {
 		content: "";

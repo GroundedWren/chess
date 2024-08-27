@@ -13,17 +13,31 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 	ns.CurrentSnapshotIdx = 0;
 
+	/**
+	 * @returns The color due to move at the current snapshot
+	 */
 	ns.getCurrentMovingColor = function getCurrentMovingColor() {
 		return ns.CurrentSnapshotIdx % 2 == 0 ? "white" : "black";
 	}
 
+	/**
+	 * Renders the previous snapshot
+	 */
 	ns.prevSnapshot = () => {
 		ns.setSnapshot(snapshotIdx - 1);
 	}
+
+	/**
+	 * Renders the next snapshot
+	 */
 	ns.nextSnapshot = () => {
 		ns.setSnapshot(snapshotIdx + 1);
 	}
 
+	/**
+	 * Renders a specified snapshot
+	 * @param {number} snapshotIdx Index of the snapshot to render
+	 */
 	ns.setSnapshot = (snapshotIdx) => {
 		ns.CurrentSnapshotIdx = snapshotIdx;
 		const snapshot = GW.Chessboard.Snapshots.List[snapshotIdx];
@@ -202,6 +216,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		document.getElementById("tblBoard").setAttribute("tabindex", "0");
 	}
 
+	/**
+	 * Handler for when the board gets focus
+	 * @param {FocusEvent} event focus in
+	 */
 	ns.tblBoardOnFocusIn = (event) => {
 		const tblBoard = document.getElementById("tblBoard");
 		const tbodyBoard = document.getElementById("tbodyBoard");
@@ -218,6 +236,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 	}
 
+	/**
+	 * Performs keyboard navigation in the board
+	 * @param {KeyboardEvent} event Navigation event
+	 */
 	ns.tblBoardOnKbdNav = (event) => {
 		const curCellBtn = tbodyBoard.querySelector(`[tabindex="0"]`);
 		const curCell = curCellBtn.parentElement;
@@ -268,6 +290,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		focusSquare(curCellBtn, targetCell.querySelector("button"));
 	}
 
+	/**
+	 * Moves system focus to a specified cell
+	 * @param {string} location Cell
+	 */
 	ns.moveFocusTo = (location) => {
 		focusSquare(
 			document.getElementById("tbodyBoard").querySelector(`button[aria-pressed="true"]`),
@@ -284,6 +310,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		document.getElementById("tblBoard").removeAttribute("tabindex");
 	}
 
+	/**
+	 * Handling when a board square is clicked
+	 * @param {string} file Clicked file location
+	 * @param {string} rank Clicked rank location
+	 */
 	ns.onSquareClicked = (file, rank) => {
 		const tbodyBoard = document.getElementById("tbodyBoard");
 		const prevSelSquareBtn = tbodyBoard.querySelector(`button[aria-pressed="true"]`);
@@ -352,6 +383,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 	}
 
+	/**
+	 * Removes all selection from the board
+	 * @param {Event} _event 
+	 */
 	ns.clearSelection = (_event) => {
 		const tbodyBoard = document.getElementById("tbodyBoard");
 		if(!tbodyBoard.querySelector(`button[aria-pressed="true"]:focus-within`)) {
@@ -361,6 +396,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		ns.cleanSelectionBasedState();
 	}
 
+	/**
+	 * Clears out DOM state from the board based on selection
+	 */
 	ns.cleanSelectionBasedState = function cleanSelectionBasedState() {
 		document.getElementById("tbodyBoard").querySelectorAll("td").forEach(tdCell => {
 			tdCell.classList.remove("movable");
@@ -376,6 +414,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		});
 	}
 
+	/**
+	 * Applies DOM state for the pieces that can move to the specified square
+	 * @param {string} file For file
+	 * @param {string} rank For rank
+	 */
 	ns.calloutPiecesMovable = function calloutPiecesMovable(file, rank) {
 		const snapshot = GW.Chessboard.Snapshots.List[ns.CurrentSnapshotIdx];
 		Object.keys(snapshot).forEach(snapCell => {
@@ -389,6 +432,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		});
 	}
 
+	/**
+	 * Applies DOM state for the pieces threatening the specified cell
+	 * @param {string} file For file
+	 * @param {string} rank For rank
+	 */
 	ns.calloutPiecesThreatening = function calloutPiecesThreatening(file, rank) {
 		const snapshot = GW.Chessboard.Snapshots.List[ns.CurrentSnapshotIdx];
 		Object.keys(snapshot).forEach(snapCell => {
@@ -402,6 +450,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		});
 	}
 
+	/**
+	 * Applies DOM state for the squres the specified square's piece can travel to
+	 * @param {string} file For file
+	 * @param {string} rank For rank
+	 * @returns 
+	 */
 	ns.calloutPiecePath = function calloutPiecePath(file, rank) {
 		const snapshot = GW.Chessboard.Snapshots.List[ns.CurrentSnapshotIdx];
 		const piece = snapshot[`${file}${rank}`];

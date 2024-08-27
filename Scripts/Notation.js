@@ -6,6 +6,14 @@
 window.GW = window.GW || {};
 window.GW.Chessboard = window.GW.Chessboard || {};
 (function Notation(ns) {
+	/**
+	 * Computes a described move in algebraic notation
+	 * @param {string} cellStart Location the primary piece moves from
+	 * @param {Object} move Object representing the move
+	 * @param {Object} beforeSnap Board snapshot before the move was applied
+	 * @param {Object} afterSnap Board snapshot after the move was applied
+	 * @returns Algebraic notation for the move
+	 */
 	ns.getMoveAsNotation = function getMoveAsNotation(cellStart, move, beforeSnap, afterSnap) {
 		if(move.CastleKS) {
 			return "0-0";
@@ -63,6 +71,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}`;
 	}
 
+	/**
+	 * Computes a move description based on algebraic notation
+	 * @param {string} note Algebraic notatino of the move
+	 * @param {string} color The color moving
+	 * @param {Object} boardSnap Board snapshot before the move
+	 * @returns An object consisting of a CellStart, which is the location the primary piece moves from, and Move, an object representing the move
+	 */
 	ns.getNotationAsMove = function getNotationAsMove(note, color, boardSnap) {
 		let disNote = note.replaceAll("+", "");
 		disNote = disNote.replaceAll("#", "");

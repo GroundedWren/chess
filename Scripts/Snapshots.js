@@ -6,6 +6,9 @@
 window.GW = window.GW || {};
 window.GW.Chessboard = window.GW.Chessboard || {};
 (function Snapshots(ns) {
+	/**
+	 * Builds snapshots from loaded game data
+	 */
 	ns.buildGameSnapshots = function buildGameSnapshots() {
 		ns.List = [];
 
@@ -59,6 +62,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		return newSnap;
 	}
 
+	/**
+	 * Applies a user-initiated move based on algebraic notation
+	 * @param {string} note Algebraic notation
+	 * @returns Whether the move succeeded
+	 */
 	ns.initiateNotationMove = function(note) {
 		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
 		const boardSnap = ns.List[curSnapIdx];
@@ -93,6 +101,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		return true;
 	}
 
+	/**
+	 * Applies a user initiated move
+	 * @param {string} cellStart Move primary piece beginning
+	 * @param {string} cellEnd Move primary piece endingending
+	 * @returns a promise which resolves when the move has applied
+	 */
 	ns.initiateMove = async function(cellStart, cellEnd) {
 		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
 		const curSnap = ns.List[curSnapIdx];
@@ -163,6 +177,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		);
 	}
 
+	/**
+	 * Applies a move to the snapshot
+	 * @param {Object} snapshot Board snapshot
+	 * @param {string} cellStart Primary piece starting point
+	 * @param {Object} move Move description
+	 */
 	ns.applyMove = function applyMove(snapshot, cellStart, move) {
 		const piece = snapshot[cellStart];
 		if(!piece) {
@@ -186,6 +206,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 	}
 
+	/**
+	 * Duplicates a board
+	 * @param {Object} snapshot Board snapshot
+	 * @returns A new board snapshot matching the input
+	 */
 	ns.cloneSnapshot = function(snapshot) {
 		const cloneSnapshot = {};
 		for(let cell of Object.keys(snapshot)) {

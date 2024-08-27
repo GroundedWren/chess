@@ -6,6 +6,9 @@
 window.GW = window.GW || {};
 window.GW.Chessboard = window.GW.Chessboard || {};
 (function LoadSave(ns) {
+	/**
+	 * Loads the initial game
+	 */
 	ns.configureInitialGame = () => {
 		reloadSavesList();
 
@@ -26,6 +29,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 	};
 	
+	/**
+	 * Handler for form submits to load a game
+	 * @param {SubmitEvent} event 
+	 */
 	ns.onLoad = async (event) => {
 		event.preventDefault();
 
@@ -54,6 +61,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		GW.Chessboard.Snapshots.buildGameSnapshots();
 		GW.Chessboard.Rendering.setSnapshot(GW.Chessboard.Snapshots.List.length - 1);
 	};
+
+	/**
+	 * Handler for form submits to save a game
+	 * @param {SubmitEvent} event 
+	 */
 	ns.onSave = (event) => {
 		event.preventDefault();
 
@@ -81,7 +93,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			localStorage.setItem("last-save-name", saveName)
 		}
 	};
-
+	
+	/**
+	 * Handler for form submits to begin a new game
+	 * @param {SubmitEvent} event 
+	 */
 	ns.newGame = (event) => {
 		event?.preventDefault();
 		
@@ -95,6 +111,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		GW.Chessboard.Rendering.setSnapshot(0);
 	};
 
+	/**
+	 * Saves the game data to local storage
+	 * @param {string} gameName Name to associate with the save
+	 */
 	ns.saveToLocal = function saveToLocal(gameName) {
 		beforeSave(gameName);
 		if(!GW.Chessboard.SavesList.includes(gameName)) {
@@ -160,6 +180,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 	};
 
+	/**
+	 * Handler for when the load mode changes
+	 * @param {Event} event Change event
+	 */
 	ns.onLoadModeChange = (event) => {
 		const selLoadLocal = document.getElementById("selLoadLocal");
 
@@ -170,6 +194,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			selLoadLocal.removeAttribute("required");
 		}
 	};
+
+	/**
+	 * Handler for when the save mode changes
+	 * @param {Event | undefined} event Change event
+	 * @param {HTMLElement | undefined} formEl form element controlling the current selection
+	 */
 	ns.onSaveModeChange = (event, formEl) => {
 		const txtSaveName = document.getElementById("txtSaveName");
 		const selSaveExisting = document.getElementById("selSaveExisting");
@@ -190,6 +220,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 	};
 
+	/**
+	 * Handler for when the save name is changed
+	 * @param {InputEvent} _event 
+	 */
 	ns.onTxtSaveNameInput = (_event) => {
 		const txtSaveName = document.getElementById("txtSaveName");
 		const nameVal = txtSaveName.value;

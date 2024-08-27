@@ -11,6 +11,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	const RANK_ORDER_INDEX = GW.Chessboard.RANK_ORDER_INDEX;
 	const FILE_ORDER_INDEX = GW.Chessboard.FILE_ORDER_INDEX;
 
+	/**
+	 * Determines whether a team is in check
+	 * @param {Object} boardSnap Snapshot of the current board
+	 * @param {string} color Team color to check
+	 * @returns boolean
+	 */
 	ns.isTeamInCheck = function isTeamInCheck(boardSnap, color) {
 		const king = Object.values(boardSnap).filter(
 			piece => piece.Name === "King" && piece.Color === color
@@ -25,12 +31,23 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}, false);
 	}
 
+	/**
+	 * Determines whether a team is in checkmate
+	 * @param {Object} boardSnap Snapshot of the current board
+	 * @param {string} color Team color to check
+	 * @returns boolean
+	 */
 	ns.isTeamInCheckmate = function isTeamInCheckmate(boardSnap, color) {
 		return !Object.values(boardSnap).find(
 			piece => piece.Color === color && piece.getMoves(boardSnap).length
 		)
 	}
 
+	/**
+	 * Turns a piece name into an abbreviation
+	 * @param {string} name Piece name
+	 * @returns string
+	 */
 	ns.getPieceAbbrFromName = function getPieceAbbrFromName(name) {
 		if(ns[name]) {
 			return new ns[name]().Abbr;
@@ -38,6 +55,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		return "";
 	}
 
+	/**
+	 * Turns a piece abbreviation into a full name
+	 * @param {string} abbr Piece abbreviation
+	 * @returns string
+	 */
 	ns.getPieceNameFromAbbr = function getPieceNameFromAbbr(abbr) {
 		switch(abbr) {
 			case "": {
@@ -71,7 +93,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		Rank;
 		MoveCount;
 
-		DisableCheckCheck;
+		DisableCheckCheck; //Whether to temporarily exempt this piece from in-check calculations
+
+		/**
+		 * Creates the piece
+		 * @param {string} color Team color
+		 * @param {string} startFile File the piece was placed onto the board
+		 * @param {string} startRank Rank the piece was placed onto the board
+		 */
 		constructor(color, startFile, startRank) {
 			this.Color = color;
 			this.StartFile = startFile;
@@ -85,18 +114,37 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			this.DisableCheckCheck = false;
 		}
 
+		/**
+		 * Full name of the piece
+		 */
 		get Name() {
 			throw new Error("Name is not implemented");
 		}
+
+		/**
+		 * Piece abbreviation for algebraic notation
+		 */
 		get Abbr() {
 			throw new Error("Abbr is not implemented");
 		}
+
+		/**
+		 * Key to a <gw-icon> for this piece
+		 */
 		get IconKey() {
 			throw new Error("IconKey is not implemented");
 		}
+
+		/**
+		 * CSS class to determine which way the icon will face
+		 */
 		get FlipClass() {
 			return "";
 		}
+
+		/**
+		 * String of a <gw-icon> element for this piece
+		 */
 		get Icon() {
 			return `<gw-icon
 				iconKey="${this.IconKey}"
@@ -106,6 +154,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			></gw-icon>`
 		}
 
+		/**
+		 * Duplicates the piece
+		 * @returns Piece
+		 */
 		clone() {
 			const clone = new ns[this.Name](this.Color, this.StartFile, this.StartRank);
 			clone.File = this.File;
@@ -114,16 +166,33 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return clone;
 		}
 
+		/**
+		 * Updates the piece's understanding of where it is on the board
+		 * @param {string} file 
+		 * @param {string} rank 
+		 */
 		moveTo(file, rank) {
 			this.Rank = rank;
 			this.File = file;
 			this.MoveCount++;
 		}
 
+		/**
+		 * Computes all legal moves
+		 * @param {Object} _boardSnap Board snapshot
+		 * @returns Array of moves
+		 */
 		getMoves(_boardSnap) {
 			throw new Error("getMoves is not implemented");
 		}
 
+		/**
+		 * Determines whether a specified move is legal
+		 * @param {Object} boardSnap Board snapshot
+		 * @param {string} file Test destination cell file
+		 * @param {string} rank Test destination cell rank
+		 * @returns boolean
+		 */
 		isValidMove(boardSnap, file, rank) {
 			const move = this.getMoves(boardSnap).filter(
 				move => move.Cell[0] === file && move.Cell[1] === rank
@@ -132,6 +201,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return !!move;
 		}
 
+		/**
+		 * Determines whether the piece at the specified cell can be captured
+		 * @param {Object} boardSnap Board snapshot
+		 * @param {string} file Test target cell file
+		 * @param {string} rank Test target cell rank
+		 * @returns boolean
+		 */
 		canCapture(boardSnap, file, rank) {
 			const move = this.getMoves(boardSnap).filter(
 				move => move.Capture && move.Capture[0] === file && move.Capture[1] === rank
@@ -140,6 +216,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return !!move;
 		}
 
+		/**
+		 * Gets all valid moves in a specified line
+		 * @param {Object} boardSnap Board snapshot
+		 * @param {number} fileStep Delta x
+		 * @param {number} rankStep Delta y
+		 * @returns Array of moves
+		 */
 		getStandardLineMoves(boardSnap, fileStep, rankStep) {
 			const moves = [];
 
@@ -165,6 +248,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return moves;
 		}
 
+		/**
+		 * Given the array of pieces found trying to move to the destination, is the destination a valid move
+		 * @param {Object} boardSnap Board snapshot
+		 * @param {Array} pieces Pieces found along the checked line
+		 * @param {string} file Destination file
+		 * @param {string} rank Destination rank
+		 * @returns boolean
+		 */
 		isStandardValidLineMove(boardSnap, pieces, file, rank) {
 			const checkCell = `${file}${rank}`;
 
@@ -178,6 +269,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return false;
 		}
 
+		/**
+		 * Filters down an array of proposed moves to those that don't cause check for the piece's team
+		 * @param {Object} boardSnap Board snapshot
+		 * @param {Array} moves Proposed moves
+		 * @returns Array of valid moves
+		 */
 		filterByTeamCheck(boardSnap, moves) {
 			if(this.DisableCheckCheck) {
 				return moves;
@@ -185,6 +282,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return moves.filter(move => !this.moveCausesTeamCheck(boardSnap, move));
 		}
 
+		/**
+		 * Determines whether a move will place the piece's team in check
+		 * @param {Object} boardSnap Board snapshot
+		 * @param {Object} move Move description
+		 * @returns boolean
+		 */
 		moveCausesTeamCheck(boardSnap, move) {
 			if(this.DisableCheckCheck) {
 				return false;

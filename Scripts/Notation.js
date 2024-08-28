@@ -91,7 +91,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		if(disNote === "0-0-0") {
 			return {
 				CellStart: color === "white" ? "e8" : "e1",
-				Move: {Cell: color === "white" ? "c1" : "c8", CastleKS: color === "white" ? "d1" : "d8"}
+				Move: {Cell: color === "white" ? "c1" : "c8", CastleQS: color === "white" ? "d1" : "d8"}
 			};
 		}
 

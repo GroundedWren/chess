@@ -80,7 +80,10 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			let moveMarkup = "Initial board";
 			if(i > -1) {
 				const move = GW.Chessboard.Data.Moves[i];
-				const pieceName = GW.Chessboard.Pieces.getPieceNameFromAbbr(move[0]) || "Pawn";
+				let pieceName = GW.Chessboard.Pieces.getPieceNameFromAbbr(move[0]) || "Pawn";
+				if(move[0] === "0") {
+					pieceName = "King";
+				}
 				const piece = new GW.Chessboard.Pieces[pieceName](i % 2 == 0 ? "white" : "black");
 				moveMarkup = `${piece.Icon}${move}`;
 			}

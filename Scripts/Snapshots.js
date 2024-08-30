@@ -69,18 +69,19 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	 */
 	ns.initiateNotationMove = function(note) {
 		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
-		const boardSnap = ns.List[curSnapIdx];
+		const curSnap = ns.List[curSnapIdx];
 		
 		const {CellStart, Move} = GW.Chessboard.Notation.getNotationAsMove(
 			note,
 			GW.Chessboard.Rendering.getCurrentMovingColor(),
-			boardSnap
+			curSnap
 		);
 		if(!CellStart || !Move) {
 			return false;
 		}
 
-		const newSnap = ns.cloneSnapshot(boardSnap);
+		ns.List = ns.List.slice(0, curSnapIdx + 1);
+		const newSnap = ns.cloneSnapshot(curSnap);
 		ns.applyMove(
 			newSnap,
 			CellStart,

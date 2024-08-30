@@ -336,7 +336,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			updateSelectionInfo(file, rank);
 		}
 		else if(isClickedBtnMove) {
-			GW.Chessboard.Snapshots.initiateMove(
+			GW.Chessboard.Snapshots.initiateClickMove(
 				prevSelSquareBtn.id.replace("button-", ""),
 				`${file}${rank}`
 			).then(() => {

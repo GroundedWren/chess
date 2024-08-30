@@ -619,7 +619,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				if(!this.moveCausesTeamCheck(boardSnap, {Cell: castleStep1, Capture: null})
 					&& !this.moveCausesTeamCheck(boardSnap, {Cell: castleStep2, Capture: null})
 					&& !boardSnap[castleStep1]
-					&& !boardSnap[castleStep2]) {
+					&& !boardSnap[castleStep2]
+				) {
 						moves.push({Cell: castleStep2, Capture: null, CastleKS: cellKingSide});
 				}
 			}
@@ -633,10 +634,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			) {
 				const castleStep1 = `${GW.Chessboard.getFile(this.File, -1)}${this.Rank}`;
 				const castleStep2 = `${GW.Chessboard.getFile(this.File, -2)}${this.Rank}`;
+				const castleStep3 = `${GW.Chessboard.getFile(this.File, -3)}${this.Rank}`;
 				if(!this.moveCausesTeamCheck(boardSnap, {Cell: castleStep1, Capture: null})
 					&& !this.moveCausesTeamCheck(boardSnap, {Cell: castleStep2, Capture: null})
 					&& !boardSnap[castleStep1]
-					&& !boardSnap[castleStep2]) {
+					&& !boardSnap[castleStep2]
+					&& !boardSnap[castleStep3]
+				) {
 						moves.push({Cell: castleStep2, Capture: null, CastleQS: cellQueenSide});
 				}
 			}

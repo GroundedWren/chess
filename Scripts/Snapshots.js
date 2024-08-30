@@ -68,8 +68,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	 * @returns Whether the move succeeded
 	 */
 	ns.initiateNotationMove = function(note) {
-		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
-		const curSnap = ns.List[curSnapIdx];
+		const curSnap = ns.List[GW.Chessboard.Rendering.CurrentSnapshotIdx];
 		
 		const {CellStart, Move} = GW.Chessboard.Notation.getNotationAsMove(
 			note,
@@ -80,26 +79,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return false;
 		}
 
-		ns.List = ns.List.slice(0, curSnapIdx + 1);
-		const newSnap = ns.cloneSnapshot(curSnap);
-		ns.applyMove(
-			newSnap,
-			CellStart,
-			Move
-		);
-		ns.List.push(newSnap);
-
-		GW.Chessboard.Data.Moves = GW.Chessboard.Data.Moves.slice(0, curSnapIdx);
-		GW.Chessboard.Data.Moves.push(note);
-
-		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
-
-		if(document.getElementById("cbxAutoSave").checked && GW.Chessboard.LoadSave.LocalSaveName) {
-			GW.Chessboard.LoadSave.saveToLocal(GW.Chessboard.LoadSave.LocalSaveName)
-			setTimeout(() => GW.Controls.Toaster.showToast("Auto saved"), 10);
-		}
-
-		return true;
+		return initiateMove(CellStart, Move, curSnap);
 	}
 
 	/**
@@ -108,9 +88,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	 * @param {string} cellEnd Move primary piece endingending
 	 * @returns a promise which resolves when the move has applied
 	 */
-	ns.initiateMove = async function(cellStart, cellEnd) {
-		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
-		const curSnap = ns.List[curSnapIdx];
+	ns.initiateClickMove = async function(cellStart, cellEnd) {
+		const curSnap = ns.List[GW.Chessboard.Rendering.CurrentSnapshotIdx];
 
 		const startPiece = curSnap[cellStart];
 		if(!startPiece) {
@@ -122,6 +101,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			debugger; //No??
 			return;
 		}
+
+		return initiateMove(cellStart, move, curSnap);
+	}
+
+	async function initiateMove(cellStart, move, curSnap) {
+		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
 
 		ns.List = ns.List.slice(0, curSnapIdx + 1);
 		const newSnap = ns.cloneSnapshot(curSnap);

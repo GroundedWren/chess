@@ -84,14 +84,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 		if(disNote === "0-0") {
 			return {
-				CellStart: color === "white" ? "e8" : "e1",
-				Move: {Cell: color === "white" ? "g1" : "g8", CastleKS: color === "white" ? "f1" : "f8"}
+				CellStart: color === "white" ? "e1" : "e8",
+				Move: {Cell: color === "white" ? "g1" : "g8", CastleKS: color === "white" ? "h1" : "h8"}
 			};
 		}
 		if(disNote === "0-0-0") {
 			return {
-				CellStart: color === "white" ? "e8" : "e1",
-				Move: {Cell: color === "white" ? "c1" : "c8", CastleQS: color === "white" ? "d1" : "d8"}
+				CellStart: color === "white" ? "e1" : "e8",
+				Move: {Cell: color === "white" ? "c1" : "c8", CastleQS: color === "white" ? "a1" : "a8"}
 			};
 		}
 

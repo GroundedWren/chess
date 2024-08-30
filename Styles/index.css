@@ -345,6 +345,11 @@ main:has(.board-square-button[aria-pressed="true"]) {
 			flex-direction: row;
 			align-items: center;
 			gap: 4px;
+
+			button {
+				display: flex;
+				align-items: center;
+			}
 		}
 		#divCurMoveContainer {
 			display: flex;

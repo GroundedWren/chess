@@ -428,6 +428,10 @@ form, article {
 		flex-direction: row;
 		justify-content: flex-end;
 		gap: 5px;
+
+		&.spread {
+			justify-content: space-between;
+		}
 	}
 
 	article {

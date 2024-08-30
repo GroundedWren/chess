@@ -75,6 +75,16 @@ window.GW = window.GW || {};
 	};
 
 	/**
+	 * Pasts the clipboard's value into the notation field
+	 * @param {Event} event button click event
+	 */
+	ns.pasteToNotation = async (event) => {
+		const txtApplyNotation = document.getElementById("txtApplyNotation");
+		const note = await navigator.clipboard.readText();
+		txtApplyNotation.value = note;
+	};
+
+	/**
 	 * Handler for submitting the apply move form
 	 * @param {SubmitEvent} event Form submit
 	 */

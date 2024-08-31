@@ -148,7 +148,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		get Icon() {
 			return `<gw-icon
 				iconKey="${this.IconKey}"
-				title="${this.Color} ${this.Name}"
+				name="${this.Color} ${this.Name}"
 				iconClasses="${this.Color} ${this.FlipClass}"
 				class="piece"
 			></gw-icon>`

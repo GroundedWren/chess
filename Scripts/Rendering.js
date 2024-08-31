@@ -156,49 +156,49 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 						<gw-icon
 							class="earmark movable"
 							iconKey="person-running"
-							title="Can move to the selected square"
+							name="Can move to the selected square"
 						></gw-icon>
 					</span>
 					<span id=spnThreatening-${file}${rank} class="icon-span">
 						<gw-icon
 							class="earmark threatening"
 							iconKey="bolt"
-							title="Can capture the selected square's piece"
+							name="Can capture the selected square's piece"
 						></gw-icon>
 					</span>
 					<span id=spnMoveToAble-${file}${rank} class="icon-span">
 						<gw-icon
 							class="earmark move-to-able"
 							iconKey="forward-step"
-							title="The selected square's piece can move here"
+							name="The selected square's piece can move here"
 						></gw-icon>
 					</span>
 					<span id=spnThreatened-${file}${rank} class="icon-span">
 						<gw-icon
 							class="earmark threatened"
 							iconKey="skull"
-							title="Can be captured by the selected square's piece"
+							name="Can be captured by the selected square's piece"
 						></gw-icon>
 					</span>
 					<span id=spnDoesCapture-${file}${rank} class="icon-span">
 						<gw-icon
 							class="earmark does-capture"
 							iconKey="hand-fist"
-							title="Moving the selected square's piece here performs a capture"
+							name="Moving the selected square's piece here performs a capture"
 						></gw-icon>
 					</span>
 					<span id=spnInCheck-${file}${rank} class="icon-span">
 						<gw-icon
 							class="earmark in-check"
 							iconKey="triangle-exclamation"
-							title="In check"
+							name="In check"
 						></gw-icon>
 					</span>
 					<span id=spnDoesCastle-${file}${rank} class="icon-span">
 						<gw-icon
 							class="earmark does-castle"
 							iconKey="chess-rook"
-							title="The selected square's piece moving here causes castling"
+							name="The selected square's piece moving here causes castling"
 						></gw-icon>
 					</span>
 				</button>

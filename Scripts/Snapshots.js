@@ -119,8 +119,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		if(document.getElementById("cbxAutoCopy").checked) {
 			setTimeout(() => GW.Chessboard.writeToClipboard(moveNotation), 0);
 		}
-		if(document.getElementById("cbxAutoSave").checked && GW.Chessboard.LoadSave.LocalSaveName) {
-			GW.Chessboard.LoadSave.saveToLocal(GW.Chessboard.LoadSave.LocalSaveName)
+		if(document.getElementById("cbxAutoSave").checked && localStorage.getItem("last-save-name")) {
+			GW.Chessboard.LoadSave.saveToLocal(localStorage.getItem("last-save-name"))
 			setTimeout(() => GW.Controls.Toaster.showToast("Auto saved"), 10);
 		}
 

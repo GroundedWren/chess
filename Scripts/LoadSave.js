@@ -100,6 +100,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	 */
 	ns.newGame = (event) => {
 		event?.preventDefault();
+
+		localStorage.removeItem("last-save-name");
 		
 		GW.Chessboard.Data = {
 			Name: "",

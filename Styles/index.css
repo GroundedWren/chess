@@ -30,6 +30,10 @@ body {
 			#asiSettings {
 				display: flex;
 				flex-direction: column;
+
+				> * {
+					min-height: 24px;
+				}
 			}
 		}
 
@@ -525,7 +529,7 @@ body:has(#cbxVertLayout:checked) {
 	}
 }
 
-@media(max-width: 1000px) {
+@media(max-width: 1050px) {
 	label:has(#cbxVertLayout) {
 		display: none;
 	}

@@ -79,7 +79,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return false;
 		}
 
-		return initiateMove(CellStart, Move, curSnap);
+		return initiateMove(CellStart, Move);
 	}
 
 	/**
@@ -102,11 +102,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return;
 		}
 
-		return initiateMove(cellStart, move, curSnap);
+		return initiateMove(cellStart, move);
 	}
 
-	async function initiateMove(cellStart, move, curSnap) {
+	async function initiateMove(cellStart, move) {
 		const curSnapIdx = GW.Chessboard.Rendering.CurrentSnapshotIdx;
+		const curSnap = ns.List[curSnapIdx];
+		const movingColor = GW.Chessboard.Rendering.getCurrentMovingColor();
 
 		ns.List = ns.List.slice(0, curSnapIdx + 1);
 		const newSnap = ns.cloneSnapshot(curSnap);
@@ -116,12 +118,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		GW.Chessboard.Data.Moves = GW.Chessboard.Data.Moves.slice(0, curSnapIdx);
 		const moveNotation = GW.Chessboard.Notation.getMoveAsNotation(cellStart, move, curSnap, newSnap)
 		GW.Chessboard.Data.Moves.push(moveNotation);
-		if(document.getElementById("cbxAutoCopy").checked) {
+		if(document.getElementById("selAutoCopy").value === movingColor) {
 			setTimeout(() => GW.Chessboard.writeToClipboard(moveNotation), 0);
 		}
 		if(document.getElementById("cbxAutoSave").checked && localStorage.getItem("last-save-name")) {
 			GW.Chessboard.LoadSave.saveToLocal(localStorage.getItem("last-save-name"))
-			setTimeout(() => GW.Controls.Toaster.showToast("Auto saved"), 10);
 		}
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);

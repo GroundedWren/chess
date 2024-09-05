@@ -132,10 +132,12 @@ window.addEventListener("load", () => {
 		document.getElementById("cbxAutoSave").checked = true;
 	}
 
-	const autoCopy = localStorage.getItem("auto-copy");
-	if(autoCopy === "true") {
-		document.getElementById("cbxAutoCopy").checked = true;
+	const selAutoCopy = document.getElementById("selAutoCopy");
+	let autoCopy = localStorage.getItem("auto-copy");
+	if(![...selAutoCopy.options].map(optionEl => optionEl.value).includes(autoCopy)) {
+		autoCopy = "none";
 	}
+	selAutoCopy.value = autoCopy;
 
 	GW.Chessboard.LoadSave.configureInitialGame();
 });

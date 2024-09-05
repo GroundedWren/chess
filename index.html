@@ -54,9 +54,13 @@
 					<input id="cbxAutoSave" type="checkbox" oninput="localStorage.setItem('auto-save', event.target.checked ? 'true' : 'false')">
 					Auto save to local
 				</label>
-				<label class="text-after">
-					<input id="cbxAutoCopy" type="checkbox" oninput="localStorage.setItem('auto-copy', event.target.checked ? 'true' : 'false')">
-					Copy new moves to clipboard
+				<label>
+					Auto copy moves for:
+					<select id="selAutoCopy" onchange="localStorage.setItem('auto-copy', event.target.value)">
+						<option value="none" selected>None</option>
+						<option value="white">White</option>
+						<option value="black">Black</option>
+					</select>
 				</label>
 			</aside>
 		</details>

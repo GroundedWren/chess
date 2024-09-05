@@ -205,4 +205,15 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		return cloneSnapshot;
 	}
+
+	/**
+	 * Gets the values for each color at the board state
+	 * @param {Object} snapshot Board snapshot
+	 * @returns Object of values by color
+	 */
+	ns.getScores = function(snapshot) {
+		let result = {white: 0, black: 0};
+		Object.values(snapshot).forEach(piece => result[piece.Color] += piece.Value);
+		return result;
+	}
 }) (window.GW.Chessboard.Snapshots = window.GW.Chessboard.Snapshots || {});

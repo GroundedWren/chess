@@ -136,6 +136,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 
 		/**
+		 * Piece value
+		 */
+		get Value() {
+			throw new Error("Value is not implemented");
+		}
+
+		/**
 		 * CSS class to determine which way the icon will face
 		 */
 		get FlipClass() {
@@ -313,6 +320,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		get IconKey() {
 			return "chess-pawn";
 		}
+		get Value() {
+			return 1;
+		}
 
 		moveTo(file, rank) {
 			if(Math.abs(rank - this.Rank) === 2) {
@@ -388,6 +398,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		get IconKey() {
 			return "chess-rook";
 		}
+		get Value() {
+			return 5;
+		}
 
 		getMoves(boardSnap) {
 			const moves = [];
@@ -446,6 +459,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		get FlipClass() {
 			return this.StartFile === "g" ? "invert-x" : "";
 		}
+		get Value() {
+			return 3;
+		}
 
 		getMoves(boardSnap) {
 			const moves = ns.Knight.MoveCombos.reduce((moves, moveCombo) => {
@@ -481,6 +497,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		get FlipClass() {
 			return this.StartFile === "c" ? "invert-x" : "";
+		}
+		get Value() {
+			return 3;
 		}
 
 		getMoves(boardSnap) {
@@ -537,6 +556,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		get IconKey() {
 			return "chess-queen";
 		}
+		get Value() {
+			return 9;
+		}
 
 		getMoves(boardSnap) {
 			const moves = [];
@@ -591,6 +613,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		get IconKey() {
 			return "chess-king";
+		}
+		get Value() {
+			return 0;
 		}
 
 		getMoves(boardSnap) {

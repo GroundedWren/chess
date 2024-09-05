@@ -70,6 +70,17 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		renderMovesList(snapshotIdx);
 
 		document.getElementById("divToMove").innerText = `${ns.getCurrentMovingColor()} to move`;
+
+		document.getElementById("spnScore").innerText = getBoardScoreText(snapshot);
+	}
+
+	function getBoardScoreText(snapshot) {
+		const {white, black} = GW.Chessboard.Snapshots.getScores(snapshot);
+		const diff = white - black;
+		if(!diff) {
+			return "even";
+		}
+		return `${diff > 0 ? "white" : "black"} up ${Math.abs(diff)}`;
 	}
 
 	function renderMovesList(snapshotIdx) {

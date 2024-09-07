@@ -42,7 +42,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				&& (piece.StartFile !== movingPiece.StartFile || piece.StartRank !== movingPiece.StartRank)
 				&& piece.isValidMove(beforeSnap, move.Cell[0], move.Cell[1])
 		);
-		if(ambiguousPieces.length) {
+		if(ambiguousPieces.length && !capturePieceComponent) {
 			if(ambiguousPieces.filter(piece => piece.File === movingPiece.File).length === 0) {
 				pieceDisambiguator = movingPiece.File;
 			}

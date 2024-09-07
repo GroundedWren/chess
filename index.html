@@ -7,36 +7,36 @@
 	File Description: A chessboard tool
 -->
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A chess game tracker">
-  <title>Chessboard</title>
-  
-  <link href="./Styles/variables.css" rel="stylesheet" type="text/css">
-  <link href="./Styles/main.css" rel="stylesheet" type="text/css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="A chess game tracker">
+	<title>Chessboard</title>
+	
+	<link href="./Styles/variables.css" rel="stylesheet" type="text/css">
+	<link href="./Styles/main.css" rel="stylesheet" type="text/css">
 
-  <script src="./Scripts/FileLibGizmo.js"></script>
-  <script src="./Scripts/ShortcutsControl.js"></script>
-  <script src="./Scripts/SVGIconControl.js"></script>
-  <script src="./Scripts/ToasterControl.js"></script>
+	<script src="./Scripts/FileLibGizmo.js"></script>
+	<script src="./Scripts/ShortcutsControl.js"></script>
+	<script src="./Scripts/SVGIconControl.js"></script>
+	<script src="./Scripts/ToasterControl.js"></script>
 
-  <link href="./Styles/index.css" rel="stylesheet" type="text/css">
-  <script src="./Scripts/index.js"></script>
-  <script src="./Scripts/LoadSave.js"></script>
-  <script src="./Scripts/Rendering.js"></script>
-  <script src="./Scripts/Pieces.js"></script>
-  <script src="./Scripts/Snapshots.js"></script>
-  <script src="./Scripts/Notation.js"></script>
+	<link href="./Styles/index.css" rel="stylesheet" type="text/css">
+	<script src="./Scripts/index.js"></script>
+	<script src="./Scripts/LoadSave.js"></script>
+	<script src="./Scripts/Rendering.js"></script>
+	<script src="./Scripts/Pieces.js"></script>
+	<script src="./Scripts/Snapshots.js"></script>
+	<script src="./Scripts/Notation.js"></script>
 </head>
 <body><gw-shortcuts id="gwShortsBody" code_0="Alt+S" handler_0="GW.Controls.Shortcuts.reportShortcuts(event)" info_0="Displays available shortcuts">
-  <header id="mainHeader">
+	<header id="mainHeader">
 	<div id="mainHeaderLeft">
-	  <a class="hide-until-focus full" href="#mainContent">Skip to content</a>
-	  <noscript><strong>This site may not function properly without JavaScript enabled.</strong></noscript>
+		<a class="hide-until-focus full" href="#mainContent">Skip to content</a>
+		<noscript><strong>This site may not function properly without JavaScript enabled.</strong></noscript>
 	</div>
 	<div>
-	  <h1>Chessboard</h1>
-	  <span id="spnName"></span>
+		<h1>Chessboard</h1>
+		<span id="spnName"></span>
 	</div>
 	<div id="mainHeaderRight">
 		<details>
@@ -197,8 +197,8 @@
 			<span aria-live="polite" aria-atomic="true">Last save: <time id="timSave">-</time></span>
 		</section>
 	</div>
-  </header>
-  <main id="mainContent">
+	</header>
+	<main id="mainContent">
 	<section id="secBoard">
 		<div class="header">
 			<h2 id="hBoard">Board</h2>
@@ -334,7 +334,7 @@
 						</button>
 					</div>
 					<div id="divCurMoveContainer">
-						<div id="divCurMove"></div>
+						<div id="divCurMove" tabindex="-1"></div>
 						<button onclick="GW.Chessboard.writeToClipboard(document.getElementById('divCurMove').innerText)">
 							<gw-icon name="Copy move notation" iconKey="copy"></gw-icon>
 						</button>
@@ -345,6 +345,10 @@
 						<ol id="olMoves" start="0" reversed>
 						</ol>
 					</details>
+				</article>
+				<article id="artAuto">
+					<h3 id="hAuto">Auto Move</h3>
+					<button onclick="GW.Chessboard.doAutoMove()">Do Auto Move</button>
 				</article>
 				<article id="artLegend" aria-labelledby="hLegend">
 					<h3 id="hLegend">Legend</h3>
@@ -470,16 +474,16 @@
 			</div>
 		</div>
 	</section>
-  </main>
-  <footer>
+	</main>
+	<footer>
 	<figure>
 		<a href="https://www.groundedwren.com/" target="_blank">
 			<img src="./Img/gw-button.png" alt="Grounded Wren 88x31 Button; white text on a swirling purple, red, and black background">
 		</a>
 		<figcaption>Created by Vera in 2024</figcaption>
 	</figure>
-  </footer>
-  <dialog id="diaPromotion">
+	</footer>
+	<dialog id="diaPromotion">
 	<form
 		aria-labelledby="hPromotion"
 		aria-describedby="pPromotion"
@@ -510,7 +514,10 @@
 			<button type="submit">Confirm</button>
 		</div>
 	</form>
-  </dialog>
-  <aside id="asiChessboardLive" class="sr-only" aria-live="polite"></aside>
+	</dialog>
+	<dialog id="diaBusy" cancel="(event) => event.preventDefault();">
+		<em>Thinking...</em>
+	</dialog>
+	<aside id="asiChessboardLive" class="sr-only" aria-live="polite"></aside>
 </gw-shortcuts></body>
 </html>

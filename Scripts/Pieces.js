@@ -21,6 +21,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		const king = Object.values(boardSnap).filter(
 			piece => piece.Name === "King" && piece.Color === color
 		)[0];
+		if(!king) { return true; } //This can only happen auto-calculating a move
+
 		return Object.values(boardSnap).reduce((inCheck, piece) => {
 			piece.DisableCheckCheck = true;
 			if(piece.Color !== color && piece.canCapture(boardSnap, king.File, king.Rank)) {
@@ -615,7 +617,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return "chess-king";
 		}
 		get Value() {
-			return 0;
+			return 100;
 		}
 
 		getMoves(boardSnap) {

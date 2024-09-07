@@ -96,6 +96,139 @@ window.GW = window.GW || {};
 		document.getElementById("formApplyMove").reset();
 	};
 
+	ns.doAutoMove = async () => {
+		const diaBusy = document.getElementById("diaBusy");
+		diaBusy.showModal();
+
+		const thinkingPromise = new Promise(resolve => ns.finishAutoMove = resolve);
+		setTimeout(() => doAutoMove(), 10);
+		await thinkingPromise;
+
+		diaBusy.close();
+		document.getElementById("divCurMove").focus();
+	};
+
+	function doAutoMove() {
+		const snapNS = GW.Chessboard.Snapshots;
+
+		const color = GW.Chessboard.Rendering.getCurrentMovingColor();
+		const curSnap = snapNS.List[GW.Chessboard.Rendering.CurrentSnapshotIdx];
+		const eventualities = [];
+		const memoEventlys = {};
+		let i = 0;
+		let maxDepth = 0;
+		do {
+			const evntly = (i > 0)
+				? eventualities.shift()
+				: {
+					Snap: snapNS.cloneSnapshot(curSnap),
+					Score: snapNS.getScoreDiff(curSnap, color),
+					PrevScore: null,
+					Color: color,
+					StartMoveNote: null,
+					Depth: 0,
+				};
+			
+			if((Math.random() < (0.1*evntly.Depth)) || !evntly.Snap) {
+				eventualities.push(evntly);
+				i += 0.5;
+				continue;
+			}
+
+			const newEvntlys = [];
+			let bestNewScoreDiff = Number.MIN_SAFE_INTEGER;
+			Object.entries(evntly.Snap).forEach(([cell, piece]) => {
+				if(piece.Color !== evntly.Color) { return; }
+				piece.getMoves(evntly.Snap).forEach(move => {
+					const newSnap = snapNS.cloneSnapshot(evntly.Snap);
+					if(move.Promotion) {
+						move.Promotion = "Queen";
+						snapNS.promotePiece(cell, move.Promotion, newSnap);
+					}
+					else {
+						snapNS.applyMove(newSnap, cell, move);
+					}
+
+					const startMoveNote = evntly.StartMoveNote
+						|| GW.Chessboard.Notation.getMoveAsNotation(cell, move, curSnap, newSnap);
+					const memoEvntly = `${startMoveNote}${snapNS.getSnapStr(newSnap)}`;
+					if(memoEventlys[memoEvntly]) {
+						return;
+					}
+					else {
+						memoEventlys[memoEvntly] = true;
+					}
+
+					if(startMoveNote === "Qh4#") {
+						i++;
+					}
+
+					const scoreDiff = snapNS.getScoreDiff(newSnap, color);
+					if(evntly.Color === color) {
+						bestNewScoreDiff = Math.max(bestNewScoreDiff, scoreDiff);
+					}
+					else {
+						bestNewScoreDiff = Math.max(bestNewScoreDiff, scoreDiff * -1);
+					}
+
+					newEvntlys.push({
+						Snap: newSnap,
+						Score: scoreDiff,
+						PrevScore: evntly.Score,
+						Color: evntly.Color === "white" ? "black" : "white",
+						StartMoveNote: startMoveNote,
+						Depth: evntly.Depth + 1,
+					});
+
+					maxDepth = Math.max(maxDepth, evntly.Depth + 1);
+				});
+			});
+
+			if(!newEvntlys.length) {
+				const checkmateScore = evntly.Color === color ? -100000 : 100000;
+				eventualities.push({
+					Snap: null,
+					Score: checkmateScore,
+					PrevScore: checkmateScore,
+					Color: evntly.Color === "white" ? "black" : "white",
+					StartMoveNote: evntly.StartMoveNote,
+					Depth: evntly.Depth + 1
+				});
+			}
+
+			eventualities.push(...(newEvntlys.filter(newEvntly => {
+				const scoreDiff = (evntly.Color === color) ? newEvntly.Score : (-1 * newEvntly.Score);
+				return (scoreDiff === bestNewScoreDiff) || (Math.random() < 0.25)
+			})));
+
+			i++;
+		} while(i < 2500 && eventualities.length);
+		
+		const moveScoreIdx = {};
+		eventualities.forEach(evntly => {
+			if((maxDepth - evntly.Depth) > 1 && Math.abs(evntly.Score) !== 100000) { return; }
+			const moveScore = moveScoreIdx[evntly.StartMoveNote] || {Score: 0, Count: 0}
+
+			moveScore.Score += evntly.Color === color ? evntly.Score : evntly.PrevScore;
+			moveScore.Count += 1;
+
+			moveScoreIdx[evntly.StartMoveNote] = moveScore;
+		});
+
+		let bestMoveNote = null;
+		let bestMoveScore = Number.MIN_SAFE_INTEGER;
+		Object.entries(moveScoreIdx).forEach(([moveNote, moveScore]) => {
+			let avgEvntlyScore = moveScore.Score / moveScore.Count;
+			if(avgEvntlyScore >= bestMoveScore) {
+				bestMoveScore = avgEvntlyScore;
+				bestMoveNote = moveNote;
+			}
+		});
+
+		snapNS.initiateNotationMove(bestMoveNote);
+		ns.finishAutoMove();
+	}
+
 	/**
 	 * general function to create a javascript delegate with some specified parameters.
 	 * @param {any} context The context for the delegate

@@ -163,6 +163,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			cell[1]
 		);
 	}
+	ns.promotePiece = promotePiece;
 
 	/**
 	 * Applies a move to the snapshot
@@ -215,5 +216,34 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		let result = {white: 0, black: 0};
 		Object.values(snapshot).forEach(piece => result[piece.Color] += piece.Value);
 		return result;
+	}
+
+	/**
+	 * Gets a number representing the difference in scores
+	 * @param {Object} snapshot Board snapshot
+	 * @param {string} posColor The color considered positive
+	 * @returns How far ahead posColor is
+	 */
+	ns.getScoreDiff = function(snapshot, posColor) {
+		const {white, black} = ns.getScores(snapshot);
+		if(posColor === "white") {
+			return white - black;
+		}
+		else {
+			return black - white;
+		}
+	}
+
+	/**
+	 * Converts a snapshot to a string
+	 * @param {Object} snapshot Snapshot to stringify
+	 * @returns String
+	 */
+	ns.getSnapStr = function(snapshot) {
+		let str = "";
+		Object.entries(snapshot).forEach(([cell, piece]) => {
+			str += `${cell}${piece.Abbr}`;
+		});
+		return str;
 	}
 }) (window.GW.Chessboard.Snapshots = window.GW.Chessboard.Snapshots || {});

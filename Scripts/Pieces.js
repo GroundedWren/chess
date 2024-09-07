@@ -372,7 +372,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 			moves.forEach(move => {
 				const moveRankIdx = RANK_ORDER_INDEX[move.Cell[1]];
-				move.Promotion = moveRankIdx === 0 || moveRankIdx === ORDERED_RANKS.length
+				move.Promotion = moveRankIdx === 0 || moveRankIdx === (ORDERED_RANKS.length - 1)
 			});
 
 			return this.filterByTeamCheck(boardSnap, moves);

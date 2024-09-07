@@ -79,9 +79,8 @@ window.GW = window.GW || {};
 	 * @param {Event} event button click event
 	 */
 	ns.pasteToNotation = async (event) => {
-		const txtApplyNotation = document.getElementById("txtApplyNotation");
 		const note = await navigator.clipboard.readText();
-		txtApplyNotation.value = note;
+		GW.Chessboard.Snapshots.initiateNotationMove(note);
 	};
 
 	/**

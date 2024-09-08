@@ -494,7 +494,7 @@ dialog {
 .cell-list {
 	margin-block-end: 4px;
 	&:has(> .link-list:empty)::after {
-		content: "-";
+		content: "None";
 	}
 }
 

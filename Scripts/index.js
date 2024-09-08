@@ -96,6 +96,9 @@ window.GW = window.GW || {};
 		document.getElementById("formApplyMove").reset();
 	};
 
+	/**
+	 * Has the computer figure out a move and make it
+	 */
 	ns.doAutoMove = async () => {
 		const diaBusy = document.getElementById("diaBusy");
 		diaBusy.showModal();

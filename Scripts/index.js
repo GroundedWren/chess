@@ -56,16 +56,6 @@ window.GW = window.GW || {};
 	}
 
 	/**
-	 * Shows a non-visual alert
-	 * @param {string} message Plain text to alert
-	 */
-	ns.invisibleAlert = function invisibleAlert(message) {
-		const asiChessboardLive = document.getElementById("asiChessboardLive");
-		asiChessboardLive.innerText = "";
-		setTimeout(() => asiChessboardLive.innerText = message, 0);
-	};
-
-	/**
 	 * Copies text to the clipboard
 	 * @param {string} message Plain text to copy
 	 */
@@ -232,6 +222,11 @@ window.GW = window.GW || {};
 		ns.finishAutoMove();
 	}
 
+	ns.setUseSquareDesc = (event) => {
+		localStorage.setItem('square-desc', event.target.checked ? 'true' : 'false');
+		GW.Chessboard.Rendering.setSnapshot(GW.Chessboard.Rendering.CurrentSnapshotIdx);
+	};
+
 	/**
 	 * general function to create a javascript delegate with some specified parameters.
 	 * @param {any} context The context for the delegate
@@ -273,6 +268,11 @@ window.addEventListener("load", () => {
 		autoCopy = "none";
 	}
 	selAutoCopy.value = autoCopy;
+
+	const squareDesc = localStorage.getItem("square-desc");
+	if(squareDesc === "true") {
+		document.getElementById("cbxSquareDesc").checked = true;
+	}
 
 	GW.Chessboard.LoadSave.configureInitialGame();
 });

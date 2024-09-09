@@ -40,7 +40,7 @@
 	</div>
 	<div id="mainHeaderRight">
 		<details>
-			<summary id="sumSettings">Settings</summary>
+			<summary id="sumSettings" title="If you are using JAWS you may want to enable additional square descriptions">Settings</summary>
 			<aside id="asiSettings" aria-labelledby="sumSettings" role="group">
 				<label class="text-after">
 					<input id="cbxDarkMode" type="checkbox" oninput="localStorage.setItem('theme', event.target.checked ? 'dark' : 'light')">
@@ -53,6 +53,14 @@
 				<label class="text-after">
 					<input id="cbxAutoSave" type="checkbox" oninput="localStorage.setItem('auto-save', event.target.checked ? 'true' : 'false')">
 					Auto save to local
+				</label>
+				<label class="text-after tool">
+					<input id="cbxSquareDesc"
+						type="checkbox"
+						oninput="GW.Chessboard.setUseSquareDesc(event)"
+						title="May be useful for JAWS in particular"
+					>
+					Additional square descriptions
 				</label>
 				<label>
 					Auto copy moves for:
@@ -335,7 +343,7 @@
 					</div>
 					<div id="divCurMoveContainer">
 						<div id="divCurMove" tabindex="-1"></div>
-						<button onclick="GW.Chessboard.writeToClipboard(document.getElementById('divCurMove').innerText)">
+						<button aria-describedby="divCurMove" onclick="GW.Chessboard.writeToClipboard(document.getElementById('divCurMove').innerText)">
 							<gw-icon name="Copy move notation" iconKey="copy"></gw-icon>
 						</button>
 					</div>
@@ -515,9 +523,8 @@
 		</div>
 	</form>
 	</dialog>
-	<dialog id="diaBusy" cancel="(event) => event.preventDefault();">
-		<em>Thinking...</em>
+	<dialog id="diaBusy" cancel="(event) => event.preventDefault();" aria-labelledby="emThinking">
+		<em id="emThinking">Thinking...</em>
 	</dialog>
-	<aside id="asiChessboardLive" class="sr-only" aria-live="polite"></aside>
 </gw-shortcuts></body>
 </html>

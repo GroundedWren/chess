@@ -131,6 +131,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			${ORDERED_FILES.map(file => `<th scope="col">${file}</th>`).join("")}
 		</tr>
 		`;
+
+		const useSquareDesc = document.getElementById("cbxSquareDesc").checked;
 		
 		document.getElementById("tbodyBoard").innerHTML = ORDERED_RANKS.map(rank => `
 		<tr>
@@ -140,25 +142,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			}
 			<th scope="row">${rank}</th>
 			${ORDERED_FILES.map(file => `
-			<td id="cell-${file}${rank}"
-				aria-labelledby="${(RANK_ORDER_INDEX[rank] + FILE_ORDER_INDEX[file]) % 2 === 0
-					? "spnSquareWhiteLabel"
-					: "spnSquareBlackLabel"
-				} spnIcon-${file}${rank}
-				  spnMovable-${file}${rank}
-				  spnThreatening-${file}${rank}
-				  spnMoveToAble-${file}${rank}
-				  spnThreatened-${file}${rank}
-				  spnDoesCapture-${file}${rank}
-				  spnInCheck-${file}${rank}
-				  spnDoesCastle-${file}${rank}"
-			>
+			<td id="cell-${file}${rank}" aria-labelledby="${getCellContextIds(file, rank).join(" ")}">
 				<button id="button-${file}${rank}"
 					tabindex="-1"
 					aria-labelledby="spnSquareBtnLabel"
 					aria-pressed="false"
 					class="board-square-button"
 					onclick="GW.Chessboard.Rendering.onSquareClicked('${file}', '${rank}')"
+					aria-describedby="${useSquareDesc ? getCellContextIds(file, rank).join(" ") : ""}"
 				>
 					<span id="spnIcon-${file}${rank}" class="icon-span">
 						${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
@@ -228,6 +219,22 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		});
 
 		document.getElementById("tblBoard").setAttribute("tabindex", "0");
+	}
+
+	function getCellContextIds(file, rank) {
+		return [
+			`${(RANK_ORDER_INDEX[rank] + FILE_ORDER_INDEX[file]) % 2 === 0
+				? "spnSquareWhiteLabel"
+				: "spnSquareBlackLabel"}`,
+			`spnIcon-${file}${rank}`,
+			`spnMovable-${file}${rank}`,
+			`spnThreatening-${file}${rank}`,
+			`spnMoveToAble-${file}${rank}`,
+			`spnThreatened-${file}${rank}`,
+			`spnDoesCapture-${file}${rank}`,
+			`spnInCheck-${file}${rank}`,
+			`spnDoesCastle-${file}${rank}`
+		];
 	}
 
 	/**
@@ -404,7 +411,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	ns.clearSelection = (_event) => {
 		const tbodyBoard = document.getElementById("tbodyBoard");
 		if(!tbodyBoard.querySelector(`button[aria-pressed="true"]:focus-within`)) {
-			GW.Chessboard.invisibleAlert("Selection cleared");
+			GW.Controls.Toaster.showToast("Selection cleared", {invisible: true});
 		}
 
 		ns.cleanSelectionBasedState();

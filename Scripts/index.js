@@ -270,8 +270,8 @@ window.addEventListener("load", () => {
 	selAutoCopy.value = autoCopy;
 
 	const squareDesc = localStorage.getItem("square-desc");
-	if(squareDesc === "true") {
-		document.getElementById("cbxSquareDesc").checked = true;
+	if(squareDesc === "false") {
+		document.getElementById("cbxSquareDesc").checked = false;
 	}
 
 	GW.Chessboard.LoadSave.configureInitialGame();

@@ -40,7 +40,7 @@
 	</div>
 	<div id="mainHeaderRight">
 		<details>
-			<summary id="sumSettings" title="If you are using JAWS you may want to enable additional square descriptions">Settings</summary>
+			<summary id="sumSettings" title="If you are using NVDA you may want to disable additional square descriptions">Settings</summary>
 			<aside id="asiSettings" aria-labelledby="sumSettings" role="group">
 				<label class="text-after">
 					<input id="cbxDarkMode" type="checkbox" oninput="localStorage.setItem('theme', event.target.checked ? 'dark' : 'light')">
@@ -58,7 +58,8 @@
 					<input id="cbxSquareDesc"
 						type="checkbox"
 						oninput="GW.Chessboard.setUseSquareDesc(event)"
-						title="May be useful for JAWS in particular"
+						title="May be redundant for NVDA"
+						checked
 					>
 					Additional square descriptions
 				</label>
@@ -213,7 +214,7 @@
 			<div id="divToMove"></div>
 		</div>
 		<div class="scroll-container">
-			<gw-shortcuts role="application" aria-describedby="asiTblBoard"
+			<gw-shortcuts role="application" aria-labelledby="asiTblBoard"
 				code_0="ArrowRight"
 				handler_0="GW.Chessboard.Rendering.tblBoardOnKbdNav(event)"
 				info_0="Move to the next file"

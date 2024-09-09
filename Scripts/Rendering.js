@@ -143,6 +143,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			<th scope="row">${rank}</th>
 			${ORDERED_FILES.map(file => `
 			<td id="cell-${file}${rank}" aria-labelledby="${getCellContextIds(file, rank).join(" ")}">
+				<span id="spnLoc-${file}${rank}" class="sr-only">${file}${rank}</span>
 				<button id="button-${file}${rank}"
 					tabindex="-1"
 					aria-labelledby="spnSquareBtnLabel"
@@ -223,6 +224,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 	function getCellContextIds(file, rank) {
 		return [
+			`spnLoc-${file}${rank}`,
 			`${(RANK_ORDER_INDEX[rank] + FILE_ORDER_INDEX[file]) % 2 === 0
 				? "spnSquareWhiteLabel"
 				: "spnSquareBlackLabel"}`,

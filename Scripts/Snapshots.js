@@ -121,8 +121,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		if(document.getElementById("selAutoCopy").value === movingColor) {
 			setTimeout(() => GW.Chessboard.writeToClipboard(moveNotation), 0);
 		}
-		if(document.getElementById("cbxAutoSave").checked && localStorage.getItem("last-save-name")) {
-			GW.Chessboard.LoadSave.saveToLocal(localStorage.getItem("last-save-name"))
+		if(document.getElementById("cbxAutoSave").checked) {
+			const lastSaveName = localStorage.getItem("last-save-name");
+			if(lastSaveName) {
+				GW.Chessboard.LoadSave.saveToLocal(lastSaveName);
+			}
+			else {
+				GW.Chessboard.LoadSave.tempSave();
+			}
 		}
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);

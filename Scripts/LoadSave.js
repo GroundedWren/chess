@@ -128,6 +128,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		updateFileInfo();
 	}
 
+	/**
+	 * Creates a temp save
+	 */
+	ns.tempSave = function tempSave() {
+		localStorage.setItem("last-save-name", "!temp");
+		localStorage.setItem(`game-!temp`, JSON.stringify(GW.Chessboard.Data))
+	}
+
 	async function saveToFile() {
 		const suggestedName = GW.Chessboard.Data.Name || "New Game";
 		beforeSave();

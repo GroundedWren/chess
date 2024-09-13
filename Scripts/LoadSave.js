@@ -21,11 +21,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		else if(lastSaveDataStr) {
 			GW.Chessboard.Data = JSON.parse(lastSaveDataStr);
-			document.getElementById("selSaveExisting").value = lastSaveName;
-			document.getElementById("formSave").elements["saveMode"].value = "existing";
-			updateSaveForm(document.getElementById("radSaveModeExisting"));
+			updateForLocalSave(GW.Chessboard.Data.Name);
 
-			updateFileInfo();
 			GW.Chessboard.Snapshots.buildGameSnapshots();
 			GW.Chessboard.Rendering.setSnapshot(GW.Chessboard.Snapshots.List.length - 1);
 		}
@@ -48,7 +45,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 					`game-${gameName}`
 				));
 
-				ns.saveToLocal(gameName, GW.Chessboard.Data.Timestamp);
+				updateForLocalSave(gameName);
 				break;
 			case "upload":
 				const loadedData = await GW.Gizmos.FileLib.promptFileAsJSON();
@@ -122,11 +119,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			reloadSavesList();
 		}
 		localStorage.setItem(`game-${gameName}`, JSON.stringify(GW.Chessboard.Data));
+		updateForLocalSave(gameName);
+	}
+
+	function updateForLocalSave(gameName) {
 		localStorage.setItem("last-save-name", gameName);
 		document.getElementById("formSave").elements["saveMode"].value = "existing";
 		document.getElementById("selSaveExisting").value = gameName;
 		updateSaveForm(document.getElementById("radSaveModeExisting"));
-
 		updateFileInfo();
 	}
 

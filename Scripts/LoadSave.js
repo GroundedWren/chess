@@ -211,7 +211,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	 * Handler for when the save mode changes
 	 * @param {Event} event Change event
 	 */
-	ns.onSaveModeChange = (event, formEl) => {
+	ns.onSaveModeChange = (event) => {
 		updateSaveForm(event.target);
 	};
 

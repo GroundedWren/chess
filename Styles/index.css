@@ -214,6 +214,7 @@ body {
 						svg {
 							width: 100%;
 							height: 100%;
+							height: -webkit-fill-available;
 							min-width: 16px;
 							min-height: 16px;
 

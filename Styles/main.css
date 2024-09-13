@@ -301,6 +301,11 @@ label:not(.input-vertical) {
 	&:not(.text-after) :is(input, select) {
 		margin-inline-start: 5px;
 	}
+	&.wide {
+		> * {
+			flex-grow: 1;
+		}
+	}
 }
 
 label:has(input:checked) {

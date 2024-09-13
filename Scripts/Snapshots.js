@@ -123,7 +123,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 		if(document.getElementById("cbxAutoSave").checked) {
 			const lastSaveName = localStorage.getItem("last-save-name");
-			if(lastSaveName) {
+			if(lastSaveName && lastSaveName !== "!temp") {
 				GW.Chessboard.LoadSave.saveToLocal(lastSaveName);
 			}
 			else {

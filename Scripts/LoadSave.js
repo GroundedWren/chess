@@ -14,11 +14,16 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 		const lastSaveName = localStorage.getItem("last-save-name");
 		const lastSaveDataStr = localStorage.getItem(`game-${lastSaveName}`);
-		if(lastSaveDataStr) {
+		if(lastSaveName === "!temp") {
+			GW.Chessboard.Data = JSON.parse(lastSaveDataStr);
+			GW.Chessboard.Snapshots.buildGameSnapshots();
+			GW.Chessboard.Rendering.setSnapshot(GW.Chessboard.Snapshots.List.length - 1);
+		}
+		else if(lastSaveDataStr) {
 			GW.Chessboard.Data = JSON.parse(lastSaveDataStr);
 			document.getElementById("selSaveExisting").value = lastSaveName;
 			document.getElementById("formSave").elements["saveMode"].value = "existing";
-			ns.onSaveModeChange(undefined, document.getElementById("radSaveModeExisting"));
+			updateSaveForm(document.getElementById("radSaveModeExisting"));
 
 			updateFileInfo();
 			GW.Chessboard.Snapshots.buildGameSnapshots();
@@ -43,9 +48,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 					`game-${gameName}`
 				));
 
-				localStorage.setItem("last-save-name", gameName);
-				document.getElementById("formSave").elements["saveMode"].value = "existing";
-				ns.onSaveModeChange(undefined, event.target);
+				ns.saveToLocal(gameName, GW.Chessboard.Data.Timestamp);
 				break;
 			case "upload":
 				const loadedData = await GW.Gizmos.FileLib.promptFileAsJSON();
@@ -54,10 +57,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				}
 				GW.Chessboard.Data = loadedData;
 				GW.Chessboard.Data.Name = GW.Gizmos.FileLib.LastLoadedFilename;
+
+				ns.saveToLocal(GW.Gizmos.FileLib.LastLoadedFilename, GW.Chessboard.Data.Timestamp);
 				break;
 		}
 
-		updateFileInfo();
 		GW.Chessboard.Snapshots.buildGameSnapshots();
 		GW.Chessboard.Rendering.setSnapshot(GW.Chessboard.Snapshots.List.length - 1);
 	};
@@ -69,28 +73,20 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	ns.onSave = (event) => {
 		event.preventDefault();
 
-		let saveName;
 		switch(event.target.elements["saveMode"].value) {
 			case "new":
 				const txtSaveName = document.getElementById("txtSaveName");
-				saveName = txtSaveName.value;
-				ns.saveToLocal(saveName);
-
+				const saveName = txtSaveName.value;
 				txtSaveName.value = "";
-				event.target.elements["saveMode"].value = "existing";
-				ns.onSaveModeChange(undefined, event.target);
-				document.getElementById("selSaveExisting").value = saveName;
+
+				ns.saveToLocal(saveName);
 				break;
 			case "existing":
-				saveName = document.getElementById("selSaveExisting").value;
-				ns.saveToLocal(saveName);
+				ns.saveToLocal(document.getElementById("selSaveExisting").value);
 				break;
 			case "download":
 				saveToFile();
 				break;
-		}
-		if(saveName) {
-			localStorage.setItem("last-save-name", saveName)
 		}
 	};
 	
@@ -116,15 +112,21 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	/**
 	 * Saves the game data to local storage
 	 * @param {string} gameName Name to associate with the save
+	 * @param {string} timestamp Timestamp to associate with the save
 	 */
-	ns.saveToLocal = function saveToLocal(gameName) {
-		beforeSave(gameName);
+	ns.saveToLocal = function saveToLocal(gameName, timestamp) {
+		beforeSave(gameName, timestamp);
 		if(!GW.Chessboard.SavesList.includes(gameName)) {
 			GW.Chessboard.SavesList.unshift(gameName);
 			localStorage.setItem("saves-list", JSON.stringify(GW.Chessboard.SavesList));
 			reloadSavesList();
 		}
 		localStorage.setItem(`game-${gameName}`, JSON.stringify(GW.Chessboard.Data));
+		localStorage.setItem("last-save-name", gameName);
+		document.getElementById("formSave").elements["saveMode"].value = "existing";
+		document.getElementById("selSaveExisting").value = gameName;
+		updateSaveForm(document.getElementById("radSaveModeExisting"));
+
 		updateFileInfo();
 	}
 
@@ -148,14 +150,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		updateFileInfo();
 	}
 
-	function beforeSave(gameName) {
+	function beforeSave(gameName, timestamp) {
 		if(gameName) {
 			GW.Chessboard.Data.Name = gameName;
 		}
 		else {
 			delete GW.Chessboard.Data.Name;
 		}
-		GW.Chessboard.Data.Timestamp = new Date().toISOString();
+		GW.Chessboard.Data.Timestamp = timestamp || new Date().toISOString();
 	}
 	function updateFileInfo() {
 		const timSave = document.getElementById("timSave");
@@ -207,14 +209,17 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 	/**
 	 * Handler for when the save mode changes
-	 * @param {Event | undefined} event Change event
-	 * @param {HTMLElement | undefined} formEl form element controlling the current selection
+	 * @param {Event} event Change event
 	 */
 	ns.onSaveModeChange = (event, formEl) => {
+		updateSaveForm(event.target);
+	};
+
+	function updateSaveForm(radSelected) {
 		const txtSaveName = document.getElementById("txtSaveName");
 		const selSaveExisting = document.getElementById("selSaveExisting");
 
-		switch((event ? event.target : formEl).getAttribute("aria-controls")) {
+		switch(radSelected.getAttribute("aria-controls")) {
 			case "divNewSave":
 				txtSaveName.setAttribute("required", "true");
 				selSaveExisting.removeAttribute("required");
@@ -228,7 +233,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				selSaveExisting.removeAttribute("required");
 				break;
 		}
-	};
+	}
 
 	/**
 	 * Handler for when the save name is changed

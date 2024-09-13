@@ -114,10 +114,16 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 
 		let disambigFile = "";
 		let disambigRank = "";
-		if(disNote.length) {
-			disambigFile = disNote[0];
+		if(disNote.length === 1) {
+			if(GW.Chessboard.ORDERED_RANKS.includes(disNote[0])) {
+				disambigRank = disNote[0];
+			}
+			else {
+				disambigFile = disNote[0];
+			}
 		}
 		if(disNote.length === 2) {
+			disambigFile = disNote[0];
 			disambigRank = disNote[1];
 		}
 

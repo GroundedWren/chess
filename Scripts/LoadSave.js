@@ -146,6 +146,9 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		localStorage.setItem(`game-!temp`, JSON.stringify(GW.Chessboard.Data))
 	}
 
+	/**
+	 * Copies a URL of the game state to the clipboard
+	 */
 	ns.saveToURL = function saveToURL() {
 		GW.Chessboard.writeToClipboard(
 			`https://chess.groundedwren.com?moves=${encodeURIComponent(GW.Chessboard.Data.Moves.join("^"))}`

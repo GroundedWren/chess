@@ -210,7 +210,12 @@
 	<main id="mainContent">
 	<section id="secBoard">
 		<div class="header">
-			<h2 id="hBoard">Board</h2>
+			<div style="display: flex; gap: 5px;">
+				<h2 id="hBoard">Board</h2>
+				<button style="display: flex; align-items: center; padding: 5px; margin-block-end: 2px;" onclick="GW.Chessboard.LoadSave.saveToURL()">
+					<gw-icon iconKey="share-nodes" name="Copy board URL to clipboard"></gw-icon>
+				</button>
+			</div>
 			<div id="divToMove"></div>
 		</div>
 		<div class="scroll-container">

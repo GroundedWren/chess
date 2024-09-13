@@ -12,6 +12,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	ns.configureInitialGame = () => {
 		reloadSavesList();
 
+		const params = new URLSearchParams(window.location.search);
+		if(params.has("moves")) {
+			GW.Chessboard.Data.Moves = decodeURIComponent(params.get("moves")).split("^");
+			GW.Chessboard.Snapshots.buildGameSnapshots();
+			GW.Chessboard.Rendering.setSnapshot(GW.Chessboard.Snapshots.List.length - 1);
+			return;
+		}
+
 		const lastSaveName = localStorage.getItem("last-save-name");
 		const lastSaveDataStr = localStorage.getItem(`game-${lastSaveName}`);
 		if(lastSaveName === "!temp") {
@@ -136,6 +144,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	ns.tempSave = function tempSave() {
 		localStorage.setItem("last-save-name", "!temp");
 		localStorage.setItem(`game-!temp`, JSON.stringify(GW.Chessboard.Data))
+	}
+
+	ns.saveToURL = function saveToURL() {
+		GW.Chessboard.writeToClipboard(
+			`https://chess.groundedwren.com?moves=${encodeURIComponent(GW.Chessboard.Data.Moves.join("^"))}`
+		);
 	}
 
 	async function saveToFile() {

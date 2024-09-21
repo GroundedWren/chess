@@ -79,6 +79,8 @@ a {
 
 summary, label, input:is([type="checkbox"], [type="radio"]) {
 	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 table, th, td {
@@ -239,6 +241,15 @@ button, input:is([type="button"], [type="submit"], [type="reset"]), input[type="
 	cursor: pointer;
 	min-width: 30px;
 	min-height: 30px;
+	user-select: none;
+	-webkit-user-select: none;
+}
+/** https://browserstrangeness.bitbucket.io/css_hacks.html#safari **/
+@supports (-webkit-hyphens:none) {
+	select {
+		background-color: white;
+		color: black;
+	}
 }
 
 button[aria-expanded="true"], button[aria-pressed="true"], details[open] summary {

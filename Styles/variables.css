@@ -31,6 +31,10 @@ File Description: CSS Variables
 	--board-piece-black-color: #4a2822;
 	--board-square-light-color: #f7f0e8;
 	--board-square-dark-color: #F9D890;
+
+	input {
+		color-scheme: light;
+	}
 }
 
 @media not print {
@@ -57,5 +61,9 @@ File Description: CSS Variables
 		--board-piece-black-color: #000000;
 		--board-square-light-color: #525dff;
 		--board-square-dark-color: #9008d9;
+
+		input {
+			color-scheme: dark;
+		}
 	}
 }

@@ -499,6 +499,16 @@ dialog {
 	}
 }
 
+body:has(#cbxHideHeaders:checked) {
+	#theadBoard, #tbodyBoard th {
+		display: none;
+	}
+
+	#tblBoard col {
+		width: auto;
+	}
+}
+
 body:has(#cbxVertLayout:checked) {
 	max-height: initial;
 

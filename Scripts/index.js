@@ -257,6 +257,11 @@ window.addEventListener("load", () => {
 			break;
 	}
 
+	const hideHeaders = localStorage.getItem("hide-headers");
+	if(hideHeaders === "true") {
+		document.getElementById("cbxHideHeaders").checked = true;
+	}
+
 	const autoSave = localStorage.getItem("auto-save");
 	if(autoSave === "true") {
 		document.getElementById("cbxAutoSave").checked = true;

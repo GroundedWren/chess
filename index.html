@@ -51,6 +51,10 @@
 					Vertical layout
 				</label>
 				<label class="text-after">
+					<input id="cbxHideHeaders" type="checkbox" oninput="localStorage.setItem('hide-headers', event.target.checked ? 'true' : 'false')">
+					Hide board headers
+				</label>
+				<label class="text-after">
 					<input id="cbxAutoSave" type="checkbox" oninput="localStorage.setItem('auto-save', event.target.checked ? 'true' : 'false')">
 					Auto save to local
 				</label>

@@ -124,8 +124,8 @@ body {
 			}
 		}
 
-		#secBoard {
-			> .header {
+		#shortsBoard {
+			> * {
 				margin-inline-end: 5px;
 			}
 		}
@@ -133,7 +133,6 @@ body {
 		#tblBoard {
 			table-layout: fixed;
 			max-width: 750px;
-			margin-inline-end: 5px;
 
 			width: calc(100% - 5px);
 
@@ -288,15 +287,22 @@ body {
 		}
 
 		:has(#tblBoard:not(:focus-within)) {
-			#asiTblBoard > * {
+			#divTblKbd > * {
 				visibility: hidden;
 			}
 		}
 		#asiTblBoard {
-			display: flex;
-			justify-content: center;
-			align-items: flex-end;
-			gap: 2px;
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			margin-block-start: 5px;
+			padding-inline: 5px;
+
+			#divTblKbd {
+				display: flex;
+				justify-content: center;
+				align-items: flex-end;
+				padding-block-end: 5px;
+			}
 		}
 	}
 
@@ -350,11 +356,10 @@ main:has(.board-square-button[aria-pressed="true"]) {
 			flex-direction: row;
 			align-items: center;
 			gap: 4px;
-
-			button {
-				display: flex;
-				align-items: center;
-			}
+		}
+		.move-button {
+			display: flex;
+			align-items: center;
 		}
 		#divCurMoveContainer {
 			display: flex;

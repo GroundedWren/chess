@@ -223,7 +223,7 @@
 			<div id="divToMove"></div>
 		</div>
 		<div class="scroll-container">
-			<gw-shortcuts role="application" aria-labelledby="asiTblBoard"
+			<gw-shortcuts id="shortsBoard" role="application" aria-labelledby="asiTblBoard"
 				code_0="ArrowRight"
 				handler_0="GW.Chessboard.Rendering.tblBoardOnKbdNav(event)"
 				info_0="Move to the next file"
@@ -284,9 +284,17 @@
 					<tbody id="tbodyBoard"></tbody>
 				</table>
 				<aside id="asiTblBoard">
-					<gw-icon iconKey="keyboard" name="Keyboard navigation available"></gw-icon>
-					<span class="sr-only">in focus mode</span>
-					<span>(<kbd>Alt</kbd>+<kbd>S</kbd>)</span>
+					<button id="btnPrevMove2" class="move-button">
+						<gw-icon iconKey="backward-step" name="Previous move"></gw-icon>
+					</button>
+					<div id="divTblKbd">
+						<gw-icon iconKey="keyboard" name="Keyboard navigation available"></gw-icon>
+						<span class="sr-only">in focus mode</span>
+						<span>(<kbd>Alt</kbd>+<kbd>S</kbd>)</span>
+					</div>
+					<button id="btnNextMove2" class="move-button">
+						<gw-icon iconKey="forward-step" name="Next move"></gw-icon>
+					</button>
 				</aside>
 			</gw-shortcuts>
 			<span id="spnSquareBtnLabel" class="hidden">Select</span>
@@ -341,13 +349,13 @@
 				<article id="artHistory" aria-labelledby="hHistory">
 					<h3 id="hHistory">History</h3>
 					<div id="moveButtons">
-						<button id="btnPrevMove">
+						<button id="btnPrevMove" class="move-button">
 							<gw-icon iconKey="backward-step" name="Previous move"></gw-icon>
 						</button>
 						<span>
 							<span id="spnMoveIdx" aria-live="polite">Move 0 of 0</span>
 						</span>
-						<button id="btnNextMove">
+						<button id="btnNextMove" class="move-button">
 							<gw-icon iconKey="forward-step" name="Next move"></gw-icon>
 						</button>
 					</div>
@@ -357,6 +365,7 @@
 							<gw-icon name="Copy move notation" iconKey="copy"></gw-icon>
 						</button>
 					</div>
+					<button onclick="GW.Chessboard.Rendering.clipAtCurrent()">Set as Current</button>
 					<div style="text-align: center;">Score: <span id="spnScore">even</span></div>
 					<details>
 						<summary>List</summary>

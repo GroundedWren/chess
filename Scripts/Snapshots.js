@@ -63,11 +63,20 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	}
 
 	/**
+	 * Sets the specified snapshot index as the current one
+	 * @param {number} idx Index of the snapshot to clip at
+	 */
+	ns.clipAtIdx = function clipAtIdx(idx) {
+		ns.List = ns.List.slice(0, idx + 1);
+		GW.Chessboard.Rendering.setSnapshot(idx);
+	};
+
+	/**
 	 * Applies a user-initiated move based on algebraic notation
 	 * @param {string} note Algebraic notation
 	 * @returns Whether the move succeeded
 	 */
-	ns.initiateNotationMove = function(note) {
+	ns.initiateNotationMove = function initiateNotationMove(note) {
 		const curSnap = ns.List[GW.Chessboard.Rendering.CurrentSnapshotIdx];
 		
 		const {CellStart, Move} = GW.Chessboard.Notation.getNotationAsMove(

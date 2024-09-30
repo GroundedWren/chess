@@ -35,6 +35,13 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	}
 
 	/**
+	 * Sets the currently shown snapshot as the current one
+	 */
+	ns.clipAtCurrent = () => {
+		GW.Chessboard.Snapshots.clipAtIdx(ns.CurrentSnapshotIdx)
+	};
+
+	/**
 	 * Renders a specified snapshot
 	 * @param {number} snapshotIdx Index of the snapshot to render
 	 */
@@ -43,23 +50,35 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		const snapshot = GW.Chessboard.Snapshots.List[snapshotIdx];
 		renderBoardAtSnapshot(snapshot);
 
-		const btnPrevMove = document.getElementById("btnPrevMove")
-		if(ns.CurrentSnapshotIdx === 0) {
-			btnPrevMove.setAttribute("disabled", "true");
-		}
-		else {
-			btnPrevMove.removeAttribute("disabled");
-			btnPrevMove.onclick = GW.createDelegate(ns, ns.setSnapshot, [ns.CurrentSnapshotIdx - 1]);
-		}
+		[document.getElementById("btnPrevMove"), document.getElementById("btnPrevMove2")].forEach(btnPrevMove => {
+			if(ns.CurrentSnapshotIdx === 0) {
+				if(btnPrevMove.matches(":focus-within")) {
+					const otherBtn = document.getElementById(btnPrevMove.id.replace("Prev", "Next"));
+					otherBtn.removeAttribute("disabled");
+					otherBtn.focus();
+				}
+				btnPrevMove.setAttribute("disabled", "true");
+			}
+			else {
+				btnPrevMove.removeAttribute("disabled");
+				btnPrevMove.onclick = GW.createDelegate(ns, ns.setSnapshot, [ns.CurrentSnapshotIdx - 1]);
+			}
+		});
 
-		const btnNextMove = document.getElementById("btnNextMove")
-		if(ns.CurrentSnapshotIdx === GW.Chessboard.Snapshots.List.length - 1) {
-			btnNextMove.setAttribute("disabled", "true");
-		}
-		else {
-			btnNextMove.removeAttribute("disabled");
-			btnNextMove.onclick = GW.createDelegate(ns, ns.setSnapshot, [ns.CurrentSnapshotIdx + 1]);
-		}
+		[document.getElementById("btnNextMove"), document.getElementById("btnNextMove2")].forEach(btnNextMove => {
+			if(ns.CurrentSnapshotIdx === GW.Chessboard.Snapshots.List.length - 1) {
+				if(btnNextMove.matches(":focus-within")) {
+					const otherBtn = document.getElementById(btnNextMove.id.replace("Next", "Prev"));
+					otherBtn.removeAttribute("disabled");
+					otherBtn.focus();
+				}
+				btnNextMove.setAttribute("disabled", "true");
+			}
+			else {
+				btnNextMove.removeAttribute("disabled");
+				btnNextMove.onclick = GW.createDelegate(ns, ns.setSnapshot, [ns.CurrentSnapshotIdx + 1]);
+			}
+		});
 
 		const spnMoveIdx = document.getElementById("spnMoveIdx");
 		const newText = `Move ${ns.CurrentSnapshotIdx} of ${GW.Chessboard.Snapshots.List.length - 1}`

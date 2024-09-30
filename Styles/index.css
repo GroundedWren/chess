@@ -186,6 +186,9 @@ body {
 				td[aria-labelledby~="spnSquareBlackLabel"] {
 					background-color: var(--board-square-dark-color);
 				}
+				td[aria-labelledby~="spnInvLastMove"] {
+					box-shadow: 0px 0px 0px 2px var(--board-square-last-move-color) inset;
+				}
 
 				td {
 					> button {

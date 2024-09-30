@@ -11,6 +11,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	 */
 	ns.buildGameSnapshots = function buildGameSnapshots() {
 		ns.List = [];
+		ns.HighlightSquares = [];
 
 		const initSnap = {};
 		GW.Chessboard.ORDERED_FILES.forEach(file => {
@@ -43,13 +44,16 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			}
 		});
 		ns.List.push(initSnap);
+		ns.HighlightSquares.push({});
 
 		for(let i = 0; i < GW.Chessboard.Data.Moves.length; i++) {
-			ns.List.push(getSnapshot(
+			const {Snap, Start, End} = getSnapshot(
 				ns.List[i],
 				GW.Chessboard.Data.Moves[i],
 				i % 2 == 0 ? "white" : "black"
-			));
+			);
+			ns.List.push(Snap);
+			ns.HighlightSquares.push({[Start]: true, [End]: true})
 		}
 	}
 
@@ -59,7 +63,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		if(CellStart && Move) {
 			applyMove(newSnap, CellStart, Move); //Async is only for user input, not needed here
 		}
-		return newSnap;
+		return {Snap: newSnap, Start: CellStart, End: Move.Cell};
 	}
 
 	/**
@@ -68,6 +72,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	 */
 	ns.clipAtIdx = function clipAtIdx(idx) {
 		ns.List = ns.List.slice(0, idx + 1);
+		ns.HighlightSquares = ns.HighlightSquares.slice(0, idx + 1);
 		GW.Chessboard.Rendering.setSnapshot(idx);
 	};
 
@@ -120,9 +125,11 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		const movingColor = GW.Chessboard.Rendering.getCurrentMovingColor();
 
 		ns.List = ns.List.slice(0, curSnapIdx + 1);
+		ns.HighlightSquares = ns.HighlightSquares.slice(0, curSnapIdx + 1);
 		const newSnap = ns.cloneSnapshot(curSnap);
 		await applyMove(newSnap, cellStart, move);
 		ns.List.push(newSnap);
+		ns.HighlightSquares.push({[cellStart]: true, [move.Cell]: true});
 
 		GW.Chessboard.Data.Moves = GW.Chessboard.Data.Moves.slice(0, curSnapIdx);
 		const moveNotation = GW.Chessboard.Notation.getMoveAsNotation(cellStart, move, curSnap, newSnap)

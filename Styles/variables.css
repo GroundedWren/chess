@@ -31,6 +31,7 @@ File Description: CSS Variables
 	--board-piece-black-color: #4a2822;
 	--board-square-light-color: #f7f0e8;
 	--board-square-dark-color: #F9D890;
+	--board-square-last-move-color: #1d04a6;
 
 	input {
 		color-scheme: light;
@@ -61,6 +62,7 @@ File Description: CSS Variables
 		--board-piece-black-color: #000000;
 		--board-square-light-color: #525dff;
 		--board-square-dark-color: #9008d9;
+		--board-square-last-move-color: #ffff00;
 
 		input {
 			color-scheme: dark;

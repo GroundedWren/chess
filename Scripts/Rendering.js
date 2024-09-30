@@ -48,7 +48,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	ns.setSnapshot = (snapshotIdx) => {
 		ns.CurrentSnapshotIdx = snapshotIdx;
 		const snapshot = GW.Chessboard.Snapshots.List[snapshotIdx];
-		renderBoardAtSnapshot(snapshot);
+		renderBoardAtSnapshot(snapshot, GW.Chessboard.Snapshots.HighlightSquares[snapshotIdx]);
 
 		[document.getElementById("btnPrevMove"), document.getElementById("btnPrevMove2")].forEach(btnPrevMove => {
 			if(ns.CurrentSnapshotIdx === 0) {
@@ -137,7 +137,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		}
 	}
 
-	function renderBoardAtSnapshot (snapshot) {
+	function renderBoardAtSnapshot (snapshot, highlights) {
 		document.getElementById("theadBoard").innerHTML = `
 		<tr>
 			<td></td>
@@ -161,7 +161,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			}
 			<th scope="row">${rank}</th>
 			${ORDERED_FILES.map(file => `
-			<td id="cell-${file}${rank}" aria-labelledby="${getCellContextIds(file, rank).join(" ")}">
+			<td id="cell-${file}${rank}" aria-labelledby="${getCellContextIds(file, rank, highlights).join(" ")}">
 				<span id="spnLoc-${file}${rank}" class="sr-only">${file}${rank}</span>
 				<button id="button-${file}${rank}"
 					tabindex="-1"
@@ -169,12 +169,12 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 					aria-pressed="false"
 					class="board-square-button"
 					onclick="GW.Chessboard.Rendering.onSquareClicked('${file}', '${rank}')"
-					aria-describedby="${useSquareDesc ? getCellContextIds(file, rank).join(" ") : ""}"
+					aria-describedby="${useSquareDesc ? getCellContextIds(file, rank, highlights).join(" ") : ""}"
 				>
 					<span id="spnIcon-${file}${rank}" class="icon-span">
 						${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
 					</span>
-					<span id=spnMovable-${file}${rank} class="icon-span">
+					<span id=-${file}${rank} class="icon-span">
 						<gw-icon
 							class="earmark movable"
 							iconKey="person-running"
@@ -241,7 +241,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		document.getElementById("tblBoard").setAttribute("tabindex", "0");
 	}
 
-	function getCellContextIds(file, rank) {
+	function getCellContextIds(file, rank, highlights) {
 		return [
 			`spnLoc-${file}${rank}`,
 			`${(RANK_ORDER_INDEX[rank] + FILE_ORDER_INDEX[file]) % 2 === 0
@@ -254,7 +254,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			`spnThreatened-${file}${rank}`,
 			`spnDoesCapture-${file}${rank}`,
 			`spnInCheck-${file}${rank}`,
-			`spnDoesCastle-${file}${rank}`
+			`spnDoesCastle-${file}${rank}`,
+			`${highlights[`${file}${rank}`] ? "spnInvLastMove" : ""}`
 		];
 	}
 

@@ -56,7 +56,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				if(btnPrevMove.matches(":focus-within")) {
 					const otherBtn = document.getElementById(btnPrevMove.id.replace("Prev", "Next"));
 					otherBtn.removeAttribute("disabled");
-					otherBtn.focus();
+					setTimeout(() => otherBtn.focus(), 0);
 				}
 				btnPrevMove.setAttribute("disabled", "true");
 			}
@@ -71,7 +71,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				if(btnNextMove.matches(":focus-within")) {
 					const otherBtn = document.getElementById(btnNextMove.id.replace("Next", "Prev"));
 					otherBtn.removeAttribute("disabled");
-					otherBtn.focus();
+					setTimeout(() => otherBtn.focus(), 0);
 				}
 				btnNextMove.setAttribute("disabled", "true");
 			}

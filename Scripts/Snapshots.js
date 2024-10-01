@@ -137,15 +137,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		if(document.getElementById("selAutoCopy").value === movingColor) {
 			setTimeout(() => GW.Chessboard.writeToClipboard(moveNotation), 0);
 		}
-		if(document.getElementById("cbxAutoSave").checked) {
-			const lastSaveName = localStorage.getItem("last-save-name");
-			if(lastSaveName && lastSaveName !== "!temp") {
-				GW.Chessboard.LoadSave.saveToLocal(lastSaveName);
-			}
-			else {
-				GW.Chessboard.LoadSave.tempSave();
-			}
-		}
+		
+		GW.Chessboard.LoadSave.autoSaveIfApplicable();
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);
 	}

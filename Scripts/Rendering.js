@@ -38,7 +38,8 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	 * Sets the currently shown snapshot as the current one
 	 */
 	ns.clipAtCurrent = () => {
-		GW.Chessboard.Snapshots.clipAtIdx(ns.CurrentSnapshotIdx)
+		GW.Chessboard.Snapshots.clipAtIdx(ns.CurrentSnapshotIdx);
+		GW.Chessboard.LoadSave.autoSaveIfApplicable();
 	};
 
 	/**

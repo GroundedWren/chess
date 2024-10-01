@@ -267,4 +267,16 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			txtSaveName.setCustomValidity("");
 		}
 	};
+
+	ns.autoSaveIfApplicable = function autoSaveIfApplicable() {
+		if(document.getElementById("cbxAutoSave").checked) {
+			const lastSaveName = localStorage.getItem("last-save-name");
+			if(lastSaveName && lastSaveName !== "!temp") {
+				ns.saveToLocal(lastSaveName);
+			}
+			else {
+				ns.tempSave();
+			}
+		}
+	}
 }) (window.GW.Chessboard.LoadSave = window.GW.Chessboard.LoadSave || {});

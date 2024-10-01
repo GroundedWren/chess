@@ -256,7 +256,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	/**
 	 * Handler for when the save name is changed
 	 * @param {InputEvent} _event 
-	 */
+	 */6
 	ns.onTxtSaveNameInput = (_event) => {
 		const txtSaveName = document.getElementById("txtSaveName");
 		const nameVal = txtSaveName.value;

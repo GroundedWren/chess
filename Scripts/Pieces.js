@@ -664,6 +664,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 				const castleStep3 = `${GW.Chessboard.getFile(this.File, -3)}${this.Rank}`;
 				if(!this.moveCausesTeamCheck(boardSnap, {Cell: castleStep1, Capture: null})
 					&& !this.moveCausesTeamCheck(boardSnap, {Cell: castleStep2, Capture: null})
+					&& !this.moveCausesTeamCheck(boardSnap, {Cell: castleStep3, Capture: null})
 					&& !boardSnap[castleStep1]
 					&& !boardSnap[castleStep2]
 					&& !boardSnap[castleStep3]

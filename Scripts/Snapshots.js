@@ -73,6 +73,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	ns.clipAtIdx = function clipAtIdx(idx) {
 		ns.List = ns.List.slice(0, idx + 1);
 		ns.HighlightSquares = ns.HighlightSquares.slice(0, idx + 1);
+		GW.Chessboard.Data.Moves = GW.Chessboard.Data.Moves.slice(0, idx);
 		GW.Chessboard.Rendering.setSnapshot(idx);
 	};
 
@@ -137,7 +138,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 		if(document.getElementById("selAutoCopy").value === movingColor) {
 			setTimeout(() => GW.Chessboard.writeToClipboard(moveNotation), 0);
 		}
-		
+
 		GW.Chessboard.LoadSave.autoSaveIfApplicable();
 
 		GW.Chessboard.Rendering.setSnapshot(curSnapIdx + 1);

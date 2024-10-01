@@ -95,7 +95,7 @@ body {
 		}
 	}
 
-	@media(min-width: 1050px) {
+	@media(min-width: 800px) {
 		#detSettings {
 			position: relative;
 		}

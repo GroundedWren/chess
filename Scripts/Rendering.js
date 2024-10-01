@@ -174,49 +174,49 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 					<span id="spnIcon-${file}${rank}" class="icon-span">
 						${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
 					</span>
-					<span id=-${file}${rank} class="icon-span">
+					<span id="spnMovable-${file}${rank}" class="icon-span">
 						<gw-icon
 							class="earmark movable"
 							iconKey="person-running"
 							name="Can move to the selected square"
 						></gw-icon>
 					</span>
-					<span id=spnThreatening-${file}${rank} class="icon-span">
+					<span id="spnThreatening-${file}${rank}" class="icon-span">
 						<gw-icon
 							class="earmark threatening"
 							iconKey="bolt"
 							name="Can capture the selected square's piece"
 						></gw-icon>
 					</span>
-					<span id=spnMoveToAble-${file}${rank} class="icon-span">
+					<span id="spnMoveToAble-${file}${rank}" class="icon-span">
 						<gw-icon
 							class="earmark move-to-able"
 							iconKey="forward-step"
 							name="The selected square's piece can move here"
 						></gw-icon>
 					</span>
-					<span id=spnThreatened-${file}${rank} class="icon-span">
+					<span id="spnThreatened-${file}${rank}" class="icon-span">
 						<gw-icon
 							class="earmark threatened"
 							iconKey="skull"
 							name="Can be captured by the selected square's piece"
 						></gw-icon>
 					</span>
-					<span id=spnDoesCapture-${file}${rank} class="icon-span">
+					<span id="spnDoesCapture-${file}${rank}" class="icon-span">
 						<gw-icon
 							class="earmark does-capture"
 							iconKey="hand-fist"
 							name="Moving the selected square's piece here performs a capture"
 						></gw-icon>
 					</span>
-					<span id=spnInCheck-${file}${rank} class="icon-span">
+					<span id="spnInCheck-${file}${rank}" class="icon-span">
 						<gw-icon
 							class="earmark in-check"
 							iconKey="triangle-exclamation"
 							name="In check"
 						></gw-icon>
 					</span>
-					<span id=spnDoesCastle-${file}${rank} class="icon-span">
+					<span id="spnDoesCastle-${file}${rank}" class="icon-span">
 						<gw-icon
 							class="earmark does-castle"
 							iconKey="chess-rook"

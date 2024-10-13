@@ -376,10 +376,6 @@ main:has(.board-square-button[aria-pressed="true"]) {
 			align-items: center;
 			gap: 4px;
 		}
-		.move-button {
-			display: flex;
-			align-items: center;
-		}
 		#divCurMoveContainer {
 			display: flex;
 			flex-direction: row;
@@ -521,6 +517,12 @@ dialog {
 	&:has(> .link-list:empty)::after {
 		content: "None";
 	}
+}
+
+.move-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 body:has(#cbxHideHeaders:checked) {

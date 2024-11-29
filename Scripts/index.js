@@ -263,7 +263,7 @@ window.addEventListener("load", () => {
 	}
 
 	const autoSave = localStorage.getItem("auto-save");
-	if(autoSave === "true") {
+	if(autoSave === "true" || autoSave === null) {
 		document.getElementById("cbxAutoSave").checked = true;
 	}
 

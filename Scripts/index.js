@@ -247,24 +247,24 @@ window.addEventListener("load", () => {
 	const theme = localStorage.getItem("theme");
 	switch(theme) {
 		case "light":
-			cbxDarkMode.checked = false;
+			cbxDarkMode.setAttribute("checked", "false");
 			break;
 		case "dark":
-			cbxDarkMode.checked = true;
+			cbxDarkMode.setAttribute("checked", "false");
 			break;
 		default:
-			cbxDarkMode.checked = window.matchMedia("(prefers-color-scheme: dark)").matches;
+			cbxDarkMode.setAttribute("checked", window.matchMedia("(prefers-color-scheme: dark)").matches ? "true" : "false");
 			break;
 	}
 
 	const hideHeaders = localStorage.getItem("hide-headers");
 	if(hideHeaders === "true") {
-		document.getElementById("cbxHideHeaders").checked = true;
+		document.getElementById("cbxHideHeaders").setAttribute("checked", "true");
 	}
 
 	const autoSave = localStorage.getItem("auto-save");
 	if(autoSave === "true" || autoSave === null) {
-		document.getElementById("cbxAutoSave").checked = true;
+		document.getElementById("cbxAutoSave").setAttribute("checked", "true");
 	}
 
 	const selAutoCopy = document.getElementById("selAutoCopy");
@@ -276,7 +276,7 @@ window.addEventListener("load", () => {
 
 	const squareDesc = localStorage.getItem("square-desc");
 	if(squareDesc === "false") {
-		document.getElementById("cbxSquareDesc").checked = false;
+		document.getElementById("cbxSquareDesc").setAttribute("checked", "false");
 	}
 
 	GW.Chessboard.LoadSave.configureInitialGame();

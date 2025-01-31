@@ -19,6 +19,7 @@
 	<script src="./Scripts/ShortcutsControl.js"></script>
 	<script src="./Scripts/SVGIconControl.js"></script>
 	<script src="./Scripts/ToasterControl.js"></script>
+	<script src="./Scripts/SwitchControl.js"></script>
 
 	<link href="./Styles/index.css" rel="stylesheet" type="text/css">
 	<script src="./Scripts/index.js"></script>
@@ -43,28 +44,37 @@
 			<summary id="sumSettings" title="If you are using NVDA you may want to disable additional square descriptions">Settings</summary>
 			<aside id="asiSettings" aria-labelledby="sumSettings" role="group">
 				<label class="text-after hide-until-focus">
-					<input id="cbxSquareDesc"
+					<gw-switch><input id="cbxSquareDesc"
 						type="checkbox"
 						oninput="GW.Chessboard.setUseSquareDesc(event)"
 						title="May be redundant for NVDA"
 						checked
-					>
+					></gw-switch>
 					(Screen Reader) additional square descriptions
 				</label>
 				<label class="text-after">
-					<input id="cbxDarkMode" type="checkbox" oninput="localStorage.setItem('theme', event.target.checked ? 'dark' : 'light')">
+					<gw-switch><input id="cbxDarkMode"
+						type="checkbox"
+						oninput="localStorage.setItem('theme', event.target.checked ? 'dark' : 'light')"
+					></gw-switch>
 					Dark mode
 				</label>
 				<label class="text-after">
-					<input id="cbxVertLayout" type="checkbox">
+					<gw-switch><input id="cbxVertLayout" type="checkbox"></gw-switch>
 					Vertical layout
 				</label>
 				<label class="text-after">
-					<input id="cbxHideHeaders" type="checkbox" oninput="localStorage.setItem('hide-headers', event.target.checked ? 'true' : 'false')">
+					<gw-switch><input id="cbxHideHeaders"
+						type="checkbox"
+						oninput="localStorage.setItem('hide-headers', event.target.checked ? 'true' : 'false')"
+					></gw-switch>
 					Hide board headers
 				</label>
 				<label class="text-after">
-					<input id="cbxAutoSave" type="checkbox" oninput="localStorage.setItem('auto-save', event.target.checked ? 'true' : 'false')">
+					<gw-switch><input id="cbxAutoSave"
+						type="checkbox"
+						oninput="localStorage.setItem('auto-save', event.target.checked ? 'true' : 'false')"
+					></gw-switch>
 					Auto save to local
 				</label>
 				<label class="wide">

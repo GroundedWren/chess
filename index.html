@@ -41,17 +41,8 @@
 	</div>
 	<div id="mainHeaderRight">
 		<details id="detSettings">
-			<summary id="sumSettings" title="If you are using NVDA you may want to disable additional square descriptions">Settings</summary>
+			<summary id="sumSettings">Settings</summary>
 			<aside id="asiSettings" aria-labelledby="sumSettings" role="group">
-				<label class="text-after hide-until-focus">
-					<gw-switch><input id="cbxSquareDesc"
-						type="checkbox"
-						oninput="GW.Chessboard.setUseSquareDesc(event)"
-						title="May be redundant for NVDA"
-						checked
-					></gw-switch>
-					(Screen Reader) additional square descriptions
-				</label>
 				<label class="text-after">
 					<gw-switch><input id="cbxDarkMode"
 						type="checkbox"
@@ -307,6 +298,7 @@
 					<gw-icon iconKey="forward-step" name="Next move"></gw-icon>
 				</button>
 			</aside>
+			<span id="spnCellLabel" class="hidden">Cell</span>
 			<span id="spnSquareBtnLabel" class="hidden">Select</span>
 			<span id="spnSquareBtnMoveLabel" class="hidden">Move</span>
 			<span id="spnSquareWhiteLabel" class="hidden">White square</span>

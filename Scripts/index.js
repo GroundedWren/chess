@@ -274,11 +274,6 @@ window.addEventListener("load", () => {
 	}
 	selAutoCopy.value = autoCopy;
 
-	const squareDesc = localStorage.getItem("square-desc");
-	if(squareDesc === "false") {
-		document.getElementById("cbxSquareDesc").setAttribute("checked", "false");
-	}
-
 	GW.Chessboard.LoadSave.configureInitialGame();
 });
 window.addEventListener("beforeunload", (event) => {});

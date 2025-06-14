@@ -184,117 +184,13 @@ body {
 					}
 				}
 
-				td[aria-labelledby~="spnSquareWhiteLabel"] {
-					background-color: var(--board-square-light-color);
-				}
-				td[aria-labelledby~="spnSquareBlackLabel"] {
-					background-color: var(--board-square-dark-color);
-				}
-				td[aria-labelledby~="spnInvLastMove"] {
-					box-shadow: 0px 0px 0px 2px var(--board-square-last-move-color) inset;
+				td {
+					padding: 0;
 				}
 
 				td {
-					> button {
-						aspect-ratio: 1 / 1;
-						display: flex;
-						width: 100%;
-						background-color: transparent;
-						border: none;
-						position: relative;
-						overflow: clip;
+					padding: 0;
 
-						&:hover, &:focus-within {
-							outline-width: 4px;
-							outline-color: var(--focus-color);
-							outline-style: solid;
-							outline-offset: 1px;
-							position: relative;
-							z-index: 100;
-						}
-
-						&[aria-pressed="true"] {
-							outline: 5px solid var(--selected-color) !important;
-							background-color: color-mix(in srgb, var(--selected-color) 8%, transparent);
-							outline-offset: -2px;
-
-							&:focus {
-								box-shadow: 0px 0px 0px 5px var(--focus-color);
-							}
-						}
-					}
-
-					.icon-span {
-						display: contents;
-					}
-
-					gw-icon.piece {
-						width: 50%;
-						height: 50%;
-						margin: auto;
-
-						svg {
-							width: 100%;
-							height: 100%;
-							height: -webkit-fill-available;
-							min-width: 16px;
-							min-height: 16px;
-
-							&.black {
-								fill: var(--board-piece-black-color);
-							}
-							&.white {
-								fill: var(--board-piece-white-color);
-							}
-							&.invert-x {
-								transform: scaleX(-1);
-							}
-						}
-					}
-
-					gw-icon.earmark {
-						display: none;
-
-						position: absolute;
-
-						svg {
-							width: var(--earmark-size);
-							height: var(--earmark-size);
-						}
-						
-						&.in-check {
-							top: calc(100% - (var(--earmark-size) * 2));
-							left: calc(100% - var(--earmark-size));
-						}
-						&.movable {
-							top: 0;
-							left: 0;
-						}
-						&.threatening {
-							top: 0;
-							left: calc(100% - var(--earmark-size));
-						}
-						&.move-to-able {
-							top: calc(100% - var(--earmark-size));
-							left: 0;
-						}
-						&.threatened {
-							top: calc(100% - var(--earmark-size));
-							left: calc(100% - var(--earmark-size));
-						}
-						&.does-capture {
-							top: calc(100% - var(--earmark-size));
-							left: calc(100% - (var(--earmark-size) * 2));
-						}
-						&.in-check {
-							top: calc(100% - (var(--earmark-size) * 2));
-							left: calc(100% - var(--earmark-size));
-						}
-						&.does-castle {
-							top: calc(100% - (var(--earmark-size) * 2));
-							left: 0;
-						}
-					}
 					&.in-check gw-icon.in-check,
 					&.movable gw-icon.movable,
 					&.threatening gw-icon.threatening,
@@ -303,7 +199,120 @@ body {
 					&.does-capture gw-icon.does-capture,
 					&.in-check gw-icon.in-check,
 					&.does-castle gw-icon.does-castle {
-						display: block;
+						display: block !important;
+					}
+
+					> [role="group"] {
+						&[aria-labelledby~="spnSquareWhiteLabel"] {
+							background-color: var(--board-square-light-color);
+						}
+						&[aria-labelledby~="spnSquareBlackLabel"] {
+							background-color: var(--board-square-dark-color);
+						}
+						&[aria-labelledby~="spnInvLastMove"] {
+							box-shadow: 0px 0px 0px 2px var(--board-square-last-move-color) inset;
+						}
+
+						> button {
+							aspect-ratio: 1 / 1;
+							display: flex;
+							width: 100%;
+							background-color: transparent;
+							border: none;
+							position: relative;
+							overflow: clip;
+
+							&:hover, &:focus-within {
+								outline-width: 4px;
+								outline-color: var(--focus-color);
+								outline-style: solid;
+								outline-offset: 1px;
+								position: relative;
+								z-index: 100;
+							}
+
+							&[aria-pressed="true"] {
+								outline: 5px solid var(--selected-color) !important;
+								background-color: color-mix(in srgb, var(--selected-color) 8%, transparent);
+								outline-offset: -2px;
+
+								&:focus {
+									box-shadow: 0px 0px 0px 5px var(--focus-color);
+								}
+							}
+						}
+
+						.icon-span {
+							display: contents;
+						}
+
+						gw-icon.piece {
+							width: 50%;
+							height: 50%;
+							margin: auto;
+
+							svg {
+								width: 100%;
+								height: 100%;
+								height: -webkit-fill-available;
+								min-width: 16px;
+								min-height: 16px;
+
+								&.black {
+									fill: var(--board-piece-black-color);
+								}
+								&.white {
+									fill: var(--board-piece-white-color);
+								}
+								&.invert-x {
+									transform: scaleX(-1);
+								}
+							}
+						}
+
+						gw-icon.earmark {
+							display: none;
+
+							position: absolute;
+
+							svg {
+								width: var(--earmark-size);
+								height: var(--earmark-size);
+							}
+							
+							&.in-check {
+								top: calc(100% - (var(--earmark-size) * 2));
+								left: calc(100% - var(--earmark-size));
+							}
+							&.movable {
+								top: 0;
+								left: 0;
+							}
+							&.threatening {
+								top: 0;
+								left: calc(100% - var(--earmark-size));
+							}
+							&.move-to-able {
+								top: calc(100% - var(--earmark-size));
+								left: 0;
+							}
+							&.threatened {
+								top: calc(100% - var(--earmark-size));
+								left: calc(100% - var(--earmark-size));
+							}
+							&.does-capture {
+								top: calc(100% - var(--earmark-size));
+								left: calc(100% - (var(--earmark-size) * 2));
+							}
+							&.in-check {
+								top: calc(100% - (var(--earmark-size) * 2));
+								left: calc(100% - var(--earmark-size));
+							}
+							&.does-castle {
+								top: calc(100% - (var(--earmark-size) * 2));
+								left: 0;
+							}
+						}
 					}
 				}
 			}

@@ -151,8 +151,6 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			${ORDERED_FILES.map(file => `<th scope="col">${file}</th>`).join("")}
 		</tr>
 		`;
-
-		const useSquareDesc = document.getElementById("cbxSquareDesc").checked;
 		
 		document.getElementById("tbodyBoard").innerHTML = ORDERED_RANKS.map(rank => `
 		<tr>
@@ -162,69 +160,70 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			}
 			<th scope="row">${rank}</th>
 			${ORDERED_FILES.map(file => `
-			<td id="cell-${file}${rank}" aria-labelledby="${getCellContextIds(file, rank, highlights).join(" ")}">
-				<span id="spnLoc-${file}${rank}" class="sr-only">${file}${rank}</span>
-				<button id="button-${file}${rank}"
-					tabindex="-1"
-					aria-labelledby="spnSquareBtnLabel"
-					aria-pressed="false"
-					class="board-square-button"
-					onclick="GW.Chessboard.Rendering.onSquareClicked('${file}', '${rank}')"
-					aria-describedby="${useSquareDesc ? getCellContextIds(file, rank, highlights).join(" ") : ""}"
-				>
-					<span id="spnIcon-${file}${rank}" class="icon-span">
-						${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
-					</span>
-					<span id="spnMovable-${file}${rank}" class="icon-span">
-						<gw-icon
-							class="earmark movable"
-							iconKey="person-running"
-							name="Can move to the selected square"
-						></gw-icon>
-					</span>
-					<span id="spnThreatening-${file}${rank}" class="icon-span">
-						<gw-icon
-							class="earmark threatening"
-							iconKey="bolt"
-							name="Can capture the selected square's piece"
-						></gw-icon>
-					</span>
-					<span id="spnMoveToAble-${file}${rank}" class="icon-span">
-						<gw-icon
-							class="earmark move-to-able"
-							iconKey="forward-step"
-							name="The selected square's piece can move here"
-						></gw-icon>
-					</span>
-					<span id="spnThreatened-${file}${rank}" class="icon-span">
-						<gw-icon
-							class="earmark threatened"
-							iconKey="skull"
-							name="Can be captured by the selected square's piece"
-						></gw-icon>
-					</span>
-					<span id="spnDoesCapture-${file}${rank}" class="icon-span">
-						<gw-icon
-							class="earmark does-capture"
-							iconKey="hand-fist"
-							name="Moving the selected square's piece here performs a capture"
-						></gw-icon>
-					</span>
-					<span id="spnInCheck-${file}${rank}" class="icon-span">
-						<gw-icon
-							class="earmark in-check"
-							iconKey="triangle-exclamation"
-							name="In check"
-						></gw-icon>
-					</span>
-					<span id="spnDoesCastle-${file}${rank}" class="icon-span">
-						<gw-icon
-							class="earmark does-castle"
-							iconKey="chess-rook"
-							name="The selected square's piece moving here causes castling"
-						></gw-icon>
-					</span>
-				</button>
+			<td id="cell-${file}${rank}" aria-labelledby="spnCellLabel">
+				<div role="group" aria-labelledby="${getCellContextIds(file, rank, highlights).join(" ")}">
+					<span id="spnLoc-${file}${rank}" class="sr-only">${file}${rank}</span>
+					<button id="button-${file}${rank}"
+						tabindex="-1"
+						aria-labelledby="spnSquareBtnLabel"
+						aria-pressed="false"
+						class="board-square-button"
+						onclick="GW.Chessboard.Rendering.onSquareClicked('${file}', '${rank}')"
+					>
+						<span id="spnIcon-${file}${rank}" class="icon-span">
+							${snapshot[`${file}${rank}`] ? snapshot[`${file}${rank}`].Icon : ""}
+						</span>
+						<span id="spnMovable-${file}${rank}" class="icon-span">
+							<gw-icon
+								class="earmark movable"
+								iconKey="person-running"
+								name="Can move to the selected square"
+							></gw-icon>
+						</span>
+						<span id="spnThreatening-${file}${rank}" class="icon-span">
+							<gw-icon
+								class="earmark threatening"
+								iconKey="bolt"
+								name="Can capture the selected square's piece"
+							></gw-icon>
+						</span>
+						<span id="spnMoveToAble-${file}${rank}" class="icon-span">
+							<gw-icon
+								class="earmark move-to-able"
+								iconKey="forward-step"
+								name="The selected square's piece can move here"
+							></gw-icon>
+						</span>
+						<span id="spnThreatened-${file}${rank}" class="icon-span">
+							<gw-icon
+								class="earmark threatened"
+								iconKey="skull"
+								name="Can be captured by the selected square's piece"
+							></gw-icon>
+						</span>
+						<span id="spnDoesCapture-${file}${rank}" class="icon-span">
+							<gw-icon
+								class="earmark does-capture"
+								iconKey="hand-fist"
+								name="Moving the selected square's piece here performs a capture"
+							></gw-icon>
+						</span>
+						<span id="spnInCheck-${file}${rank}" class="icon-span">
+							<gw-icon
+								class="earmark in-check"
+								iconKey="triangle-exclamation"
+								name="In check"
+							></gw-icon>
+						</span>
+						<span id="spnDoesCastle-${file}${rank}" class="icon-span">
+							<gw-icon
+								class="earmark does-castle"
+								iconKey="chess-rook"
+								name="The selected square's piece moving here causes castling"
+							></gw-icon>
+						</span>
+					</button>
+				</div>
 			</td>
 			`).join("")}
 		</tr>
@@ -286,7 +285,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	 */
 	ns.tblBoardOnKbdNav = (event) => {
 		const curCellBtn = tbodyBoard.querySelector(`[tabindex="0"]`);
-		const curCell = curCellBtn.parentElement;
+		const curCell = getParentTd(curCellBtn);
 		const curFile = curCell.getAttribute("id")["cell-".length];
 		const curRank = curCell.getAttribute("id")["cell-".length + 1];
 
@@ -332,6 +331,14 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 			return;
 		}
 		focusSquare(curCellBtn, targetCell.querySelector("button"));
+	}
+
+	function getParentTd(element) {
+		let tdEl = element;
+		while(tdEl && tdEl.tagName !== "TD") {
+			tdEl = tdEl.parentElement;
+		}
+		return tdEl;
 	}
 
 	/**
@@ -389,7 +396,7 @@ window.GW.Chessboard = window.GW.Chessboard || {};
 	function updateSelectionInfo(file, rank) {
 		const tdSelection = document.getElementById(`cell-${file}${rank}`);
 		document.getElementById("spnSelInfoCell").innerText = `${file}${rank} (${
-			tdSelection.getAttribute("aria-labelledby").includes("spnSquareWhiteLabel")
+			tdSelection.querySelector(`[role="group"]`).getAttribute("aria-labelledby").includes("spnSquareWhiteLabel")
 			? "white"
 			: "black"
 		})`;

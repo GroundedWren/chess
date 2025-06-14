@@ -40,44 +40,101 @@
 		<span id="spnName"></span>
 	</div>
 	<div id="mainHeaderRight">
-		<details id="detSettings">
-			<summary id="sumSettings">Settings</summary>
-			<aside id="asiSettings" aria-labelledby="sumSettings" role="group">
-				<label class="text-after">
-					<gw-switch><input id="cbxDarkMode"
-						type="checkbox"
-						oninput="localStorage.setItem('theme', event.target.checked ? 'dark' : 'light')"
-					></gw-switch>
-					Dark mode
-				</label>
-				<label class="text-after">
-					<gw-switch><input id="cbxVertLayout" type="checkbox"></gw-switch>
-					Vertical layout
-				</label>
-				<label class="text-after">
-					<gw-switch><input id="cbxHideHeaders"
-						type="checkbox"
-						oninput="localStorage.setItem('hide-headers', event.target.checked ? 'true' : 'false')"
-					></gw-switch>
-					Hide board headers
-				</label>
-				<label class="text-after">
-					<gw-switch><input id="cbxAutoSave"
-						type="checkbox"
-						oninput="localStorage.setItem('auto-save', event.target.checked ? 'true' : 'false')"
-					></gw-switch>
-					Auto save to local
-				</label>
-				<label class="wide">
-					Auto copy moves for:
-					<select id="selAutoCopy" onchange="localStorage.setItem('auto-copy', event.target.value)">
-						<option value="none" selected>None</option>
-						<option value="white">White</option>
-						<option value="black">Black</option>
-					</select>
-				</label>
-			</aside>
-		</details>
+		<div>
+			<button onclick="document.getElementById('diaInfo').showModal()"><gw-icon iconKey="circle-info" name="Information"></gw-icon></button>
+			<dialog id="diaInfo">
+				<article>
+					<gw-icon iconKey="circle-info" name="info" tabindex="-1" role="heading" aria-level="1" autofocus></gw-icon>
+					<article class="ignore-nest">
+						<h2>Intro</h2>
+						<p>
+							Welcome to the Grounded Wren Chess Page!
+						</p>
+						<p>
+							This tool allows you to play <a href="https://en.wikipedia.org/wiki/Correspondence_chess" target="_blank">correspondance-style</a>
+							 chess with a friend, or against a simple automated opponent.
+						</p>
+						<h2>Correspondance Chess</h2>
+						<p>
+							To play correspondance chess, you and your opponent send moves in chess notation back and forth via a messaging service. Plugging
+							 those moves into this page (with the <q>Apply Move</q> form) will update your board. When you make a move, it can either be automatically
+							 copied to your clipboard (via the <q>Auto copy moves</q> setting), or manually copied via the <q>History</q> form.
+						</p>
+						<p>
+							At any time, you can copy the entire board state as a link with the <q>Share</q> button atop the board.
+						</p>
+						<h2>Automated Opponent</h2>
+						<p>
+							At any time, you may use the <q>Do Auto Move</q> button to have the page calculate and make the next move in the game. Its algorithm is
+							 quite simple, so it's unlikely to present a challenge to advanced players.
+						</p>
+						<h2>Saving Games</h2>
+						<p>
+							You can operate multiple games at once via this page's save functionality (the <q>Games</q> section in the header). It allows you to
+							 save and load game states using your browser's
+							 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank">local storage</a>, or download them as 
+							 simple <a href="https://www.json.org/json-en.html" target="_blank">JSON</a> files.
+						</p>
+						<h2>Controls</h2>
+						<p>
+							This tool is designed to be operable with a keyboard, mouse, or mobile device.
+						</p>
+						<p>
+							To make a move, first select the square with the piece you are moving, then activate the square you're moving it to. The game
+							 has validation to only allow legal moves, and a list of all legal moves (as well as other information) for selected squares
+							  is available in the <q>Selection</q> article.
+						</p>
+						<p>
+							Using a keyboard, the chess board behaves
+							 as a <a href="https://www.w3.org/WAI/ARIA/apg/patterns/grid/examples/data-grids/" target="_blank">Data Grid</a>. All keyboard shortcuts
+							 are available to review by pressing <kbd>Alt</kbd>+<kbd>S</kbd> when the board is focused.
+						</p>
+					</article>
+					<footer>
+						<a class="full" href="mailto:vera@groundedwren.com?subject=Chess">Give feedback</a>
+						<button onclick="document.getElementById('diaInfo').close();">Close</button>
+					</footer>
+				</article>
+			</dialog>
+			<details id="detSettings">
+				<summary id="sumSettings"><gw-icon iconKey="gear" name="Settings"></gw-icon></summary>
+				<aside id="asiSettings" aria-labelledby="sumSettings" role="group">
+					<label class="text-after">
+						<gw-switch><input id="cbxDarkMode"
+							type="checkbox"
+							oninput="localStorage.setItem('theme', event.target.checked ? 'dark' : 'light')"
+						></gw-switch>
+						Dark mode
+					</label>
+					<label class="text-after">
+						<gw-switch><input id="cbxVertLayout" type="checkbox"></gw-switch>
+						Vertical layout
+					</label>
+					<label class="text-after">
+						<gw-switch><input id="cbxHideHeaders"
+							type="checkbox"
+							oninput="localStorage.setItem('hide-headers', event.target.checked ? 'true' : 'false')"
+						></gw-switch>
+						Hide board headers
+					</label>
+					<label class="text-after">
+						<gw-switch><input id="cbxAutoSave"
+							type="checkbox"
+							oninput="localStorage.setItem('auto-save', event.target.checked ? 'true' : 'false')"
+						></gw-switch>
+						Auto save to local
+					</label>
+					<label class="wide">
+						Auto copy moves for:
+						<select id="selAutoCopy" onchange="localStorage.setItem('auto-copy', event.target.value)">
+							<option value="none" selected>None</option>
+							<option value="white">White</option>
+							<option value="black">Black</option>
+						</select>
+					</label>
+				</aside>
+			</details>
+		</div>
 		<section id="secGames" aria-labelledby="hGames">
 			<h2 id="hGames">Games</h2>
 			<button popovertarget="formLoad">Load</button>
@@ -514,36 +571,36 @@
 	</figure>
 	</footer>
 	<dialog id="diaPromotion">
-	<form
-		aria-labelledby="hPromotion"
-		aria-describedby="pPromotion"
-		onsubmit="GW.Chessboard.Snapshots.resolvePromotion(event); document.getElementById('diaPromotion').close();"
-	>
-		<h1 id="hPromotion">Promotion</h1>
-		<p id="pPromotion">This move has promoted a pawn.</p>
-		<fieldset>
-			<legend>Promote to</legend>
-			<label class="text-after">
-				<input type="radio" name="promoteTo" value="Queen" autofocus checked>
-				Queen
-			</label>
-			<label class="text-after">
-				<input type="radio" name="promoteTo" value="Knight">
-				Knight
-			</label>
-			<label class="text-after">
-				<input type="radio" name="promoteTo" value="Rook">
-				Rook
-			</label>
-			<label class="text-after">
-				<input type="radio" name="promoteTo" value="Bishop">
-				Bishop
-			</label>
-		</fieldset>
-		<div class="footer">
-			<button type="submit">Confirm</button>
-		</div>
-	</form>
+		<form
+			aria-labelledby="hPromotion"
+			aria-describedby="pPromotion"
+			onsubmit="GW.Chessboard.Snapshots.resolvePromotion(event); document.getElementById('diaPromotion').close();"
+		>
+			<h1 id="hPromotion">Promotion</h1>
+			<p id="pPromotion">This move has promoted a pawn.</p>
+			<fieldset>
+				<legend>Promote to</legend>
+				<label class="text-after">
+					<input type="radio" name="promoteTo" value="Queen" autofocus checked>
+					Queen
+				</label>
+				<label class="text-after">
+					<input type="radio" name="promoteTo" value="Knight">
+					Knight
+				</label>
+				<label class="text-after">
+					<input type="radio" name="promoteTo" value="Rook">
+					Rook
+				</label>
+				<label class="text-after">
+					<input type="radio" name="promoteTo" value="Bishop">
+					Bishop
+				</label>
+			</fieldset>
+			<div class="footer">
+				<button type="submit">Confirm</button>
+			</div>
+		</form>
 	</dialog>
 	<dialog id="diaBusy" cancel="(event) => event.preventDefault();" aria-labelledby="emThinking">
 		<em id="emThinking">Thinking...</em>

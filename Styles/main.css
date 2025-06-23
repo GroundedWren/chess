@@ -9,10 +9,8 @@ File Description: CSS Reset
 }
 
 html, body {
-	margin-top: 0;
-	margin-bottom: 0;
-	margin-left: auto;
-	margin-right: auto;
+	margin-block: 0;
+	margin-inline: auto;
 	max-width: 1900px;
 	
 	word-break: break-word;
@@ -43,7 +41,7 @@ a {
 }
 
 .sr-only {
-	position: absolute;
+	position: absolute !important;
 	left: -99999999px;
 	top: 0px;
 }
@@ -184,10 +182,6 @@ footer {
 summary {
 	min-height: auto;
 	padding: 5px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 3px;
 
 	&::marker {
 		content: "";
@@ -195,6 +189,13 @@ summary {
 	&::-webkit-details-marker {
 		display: none;
 	}
+}
+summary, button[aria-expanded] {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 3px;
+
 	&::before, &::after {
 		content: "";
 		display: inline-block;
@@ -211,7 +212,7 @@ summary {
 		border-left: 2px solid var(--border-color);
 	}
 }
-details[open] summary {
+details[open] summary, button[aria-expanded="true"] {
 	&::after {
 		border-top: none;
 		border-right: none;
@@ -225,7 +226,7 @@ details[open] summary {
 		border-right: 2px solid var(--border-color);
 	}
 }
-[dir="rtl"] summary {
+[dir="rtl"] :is(summary, button[aria-expanded]) {
 	&::before, &::after {
 		transform: rotate(225deg);
 	}
@@ -237,15 +238,67 @@ details[open] summary {
 }
 
 button, input:is([type="button"], [type="submit"], [type="reset"]), input[type="file"]::file-selector-button, select, summary {
+	--border-start-color: color-mix(in oklab, var(--link-color), #FFFFFF 30%);
+	--border-end-color: color-mix(in oklab, var(--link-color), #000000 20%);
+	
 	background-color: var(--button-face-color);
 	color: var(--button-text-color);
-	border: 1px solid var(--link-color);
+
+	border: 2.5px solid;
+	border-block-start-color: var(--border-start-color);
+	border-inline-start-color: var(--border-start-color);
+	border-block-end-color: var(--border-end-color);
+	border-inline-end-color: var(--border-end-color);
 	cursor: pointer;
 	min-width: 30px;
 	min-height: 30px;
 	user-select: none;
 	-webkit-user-select: none;
+
+	&:hover {
+		background-color: color-mix(in oklab, var(--button-face-color), var(--selected-color) 35%);
+	}
+	&:active, &:open {
+		background-color: color-mix(in oklab, var(--button-face-color), var(--selected-color) 65%);
+		--border-start-color: color-mix(in oklab, var(--link-color), #000000 20%);
+		--border-end-color: color-mix(in oklab, var(--link-color), #FFFFFF 30%);
+	}
 }
+
+button[aria-pressed] {
+	display: flex;
+	flex-direction: row;
+	gap: 3px;
+	align-items: center;
+	justify-content: center;
+
+	&::before {
+		content: "";
+		display: inline-block;
+		width: 0.6em;
+		height: 0.6em;
+		transform: rotate(45deg);
+		border: 1px solid var(--border-color);
+	}
+
+	&[aria-pressed="true"] {
+		&::before {
+			background-color: var(--border-color);
+		}
+	}
+}
+
+button:is([aria-expanded="true"], [aria-pressed="true"]), details[open] summary {
+	--border-start-color: color-mix(in oklab, var(--link-color), #000000 20%);
+	--border-end-color: color-mix(in oklab, var(--link-color), #FFFFFF 30%);
+
+	background-color: var(--selected-color);
+
+	&:hover {
+		background-color: color-mix(in oklab, var(--selected-color), var(--button-face-color) 20%);
+	}
+}
+
 /** https://browserstrangeness.bitbucket.io/css_hacks.html#safari **/
 @supports (-webkit-hyphens:none) {
 	select {
@@ -254,18 +307,10 @@ button, input:is([type="button"], [type="submit"], [type="reset"]), input[type="
 	}
 }
 
-button[aria-expanded="true"], button[aria-pressed="true"], details[open] summary {
-	background-color: var(--selected-color);
-	box-shadow: 0px 0px 3px 1px var(--link-color) inset;
-}
-
 :is(button, select, input:is([type="button"], [type="submit"], [type="reset"]))[disabled], input[type="file"][disabled]::file-selector-button {
 	text-decoration: line-through;
 	border: 1px solid var(--border-color);
 	opacity: 0.5;
-}
-
-:is(button, select, input:is([type="button"], [type="submit"], [type="reset"]))[disabled]:hover, input[type="file"][disabled]::file-selector-button:hover {
 	cursor: not-allowed;
 }
 
@@ -294,7 +339,7 @@ mark {
 
 form {
 	button[type="submit"], button:not([type="reset"], [type="button"]), input[type="submit"] {
-		border-width: 2px;
+		border-width: 3px;
 		font-weight: bold;
 	}
 }
@@ -308,10 +353,13 @@ form {
 label:not(.input-vertical) {
 	display: inline-flex;
 	align-items: center;
-	&.text-after :is(input, select, [role="switch"]) {
-		margin-inline-end: 5px;
+	&:is(.text-after, :has(input:is([type="checkbox"], [type="radio"]), [role="switch"])) {
+		padding-inline-end: 2px;
+		:is(input, select, [role="switch"]) {
+			margin-inline-end: 5px;
+		}
 	}
-	&:not(.text-after) :is(input, select) {
+	&:not(:is(.text-after, :has(input:is([type="checkbox"], [type="radio"]), [role="switch"]))) :is(input, select) {
 		margin-inline-start: 5px;
 	}
 	&.wide {

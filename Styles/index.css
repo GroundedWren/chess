@@ -228,8 +228,11 @@ body {
 							border: none;
 							position: relative;
 							overflow: clip;
+							&::before {
+								display: none;
+							}
 
-							&:hover, &:focus-within {
+							&:focus-within {
 								outline-width: 4px;
 								outline-color: var(--focus-color);
 								outline-style: solid;
@@ -513,6 +516,7 @@ dialog {
 	border: none;
 	max-width: 900px;
 	text-align: left;
+	padding-block-end: 0;
 
 	display: grid;
 	grid-template-columns: 30px 1fr;

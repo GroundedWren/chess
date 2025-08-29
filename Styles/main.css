@@ -302,8 +302,8 @@ button:is([aria-expanded="true"], [aria-pressed="true"]), details[open] summary 
 /** https://browserstrangeness.bitbucket.io/css_hacks.html#safari **/
 @supports (-webkit-hyphens:none) {
 	select {
-		background-color: white;
-		color: black;
+		background-color: white !important;
+		color: black !important;
 	}
 }
 

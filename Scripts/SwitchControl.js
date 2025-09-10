@@ -4,8 +4,7 @@
  */
  
 window.GW = window.GW || {};
-window.GW.Controls = window.GW.Controls || {};
-(function SwitchEl(ns) {
+(function Controls(ns) {
 	ns.SwitchEl = class SwitchEl extends HTMLElement {
 		static InstanceCount = 0;
 
@@ -240,5 +239,5 @@ window.GW.Controls = window.GW.Controls || {};
 		};
 	}
 	customElements.define("gw-switch", ns.SwitchEl);
-}) (window.GW.Controls.TEMPLATE = window.GW.Controls.TEMPLATE || {});
+}) (window.GW.Controls = window.GW.Controls || {});
 GW?.Controls?.Veil?.clearDefer("GW.Controls.SwitchEl");
